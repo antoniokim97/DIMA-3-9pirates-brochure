@@ -267,9 +267,12 @@
             border-radius: 12px; /* 안쪽 라운드 감소 */
             border: none; /* 깔끔한 테두리만 */
         }
-        /* 💡 모바일 뷰어에서 JS가 동적으로 스케일링을 제어하므로 트랜지션 해제 */
+        /* 💡 모바일 뷰어에서 JS가 동적으로 스케일링을 제어하므로 트랜지션 해제 및 100% 렌더링 강제 */
         body.mobile-view-mode .iframe-scaler {
-            transition: none;
+            transition: none !important;
+            transform: none !important;
+            width: 100% !important;
+            height: 100% !important;
         }
 
         /* 토글 스위치 디자인 */
@@ -582,9 +585,9 @@
                                     <div class="phone-glow glow-neon-green"></div>
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <!-- 💡 영상 전체화면(Fullscreen) 가능하도록 속성 추가 -->
-                                            <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="phone-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                        <!-- 💡 영상 비율 깨짐 및 구글 드라이브 UI 오류 완벽 방지 패치 -->
+                                        <div class="phone-screen" style="background-color: #000; display: flex; align-items: center; justify-content: center;">
+                                            <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="phone-iframe" style="width: 100%; aspect-ratio: 9/16; height: auto;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -626,9 +629,9 @@
                                     <div class="phone-glow glow-cyan"></div>
                                     <div class="phone-mockup border-cyan-800">
                                         <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <!-- 💡 영상 전체화면(Fullscreen) 가능하도록 속성 추가 -->
-                                            <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="phone-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                        <!-- 💡 영상 비율 깨짐 방지 -->
+                                        <div class="phone-screen" style="background-color: #000; display: flex; align-items: center; justify-content: center;">
+                                            <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="phone-iframe" style="width: 100%; aspect-ratio: 9/16; height: auto;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -678,9 +681,9 @@
                                     <div class="phone-glow glow-neon-green"></div>
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <!-- 💡 영상 전체화면(Fullscreen) 가능하도록 속성 추가 -->
-                                            <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="phone-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                        <!-- 💡 영상 비율 깨짐 방지 -->
+                                        <div class="phone-screen" style="background-color: #000; display: flex; align-items: center; justify-content: center;">
+                                            <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="phone-iframe" style="width: 100%; aspect-ratio: 9/16; height: auto;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -721,9 +724,9 @@
                                     <div class="phone-glow glow-pink"></div>
                                     <div class="phone-mockup border-rose-900">
                                         <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <!-- 💡 영상 전체화면(Fullscreen) 가능하도록 속성 추가 -->
-                                            <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="phone-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                        <!-- 💡 영상 비율 깨짐 방지 -->
+                                        <div class="phone-screen" style="background-color: #000; display: flex; align-items: center; justify-content: center;">
+                                            <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="phone-iframe" style="width: 100%; aspect-ratio: 9/16; height: auto;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -976,22 +979,24 @@
             setTimeout(adjustIframeScalers, 50);
         }
 
-        // 💡 1차 랜딩페이지 비율 깨짐 방지용 동적 스케일링 함수
+        // 💡 랜딩페이지 비율 깨짐 방지용 동적 스케일링 함수
         function adjustIframeScalers() {
             const scalers = document.querySelectorAll('.iframe-scaler');
             scalers.forEach(scaler => {
                 const parent = scaler.parentElement;
                 if (document.body.classList.contains('mobile-view-mode')) {
+                    // 모바일 뷰어 모드일 때는 강제 스케일링을 풀고 100% 본래 해상도로 네이티브 구동되게 처리
+                    scaler.style.transform = '';
+                    scaler.style.width = '';
+                    scaler.style.height = '';
+                } else {
+                    // 데스크탑 모드(목업)에서는 목업 창 크기에 맞춰 414px 해상도를 조화롭게 축소해서 보여줌
                     const parentWidth = parent.clientWidth;
                     const parentHeight = parent.clientHeight;
-                    const scale = parentWidth / 414; // 414px 기준 모바일 폰 너비에 맞춰 축소 비율 계산
+                    const scale = parentWidth / 414; 
                     scaler.style.transform = `scale(${scale})`;
                     scaler.style.width = '414px';
-                    scaler.style.height = `${parentHeight / scale}px`; // 축소된 만큼 세로 길이를 늘려 빈 공간 방지
-                } else {
-                    scaler.style.transform = 'scale(0.81)';
-                    scaler.style.width = '414px';
-                    scaler.style.height = '940px';
+                    scaler.style.height = `${parentHeight / scale}px`; 
                 }
             });
         }
