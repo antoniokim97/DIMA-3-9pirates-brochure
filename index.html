@@ -19,7 +19,6 @@
                 extend: {
                     fontFamily: {
                         sans: ['Pretendard', 'sans-serif'],
-                        mono: ['Courier New', 'monospace'],
                     },
                     colors: {
                         brand: {
@@ -32,6 +31,7 @@
                     },
                     animation: {
                         'float': 'float 8s ease-in-out infinite',
+                        'gradient-x': 'gradient-x 15s ease infinite',
                         'pulse-glow': 'pulse-glow 3s ease-in-out infinite alternate',
                         'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     },
@@ -39,6 +39,10 @@
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-12px)' },
+                        },
+                        'gradient-x': {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' },
                         },
                         'pulse-glow': {
                             '0%': { opacity: 0.3, transform: 'scale(0.95)' },
@@ -62,29 +66,21 @@
             overflow-wrap: break-word;
         }
 
-        /* 💡 배경 UI: 모던 앰비언트 오라 */
-        .ambient-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 0;
-            transition: background 1.5s ease-in-out;
-            will-change: transform;
-        }
-        #orb-1 { width: 50vw; height: 50vw; top: -10%; left: -10%; background: rgba(8, 145, 178, 0.4); } 
-        #orb-2 { width: 60vw; height: 60vw; bottom: -10%; right: -10%; background: rgba(225, 29, 72, 0.3); }
-
-        /* 💡 마그네틱 버튼 특수 UI */
+        /* 💡 마그네틱 버튼 (Magnetic Hover) 특수 UI */
         .magnetic-wrap {
             display: inline-block;
             cursor: pointer;
-            padding: 20px; 
-            margin: -20px; 
         }
-        .magnetic-inner { display: flex; will-change: transform; }
-        .magnetic-text { display: flex; will-change: transform; }
+        .magnetic-inner {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform;
+        }
+        .magnetic-text {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform;
+        }
 
         /* 💎 다크 솔리드 CTA 버튼 */
         .solid-dark-btn {
@@ -98,173 +94,337 @@
             box-shadow: 0 10px 30px rgba(8, 145, 178, 0.8), inset 0 0 25px rgba(8, 145, 178, 0.6);
             background: #0f172a;
         }
+        
         @keyframes btn-neon-pulse {
             0% { box-shadow: 0 0 15px rgba(8, 145, 178, 0.3), inset 0 0 10px rgba(8, 145, 178, 0.2); }
             100% { box-shadow: 0 0 35px rgba(8, 145, 178, 0.7), inset 0 0 25px rgba(8, 145, 178, 0.5); }
         }
 
-        .readable-text { word-break: keep-all; line-height: 1.7; }
+        .readable-text {
+            word-break: keep-all;
+            line-height: 1.7;
+        }
         
         /* 🍎 스크롤 애니메이션 */
-        .reveal-up { opacity: 0; transform: translateY(60px) scale(0.98); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .reveal-up.active { opacity: 1; transform: translateY(0) scale(1); }
-        .reveal-scale { opacity: 0; transform: scale(0.92); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(60px) scale(0.98);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-up.active { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.92);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         .reveal-scale.active { opacity: 1; transform: scale(1); }
+
         .delay-100 { transition-delay: 100ms; }
         .delay-200 { transition-delay: 200ms; }
         .delay-300 { transition-delay: 300ms; }
 
-        /* 💡💡💡 [NEW 하이엔드 UI] 글래스모피즘 + 동적 스팟라이트 호버 효과 💡💡💡 */
         .premium-card {
-            background: rgba(248, 250, 252, 0.7); 
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255,255,255,0.8);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
-            overflow: hidden;
-        }
-        /* 마우스를 따라다니는 스팟라이트 빛 무리 */
-        .premium-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 1), transparent 40%);
-            z-index: 0;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            pointer-events: none;
-        }
-        .premium-card:hover::before {
-            opacity: 1;
-        }
-        .premium-card > * {
-            position: relative;
-            z-index: 1; /* 콘텐츠가 빛 위에 오도록 */
         }
         .premium-card:hover {
-            box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255,255,255,1);
+            box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.1);
             transform: translateY(-4px);
-            border-color: rgba(255, 255, 255, 1);
+            border-color: #cbd5e1;
         }
 
-        /* 💡 [이스터에그 1] 3D 틸트 카라셀 & 플립(Flip) 뒤집기 카드 */
-        .tilt-card { perspective: 1000px; cursor: pointer; }
+        /* 💡 3D 틸트 카라셀 효과 (팀원 카드용 - 극찬하신 효과 유지!) */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+        }
         .tilt-card-inner {
-            position: relative; width: 100%; height: 100%;
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-            transform-style: preserve-3d; will-change: transform;
-        }
-        .tilt-card.is-flipped .tilt-card-inner { transform: rotateY(180deg) !important; }
-        .card-front, .card-back {
-            -webkit-backface-visibility: hidden; backface-visibility: hidden;
-            width: 100%; height: 100%; border-radius: 2rem; position: relative; transform-style: preserve-3d;
-        }
-        .card-back {
-            position: absolute; top: 0; left: 0; background: #0f172a; color: white; transform: rotateY(180deg);
-            display: flex; flex-col; align-items: center; justify-content: center;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5); border: 1px solid #334155;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+            transform: translateZ(0); 
         }
 
-        /* 📱 스마트폰 목업 (데스크탑 뷰 기본) - 완벽 고정 유지 */
-        .phone-wrapper { position: relative; margin: 0 auto; width: 100%; max-width: 360px; transition: all 0.5s ease; }
-        .phone-glow { position: absolute; inset: -4px; border-radius: 4rem; filter: blur(12px); opacity: 0.8; z-index: 0; transition: all 0.5s ease; }
+        /* 💡 스크롤 속도 반응형 마키(Marquee) 티커 UI */
+        .velocity-marquee-container {
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .velocity-marquee-track {
+            display: flex;
+            white-space: nowrap;
+            animation: marqueeScroll 25s linear infinite;
+        }
+        .velocity-marquee-item {
+            font-size: 5vw;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: transparent;
+            -webkit-text-stroke: 2px #e2e8f0;
+            padding: 0 2vw;
+            will-change: transform;
+        }
+        /* 데스크탑 텍스트 스트로크 조정 */
+        @media (min-width: 768px) {
+            .velocity-marquee-item {
+                font-size: 4rem;
+                -webkit-text-stroke: 2px #f1f5f9;
+            }
+        }
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } 
+        }
+
+        /* 📱 스마트폰 목업 (데스크탑 뷰 기본) */
+        .phone-wrapper {
+            position: relative;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 360px; 
+            transition: all 0.5s ease;
+        }
+        .phone-glow {
+            position: absolute;
+            inset: -4px; 
+            border-radius: 4rem;
+            filter: blur(12px);
+            opacity: 0.8;
+            z-index: 0;
+            transition: all 0.5s ease;
+        }
         .phone-wrapper:hover .phone-glow { filter: blur(18px); opacity: 1; inset: -6px; }
+        
         .glow-neon-green { background: linear-gradient(135deg, #10b981, #34d399); }
         .glow-cyan { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
         .glow-pink { background: linear-gradient(135deg, #e11d48, #f43f5e); }
 
         .phone-mockup {
-            position: relative; width: 100%; height: 780px; 
+            position: relative;
+            width: 100%;
+            height: 780px; 
             background: linear-gradient(145deg, #e2e8f0 0%, #cbd5e1 40%, #94a3b8 60%, #e2e8f0 100%);
-            border-radius: 3.5rem; padding: 12px; 
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9), inset 0 0 10px rgba(0,0,0,0.1), 0 20px 40px -10px rgba(0,0,0,0.2);
-            border: 1px solid #cbd5e1; z-index: 10; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 3.5rem; 
+            padding: 12px; 
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9), 
+                        inset 0 0 10px rgba(0,0,0,0.1),
+                        0 20px 40px -10px rgba(0,0,0,0.2);
+            border: 1px solid #cbd5e1;
+            z-index: 10;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .phone-wrapper:hover .phone-mockup { transform: translateY(-8px); }
-        .phone-mockup::before { content: ''; position: absolute; top: 160px; left: -3px; width: 3px; height: 35px; background: #94a3b8; border-radius: 3px 0 0 3px; box-shadow: 0 60px 0 0 #94a3b8, 0 120px 0 0 #94a3b8; }
-        .phone-mockup::after { content: ''; position: absolute; top: 190px; right: -3px; width: 3px; height: 55px; background: #94a3b8; border-radius: 0 3px 3px 0; }
-        .phone-mockup-dark { background: #1e293b; box-shadow: inset 0 0 0 1px #334155, 0 15px 30px -10px rgba(0, 0, 0, 0.15); }
+
+        .phone-mockup::before {
+            content: ''; position: absolute; top: 160px; left: -3px; width: 3px; height: 35px; background: #94a3b8; border-radius: 3px 0 0 3px;
+            box-shadow: 0 60px 0 0 #94a3b8, 0 120px 0 0 #94a3b8; 
+            transition: opacity 0.3s;
+        }
+        .phone-mockup::after {
+            content: ''; position: absolute; top: 190px; right: -3px; width: 3px; height: 55px; background: #94a3b8; border-radius: 0 3px 3px 0; 
+            transition: opacity 0.3s;
+        }
+
+        .phone-mockup-dark {
+            background: #1e293b;
+            box-shadow: inset 0 0 0 1px #334155, 0 15px 30px -10px rgba(0, 0, 0, 0.15);
+        }
         .phone-mockup-dark::before, .phone-mockup-dark::after { background: #334155; box-shadow: 0 60px 0 0 #334155, 0 120px 0 0 #334155; }
 
-        .phone-screen { width: 100%; height: 100%; background: #ffffff; border-radius: 2.8rem; overflow: hidden; position: relative; transform: translateZ(0); border: 2px solid #000; }
-        .dynamic-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 100px; height: 30px; background: #000000; border-radius: 20px; z-index: 50; pointer-events: none; }
-        .phone-iframe { width: 100%; height: 100%; border: none; background-color: #ffffff; }
-
-        .iframe-scaler { width: 414px; height: 940px; transform: scale(0.81); transform-origin: top left; transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease; }
-        .iframe-scaler iframe { width: 100%; height: 100%; border: none; }
-
-        /* 💡 모바일 뷰어 모드 (토글 활성화 시 - 절대 깨지지 않는 완벽 고정 구역) */
-        body.mobile-view-mode .phone-wrapper { max-width: 414px; margin: 0 auto; padding: 0; }
-        body.mobile-view-mode .phone-mockup {
-            width: 100%; height: auto !important; min-height: 0 !important; 
-            aspect-ratio: 9 / 16 !important; 
-            background: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; padding: 0; border-radius: 12px; transform: none !important; position: relative; overflow: hidden; 
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 2.8rem;
+            overflow: hidden;
+            position: relative;
+            transform: translateZ(0); 
+            border: 2px solid #000;
+            transition: border-radius 0.4s ease;
         }
-        body.mobile-view-mode .phone-wrapper:hover .phone-mockup { transform: none !important; }
-        body.mobile-view-mode .phone-glow, body.mobile-view-mode .phone-mockup::before, body.mobile-view-mode .phone-mockup::after, body.mobile-view-mode .dynamic-island { opacity: 0; display: none !important; }
-        body.mobile-view-mode .phone-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; border: none; background-color: #000; }
 
-        /* 구글 드라이브 거대 UI 겹침 대참사 완벽 해결용 해킹 클래스 */
-        .gdrive-video-wrapper { position: relative; width: 100%; height: 100%; background-color: #000; overflow: hidden; }
-        .gdrive-video-iframe { position: absolute; top: 50%; left: 50%; width: 150%; height: 150%; transform: translate(-50%, -50%) scale(0.666667); border: none; }
+        .dynamic-island {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 30px;
+            background: #000000;
+            border-radius: 20px;
+            z-index: 50;
+            pointer-events: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: opacity 0.3s;
+        }
+
+        .phone-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #ffffff;
+        }
+
+        .iframe-scaler {
+            width: 414px; 
+            height: 940px; 
+            transform: scale(0.81); 
+            transform-origin: top left;
+            transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
+        }
+        .iframe-scaler iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 💡💡💡 모바일 뷰어 모드 (토글 활성화 시) 💡💡💡 */
+        body.mobile-view-mode .phone-wrapper {
+            max-width: 414px; 
+            margin: 0 auto;
+            padding: 0; 
+        }
+        body.mobile-view-mode .phone-mockup {
+            width: 100%;
+            height: auto !important;
+            min-height: 0 !important; 
+            aspect-ratio: 9 / 16 !important; /* 💡 숏폼 완벽 비율 강제 고정 */
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            padding: 0;
+            border-radius: 12px; 
+            transform: none !important;
+            position: relative;
+            overflow: hidden; 
+        }
+        body.mobile-view-mode .phone-wrapper:hover .phone-mockup {
+            transform: none !important; 
+        }
+        body.mobile-view-mode .phone-glow,
+        body.mobile-view-mode .phone-mockup::before,
+        body.mobile-view-mode .phone-mockup::after,
+        body.mobile-view-mode .dynamic-island {
+            opacity: 0; 
+            display: none !important;
+        }
+        body.mobile-view-mode .phone-screen {
+            position: absolute; 
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 0; 
+            border: none; 
+            background-color: #000;
+        }
+
+        /* 💡 구글 드라이브 거대 UI 겹침 대참사 완벽 해결용 해킹 클래스 */
+        .gdrive-video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            overflow: hidden;
+        }
+        .gdrive-video-iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            transform: translate(-50%, -50%) scale(0.666667); 
+            border: none;
+        }
 
         /* 토글 스위치 디자인 */
         .view-toggle-container {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;
-            background: white; padding: 4px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: flex; align-items: center; border: 1px solid #e2e8f0; width: 260px; 
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: white;
+            padding: 4px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            width: 260px; 
         }
+        
         .view-toggle-container::before {
-            content: ''; position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); 
-            background: #0f172a; border-radius: 26px; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); z-index: 0; box-shadow: 0 2px 8px rgba(15,23,42,0.3);
+            content: '';
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            left: 4px;
+            width: calc(50% - 4px); 
+            background: #0f172a;
+            border-radius: 26px;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 0;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.3);
         }
-        body.mobile-view-mode .view-toggle-container::before { transform: translateX(100%); }
+
+        body.mobile-view-mode .view-toggle-container::before {
+            transform: translateX(100%);
+        }
 
         .toggle-btn {
-            flex: 1; padding: 12px 0; border-radius: 26px; font-size: 14px; font-weight: 800; cursor: pointer;
-            transition: color 0.4s ease; display: flex; align-items: center; justify-content: center; gap: 6px;
-            color: #64748b; z-index: 1; background: transparent !important; box-shadow: none !important; border: none; outline: none; -webkit-tap-highlight-color: transparent;
+            flex: 1; 
+            padding: 12px 0;
+            border-radius: 26px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: color 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #64748b;
+            z-index: 1;
+            background: transparent !important; 
+            box-shadow: none !important;
+            border: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
-        .toggle-btn.active { color: white; }
+        
+        .toggle-btn.active {
+            color: white; 
+        }
 
-        /* 아이프레임 내부 터치 활성화 (모바일 흔들림 방지) */
-        body.mobile-view-mode .phone-iframe { pointer-events: auto; }
-        body.mobile-view-mode .phone-screen { overflow: auto; -webkit-overflow-scrolling: touch; }
+        /* 💡 아이프레임 내부 터치 활성화 */
+        body.mobile-view-mode .phone-iframe {
+            pointer-events: auto; 
+        }
+        body.mobile-view-mode .phone-screen {
+            overflow: auto; 
+            -webkit-overflow-scrolling: touch; 
+        }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         body.modal-open { overflow: hidden; }
-
-        /* 💡 시스템 오버라이드 터미널 */
-        body.override-active { overflow: hidden; }
-        body.override-active main, body.override-active section, body.override-active nav { 
-            filter: invert(1) contrast(120%) hue-rotate(180deg); pointer-events: none;
-        }
-        .glitch-effect { animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite; }
-        @keyframes glitch-anim {
-            0% { transform: translate(0) }
-            20% { transform: translate(-5px, 5px) }
-            40% { transform: translate(-5px, -5px) }
-            60% { transform: translate(5px, 5px) }
-            80% { transform: translate(5px, -5px) }
-            100% { transform: translate(0) }
-        }
-        #secret-terminal { background-color: rgba(0, 0, 0, 0.95); backdrop-filter: blur(10px); }
-        .typing-cursor::after { content: '█'; animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
-<body class="antialiased selection:bg-brand-pink selection:text-white break-keep bg-slate-50 relative transition-all duration-700">
+<body class="antialiased selection:bg-brand-pink selection:text-white break-keep bg-slate-50">
 
-    <!-- 💡 배경 UI: 앰비언트 오라 -->
-    <div id="orb-1" class="ambient-orb"></div>
-    <div id="orb-2" class="ambient-orb"></div>
-    
-    <!-- 💡 디바이스 뷰 토글 버튼 (화면 하단 중앙) -->
+    <!-- 💡 디바이스 뷰 토글 버튼 (화면 하단 중앙 고정) -->
     <div class="view-toggle-container">
         <button id="btnDesktopView" class="toggle-btn active" onclick="setViewMode('desktop')">
             <i class="ph-fill ph-desktop"></i> DESKTOP
@@ -277,8 +437,7 @@
     <!-- 고정 네비게이션 -->
     <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-slate-100 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
-            <!-- 💡 [이스터에그 2] 해골 3번 연속 클릭 시 터미널 발동 -->
-            <div id="nav-logo-trigger" class="font-black text-2xl tracking-tighter flex items-center gap-2 text-slate-900 cursor-pointer select-none" title="Do not click 3 times.">
+            <div class="font-black text-2xl tracking-tighter flex items-center gap-2 text-slate-900">
                 <i class="ph-fill ph-skull text-brand-pink animate-float"></i> K-9적단
             </div>
             <div class="hidden md:flex space-x-8 text-sm font-bold text-slate-500">
@@ -295,7 +454,7 @@
     <section id="sec-00" class="relative min-h-screen flex flex-col items-center justify-start text-center px-6 pt-32 pb-20 overflow-hidden">
         <div class="absolute inset-0 z-0 bg-gradient-to-tr from-rose-50 via-slate-50 to-cyan-50 opacity-80"></div>
         <div class="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center">
-            <div class="reveal-up active inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-sm font-bold text-slate-500 tracking-widest uppercase mb-8 premium-card">
+            <div class="reveal-up active inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-sm font-bold text-slate-500 tracking-widest uppercase mb-8">
                 디마 3기 최종 프로젝트
             </div>
             <h1 class="reveal-up active delay-100 text-6xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter mb-6 leading-[1.1] text-slate-900 drop-shadow-sm">
@@ -311,17 +470,15 @@
                 
                 <div class="absolute bottom-12 md:bottom-20 left-1/2 -translate-x-1/2 w-full flex flex-col items-center justify-center z-20">
                     
-                    <!-- 💡 마그네틱 CTA 버튼 -->
+                    <!-- 💡 [하이엔드 UI 적용] 마그네틱 CTA 버튼 -->
                     <div class="magnetic-wrap group mb-4">
-                        <div class="magnetic-inner">
-                            <div class="absolute inset-0 bg-brand-cyan/60 blur-[20px] rounded-full animate-pulse-glow group-hover:bg-brand-cyan/90 transition duration-500 pointer-events-none"></div>
-                            <a href="#sec-01" class="solid-dark-btn px-12 py-5 rounded-full z-10 relative">
-                                <span class="magnetic-text flex items-center justify-center gap-3 font-black text-xl">
-                                    작전 성과 확인하기
-                                    <i class="ph-bold ph-hand-pointing-down text-3xl text-brand-cyan group-hover:text-white transition-colors"></i>
-                                </span>
-                            </a>
-                        </div>
+                        <div class="absolute inset-0 bg-brand-cyan/60 blur-[20px] rounded-full animate-pulse-glow group-hover:bg-brand-cyan/90 transition duration-500 pointer-events-none"></div>
+                        <a href="#sec-01" class="magnetic-inner solid-dark-btn px-12 py-5 rounded-full z-10 relative">
+                            <span class="magnetic-text flex items-center justify-center gap-3 font-black text-xl">
+                                작전 성과 확인하기
+                                <i class="ph-bold ph-hand-pointing-down text-3xl text-brand-cyan group-hover:text-white transition-colors"></i>
+                            </span>
+                        </a>
                     </div>
 
                     <div class="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition mt-2">
@@ -446,6 +603,7 @@
                 <p class="text-slate-500 text-lg font-medium leading-relaxed readable-text">데이터를 분석하여 빠르게 방향을 전환하고 성과를 만들어낸 과정입니다.</p>
             </div>
 
+            <!-- 투트랙 전략 설명 -->
             <div class="max-w-5xl mx-auto mb-20 premium-card p-10 md:p-14 rounded-[3rem] text-left reveal-scale">
                 <h4 class="text-2xl md:text-3xl font-black mb-6 text-slate-900 flex items-center gap-3">
                     <i class="ph-fill ph-git-branch text-brand-pink"></i> 두 가지 방향 동시 테스트 (투트랙 전략)
@@ -465,6 +623,7 @@
                 </div>
             </div>
 
+            <!-- 매체 및 예산 요약 -->
             <div class="flex flex-wrap justify-center gap-4 mb-24 reveal-up">
                 <div class="px-6 py-4 rounded-full border border-slate-200 text-slate-700 font-bold flex items-center gap-2 readable-text premium-card !rounded-full">
                     <i class="ph-fill ph-tiktok text-slate-900 text-xl"></i> 틱톡 집중 (총 예산 227,000원)
@@ -748,6 +907,7 @@
                         랜딩 첫 화면의 '시작 버튼'을 누르게 하는 것이 가장 큰 관건이었습니다. 3초 이내에 나가는 유저를 붙잡기 위해, <strong class="text-slate-900">광고 영상 제일 첫 부분에 확실한 보상이나 결과물을 미리 보여줘야 한다는 것</strong>을 배웠습니다.
                     </div>
                 </div>
+                <!-- 💡 넥스트 스텝 및 핵심 결론 -->
                 <div class="p-8 bg-slate-50/50 rounded-2xl border border-slate-200">
                     <p class="text-slate-700 font-medium leading-relaxed mb-4 readable-text">
                         이번 프로젝트의 진정한 성과는 남아공이라는 완전히 낯선 신규 시장에서 <strong>'작동하는 디지털 유입 공식'</strong>을 찾아냈다는 점입니다. 일방적인 관광 홍보물에는 전혀 반응하지 않던(1차 완주율 0%) 차가운 트래픽(Cold Traffic)을 상대로, 현지 밈(Now-Now)과 '인터랙티브 밸런스 게임'을 테스트한 결과 불과 20만 원 남짓한 소액 예산으로 <strong>총 53건의 자발적인 행동 전환(활성 사용자 25명)</strong>을 유도했습니다. 비록 초기 테스트라 절대적인 수치가 작아 보일 수 있으나, 이는 글로벌 유저가 한국 콘텐츠에 평균 10회 이상 능동적으로 개입하게 만들어 '0에서 1을 만들어낸' 매우 유의미한 질적 데이터입니다.
@@ -763,166 +923,102 @@
         </div>
     </section>
 
+    <!-- 💡 [스페셜 기프트 UI 2] 스크롤 속도 반응형 하이엔드 티커 (Marquee) -->
+    <div class="velocity-marquee-container relative z-10 py-10 md:py-16">
+        <div class="velocity-marquee-track">
+            <!-- 시각적으로 빈 공간이 없도록 텍스트 블록 3개 배치 -->
+            <div class="velocity-marquee-item">K-9 PIRATES ✦ TIKTOK FUNNEL ✦ CONVERSION OPTIMIZATION ✦</div>
+            <div class="velocity-marquee-item">K-9 PIRATES ✦ TIKTOK FUNNEL ✦ CONVERSION OPTIMIZATION ✦</div>
+            <div class="velocity-marquee-item">K-9 PIRATES ✦ TIKTOK FUNNEL ✦ CONVERSION OPTIMIZATION ✦</div>
+        </div>
+    </div>
+
     <!-- 04. 팀 소개 -->
     <section id="sec-04" class="py-32 px-6 bg-slate-50 border-t border-slate-200/50 relative z-10">
         <div class="max-w-7xl mx-auto reveal-up">
             <div class="text-center mb-24">
                 <span class="text-slate-400 font-black tracking-widest text-sm uppercase mb-3 block">04. Meet the Crew</span>
                 <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">이 구역의 전환 루팡, K-9적단</h2>
-                <p class="text-slate-500 text-xl font-medium">카드를 클릭(터치)하여 팀원들의 비밀 스탯을 확인해보세요!</p>
+                <p class="text-slate-500 text-xl font-medium">데이터를 무기로 성과를 만들어낸 5인의 프로 마케터</p>
             </div>
 
-            <!-- 💡 [이스터에그 1] 3D 틸트 카라셀 & 플립(Flip) 뒤집기 카드 (이메일 적용 완료) -->
+            <!-- 💡 3D 틸트 카라셀 (팀원 카드 - 극찬 효과 유지!) -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 reveal-up delay-200 perspective-container">
-                
                 <!-- Member 1 : 윤서영 (에메랄드 Emerald) -->
-                <div class="tilt-card" onclick="this.classList.toggle('is-flipped')">
-                    <div class="tilt-card-inner">
-                        <!-- 앞면 -->
-                        <div class="card-front bg-white p-3 shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-emerald-400 premium-card">
-                            <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                                <img src="https://drive.google.com/thumbnail?id=1uhmGR72hyXqs3bi-K66BmeqzGucrzwVX&sz=w600" class="w-full h-full object-cover pointer-events-none" alt="윤서영">
-                            </div>
-                            <div class="p-5 text-center relative z-10">
-                                <div class="text-[10px] font-black tracking-wider text-emerald-500 mb-1 uppercase">팀장 / PM</div>
-                                <div class="font-black text-xl text-slate-900">윤서영</div>
-                            </div>
+                <div class="tilt-card cursor-pointer">
+                    <div class="tilt-card-inner bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-emerald-400 premium-card">
+                        <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                            <img src="https://drive.google.com/thumbnail?id=1uhmGR72hyXqs3bi-K66BmeqzGucrzwVX&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 pointer-events-none" alt="윤서영">
+                            <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(16,185,129,0.15)] pointer-events-none transition duration-500 opacity-0 group-hover:opacity-100"></div>
                         </div>
-                        <!-- 뒷면 (비밀 스탯 & 이메일) -->
-                        <div class="card-back flex flex-col justify-center items-center p-6 bg-slate-900 text-emerald-400 text-center">
-                            <i class="ph-fill ph-crown text-4xl mb-4 text-emerald-400"></i>
-                            <h5 class="font-black text-xl mb-3 text-white">Secret Stats</h5>
-                            <p class="text-sm font-bold leading-loose">리더십: 99<br>결단력: MAX<br>주특기: 프로젝트 하드캐리</p>
-                            <div class="mt-4 pt-3 border-t border-slate-700/50 w-full">
-                                <a href="mailto:althaeafrutex20@gmail.com" class="text-[10px] sm:text-[11px] flex items-center justify-center gap-1 text-emerald-400 hover:text-white transition-colors font-mono">
-                                    <i class="ph-fill ph-envelope-simple text-sm"></i> althaeafrutex20@gmail...
-                                </a>
-                            </div>
+                        <div class="p-5 text-center">
+                            <div class="text-[10px] font-black tracking-wider text-emerald-500 mb-1 uppercase">팀장 / PM</div>
+                            <div class="font-black text-xl text-slate-900">윤서영</div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Member 2 : 서지연 (핑크 Pink) -->
-                <div class="tilt-card" onclick="this.classList.toggle('is-flipped')">
-                    <div class="tilt-card-inner">
-                        <!-- 앞면 -->
-                        <div class="card-front bg-white p-3 shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-brand-pink premium-card">
-                            <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                                <img src="https://drive.google.com/thumbnail?id=1ThPTdSFmntW0jgjbFnUruojnOuVqGZJi&sz=w600" class="w-full h-full object-cover pointer-events-none" alt="서지연">
-                            </div>
-                            <div class="p-5 text-center relative z-10">
-                                <div class="text-[10px] font-black tracking-wider text-brand-pink mb-1 uppercase">부팀장 / Marketer</div>
-                                <div class="font-black text-xl text-slate-900">서지연</div>
-                            </div>
+                <div class="tilt-card cursor-pointer">
+                    <div class="tilt-card-inner bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-brand-pink premium-card">
+                        <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                            <img src="https://drive.google.com/thumbnail?id=1ThPTdSFmntW0jgjbFnUruojnOuVqGZJi&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 pointer-events-none" alt="서지연">
+                            <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(225,29,72,0.15)] pointer-events-none transition duration-500 opacity-0 group-hover:opacity-100"></div>
                         </div>
-                        <!-- 뒷면 -->
-                        <div class="card-back flex flex-col justify-center items-center p-6 bg-slate-900 text-brand-pink text-center">
-                            <i class="ph-fill ph-target text-4xl mb-4 text-brand-pink"></i>
-                            <h5 class="font-black text-xl mb-3 text-white">Secret Stats</h5>
-                            <p class="text-sm font-bold leading-loose">기획력: 95<br>추진력: 98<br>주특기: 타겟 취향 저격</p>
-                            <div class="mt-4 pt-3 border-t border-slate-700/50 w-full">
-                                <a href="mailto:jiyeeooon2618@gmail.com" class="text-[10px] sm:text-[11px] flex items-center justify-center gap-1 text-brand-pink hover:text-white transition-colors font-mono">
-                                    <i class="ph-fill ph-envelope-simple text-sm"></i> jiyeeooon2618@gmail...
-                                </a>
-                            </div>
+                        <div class="p-5 text-center">
+                            <div class="text-[10px] font-black tracking-wider text-brand-pink mb-1 uppercase">부팀장 / Marketer</div>
+                            <div class="font-black text-xl text-slate-900">서지연</div>
                         </div>
                     </div>
                 </div>
-
-                <!-- 💡 Member 3 : 김진석 (옐로우 Yellow) - 데이터 대신 올라운더로 수정 완료 -->
-                <div class="tilt-card" onclick="this.classList.toggle('is-flipped')">
-                    <div class="tilt-card-inner">
-                        <!-- 앞면 -->
-                        <div class="card-front bg-white p-3 shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-yellow-400 premium-card">
-                            <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                                <img src="https://drive.google.com/thumbnail?id=1N4EZAs5Tg5tZfEn7LMNZRltmMBfOC4xx&sz=w600" class="w-full h-full object-cover pointer-events-none" alt="김진석">
-                            </div>
-                            <div class="p-5 text-center relative z-10">
-                                <!-- 💡 직무 All-rounder 로 수정 -->
-                                <div class="text-[10px] font-black tracking-wider text-yellow-500 mb-1 uppercase">팀원 / All-rounder</div>
-                                <div class="font-black text-xl text-slate-900">김진석</div>
-                            </div>
+                <!-- Member 3 : 김진석 (옐로우 Yellow) -->
+                <div class="tilt-card cursor-pointer">
+                    <div class="tilt-card-inner bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-yellow-400 premium-card">
+                        <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                            <img src="https://drive.google.com/thumbnail?id=1N4EZAs5Tg5tZfEn7LMNZRltmMBfOC4xx&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 pointer-events-none" alt="김진석">
+                            <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(234,179,8,0.15)] pointer-events-none transition duration-500 opacity-0 group-hover:opacity-100"></div>
                         </div>
-                        <!-- 뒷면 (비밀 스탯 및 이메일 수정 완료) -->
-                        <div class="card-back flex flex-col justify-center items-center p-6 bg-slate-900 text-yellow-400 text-center">
-                            <i class="ph-fill ph-lifebuoy text-4xl mb-4 text-yellow-400"></i>
-                            <h5 class="font-black text-xl mb-3 text-white">Secret Stats</h5>
-                            <p class="text-sm font-bold leading-loose">위기대처: MAX<br>데이터 생존력: 99<br>주특기: 팀 내 궂은일 마스터</p>
-                            <div class="mt-4 pt-3 border-t border-slate-700/50 w-full">
-                                <a href="mailto:jinseokjjj@gmail.com" class="text-[10px] sm:text-[11px] flex items-center justify-center gap-1 text-yellow-400 hover:text-white transition-colors font-mono">
-                                    <i class="ph-fill ph-envelope-simple text-sm"></i> jinseokjjj@gmail.com
-                                </a>
-                            </div>
+                        <div class="p-5 text-center">
+                            <div class="text-[10px] font-black tracking-wider text-yellow-500 mb-1 uppercase">팀원 / Analyst</div>
+                            <div class="font-black text-xl text-slate-900">김진석</div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Member 4 : 윤소이 (퍼플 Purple) -->
-                <div class="tilt-card" onclick="this.classList.toggle('is-flipped')">
-                    <div class="tilt-card-inner">
-                        <!-- 앞면 -->
-                        <div class="card-front bg-white p-3 shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-purple-400 premium-card">
-                            <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                                <img src="https://drive.google.com/thumbnail?id=1AR_55zPSkMomW2NLo1sSGMfdJV6ab49d&sz=w600" class="w-full h-full object-cover pointer-events-none" alt="윤소이">
-                            </div>
-                            <div class="p-5 text-center relative z-10">
-                                <div class="text-[10px] font-black tracking-wider text-purple-500 mb-1 uppercase">팀원 / Designer</div>
-                                <div class="font-black text-xl text-slate-900">윤소이</div>
-                            </div>
+                <div class="tilt-card cursor-pointer">
+                    <div class="tilt-card-inner bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-purple-400 premium-card">
+                        <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                            <img src="https://drive.google.com/thumbnail?id=1AR_55zPSkMomW2NLo1sSGMfdJV6ab49d&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 pointer-events-none" alt="윤소이">
+                            <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(168,85,247,0.15)] pointer-events-none transition duration-500 opacity-0 group-hover:opacity-100"></div>
                         </div>
-                        <!-- 뒷면 -->
-                        <div class="card-back flex flex-col justify-center items-center p-6 bg-slate-900 text-purple-400 text-center">
-                            <i class="ph-fill ph-paint-brush-broad text-4xl mb-4 text-purple-400"></i>
-                            <h5 class="font-black text-xl mb-3 text-white">Secret Stats</h5>
-                            <p class="text-sm font-bold leading-loose">창의력: MAX<br>밤샘지수: 120%<br>주특기: 시각적 후킹 마스터</p>
-                            <div class="mt-4 pt-3 border-t border-slate-700/50 w-full">
-                                <a href="mailto:119kelly@naver.com" class="text-[10px] sm:text-[11px] flex items-center justify-center gap-1 text-purple-400 hover:text-white transition-colors font-mono">
-                                    <i class="ph-fill ph-envelope-simple text-sm"></i> 119kelly@naver.com
-                                </a>
-                            </div>
+                        <div class="p-5 text-center">
+                            <div class="text-[10px] font-black tracking-wider text-purple-500 mb-1 uppercase">팀원 / Designer</div>
+                            <div class="font-black text-xl text-slate-900">윤소이</div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Member 5 : 강현아 (시안 Cyan) -->
-                <div class="tilt-card" onclick="this.classList.toggle('is-flipped')">
-                    <div class="tilt-card-inner">
-                        <!-- 앞면 -->
-                        <div class="card-front bg-white p-3 shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-brand-cyan premium-card">
-                            <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                                <img src="https://drive.google.com/thumbnail?id=1RsMkfvcSUCucqU7fpdn5ky13iuCrqsz-&sz=w600" class="w-full h-full object-cover pointer-events-none" alt="강현아">
-                            </div>
-                            <div class="p-5 text-center relative z-10">
-                                <div class="text-[10px] font-black tracking-wider text-brand-cyan mb-1 uppercase">팀원 / Creator</div>
-                                <div class="font-black text-xl text-slate-900">강현아</div>
-                            </div>
+                <div class="tilt-card cursor-pointer">
+                    <div class="tilt-card-inner bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition-shadow duration-500 group border border-slate-200 hover:border-brand-cyan premium-card">
+                        <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                            <img src="https://drive.google.com/thumbnail?id=1RsMkfvcSUCucqU7fpdn5ky13iuCrqsz-&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 pointer-events-none" alt="강현아">
+                            <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(8,145,178,0.15)] pointer-events-none transition duration-500 opacity-0 group-hover:opacity-100"></div>
                         </div>
-                        <!-- 뒷면 -->
-                        <div class="card-back flex flex-col justify-center items-center p-6 bg-slate-900 text-brand-cyan text-center">
-                            <i class="ph-fill ph-magic-wand text-4xl mb-4 text-brand-cyan"></i>
-                            <h5 class="font-black text-xl mb-3 text-white">Secret Stats</h5>
-                            <p class="text-sm font-bold leading-loose">표현력: 98<br>트렌드: MAX<br>주특기: 숏폼 연성술사</p>
-                            <div class="mt-4 pt-3 border-t border-slate-700/50 w-full">
-                                <a href="mailto:1714kha@naver.com" class="text-[10px] sm:text-[11px] flex items-center justify-center gap-1 text-brand-cyan hover:text-white transition-colors font-mono">
-                                    <i class="ph-fill ph-envelope-simple text-sm"></i> 1714kha@naver.com
-                                </a>
-                            </div>
+                        <div class="p-5 text-center">
+                            <div class="text-[10px] font-black tracking-wider text-brand-cyan mb-1 uppercase">팀원 / Creator</div>
+                            <div class="font-black text-xl text-slate-900">강현아</div>
                         </div>
                     </div>
                 </div>
-
             </div>
             
             <div class="mt-24 text-center reveal-scale delay-300">
-                <!-- 💡 [리마스터] 마그네틱 CTA 버튼 -->
+                <!-- 💡 [하이엔드 UI 적용] 마그네틱 CTA 버튼 -->
                 <div class="magnetic-wrap inline-block">
-                    <div class="magnetic-inner">
-                        <button onclick="triggerConfettiAndModal()" class="px-12 py-6 bg-slate-900 text-white font-black rounded-full text-xl shadow-2xl hover:bg-slate-800 transition duration-500 flex items-center gap-3 mx-auto">
-                            <span class="magnetic-text flex items-center gap-3">
-                                <i class="ph-fill ph-handshake text-2xl"></i> K-9적단 영입 제안하기
-                            </span>
-                        </button>
-                    </div>
+                    <button onclick="triggerConfettiAndModal()" class="magnetic-inner px-12 py-6 bg-slate-900 text-white font-black rounded-full text-xl shadow-2xl hover:bg-slate-800 transition duration-500 flex items-center gap-3 mx-auto">
+                        <span class="magnetic-text flex items-center gap-3">
+                            <i class="ph-fill ph-handshake text-2xl"></i> K-9적단 영입 제안하기
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -942,6 +1038,7 @@
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleModal()"></div>
         <div class="bg-white rounded-[2rem] p-10 md:p-12 max-w-lg w-full relative z-10 shadow-2xl animate-slide-up text-center border-t-8 border-t-brand-cyan">
             <button onclick="toggleModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition text-2xl"><i class="ph-bold ph-x"></i></button>
+            
             <div class="w-20 h-20 bg-cyan-50 text-brand-cyan rounded-full flex items-center justify-center text-4xl mx-auto mb-6"><i class="ph-fill ph-confetti"></i></div>
             <h3 class="text-3xl font-black text-slate-900 mb-4">저희가 그만큼 마음에 드셨군요? 😉</h3>
             <p class="text-slate-600 font-bold text-lg leading-relaxed mb-4">
@@ -950,22 +1047,8 @@
             <p class="text-slate-400 text-sm font-medium mb-8">
                 (이 버튼을 누르셨다면 이미 저희에게 설득당하신 겁니다. 멋진 기회로 뵙겠습니다!)
             </p>
+            
             <button onclick="toggleModal()" class="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition duration-300 text-lg">기분 좋게 닫기</button>
-        </div>
-    </div>
-
-    <!-- 💡💡💡 [새로운 이스터에그 2] K-9 시스템 오버라이드 해커 터미널 💡💡💡 -->
-    <div id="secret-terminal" class="fixed inset-0 z-[9999] hidden flex-col justify-center items-center p-6">
-        <div class="absolute inset-0 bg-black/80"></div>
-        <div class="relative z-10 w-full max-w-3xl border border-brand-neonGreen/30 p-8 rounded-lg bg-black/50 shadow-[0_0_50px_rgba(16,185,129,0.2)] font-mono text-brand-neonGreen text-left">
-            <div class="flex items-center justify-between border-b border-brand-neonGreen/30 pb-4 mb-6">
-                <span class="text-xs uppercase tracking-widest text-brand-neonGreen/70">K-9 System Override Terminal v2.0.26</span>
-                <button onclick="closeTerminal()" class="text-brand-neonGreen hover:text-white"><i class="ph-bold ph-x text-xl"></i></button>
-            </div>
-            <div id="terminal-content" class="text-sm md:text-lg space-y-2 leading-relaxed">
-                <!-- 자바스크립트로 타이핑 효과가 들어갑니다 -->
-            </div>
-            <div class="mt-4"><span class="typing-cursor text-brand-neonGreen"></span></div>
         </div>
     </div>
 
@@ -1002,13 +1085,16 @@
             scalers.forEach(scaler => {
                 const parent = scaler.parentElement;
                 if (document.body.classList.contains('mobile-view-mode')) {
+                    // 모바일 모드: 100% 네이티브 렌더링 (비율 깨짐 및 잘림 완벽 방지)
                     scaler.style.transform = 'none';
                     scaler.style.width = '100%';
                     scaler.style.height = '100%';
                 } else {
+                    // 데스크탑 모드: 목업창에 맞춰 414px 비율 스케일링
                     const parentWidth = parent.clientWidth;
                     const parentHeight = parent.clientHeight;
                     const scale = parentWidth / 414; 
+                    
                     scaler.style.transform = `scale(${scale})`;
                     scaler.style.transformOrigin = 'top left';
                     scaler.style.width = '414px';
@@ -1018,204 +1104,103 @@
         }
         window.addEventListener('resize', adjustIframeScalers);
 
-        if (window.innerWidth <= 768) { setViewMode('mobile'); } else { setViewMode('desktop'); }
+        if (window.innerWidth <= 768) {
+            setViewMode('mobile');
+        } else {
+            setViewMode('desktop');
+        }
         window.addEventListener('load', adjustIframeScalers);
 
+
         // ==========================================
-        // 2. [리마스터] 마그네틱 CTA 버튼 애니메이션 (Lerp 보간법 적용)
+        // 2. [스페셜 기프트 UI 1] 마그네틱 CTA 버튼 애니메이션
         // ==========================================
-        const magneticWraps = document.querySelectorAll('.magnetic-wrap');
-        
-        magneticWraps.forEach(wrap => {
+        const magneticBtns = document.querySelectorAll('.magnetic-wrap');
+        magneticBtns.forEach(wrap => {
             const inner = wrap.querySelector('.magnetic-inner');
             const text = wrap.querySelector('.magnetic-text');
             
-            let mouseX = 0, mouseY = 0;
-            let currentX = 0, currentY = 0;
-
             wrap.addEventListener('mousemove', (e) => {
                 const rect = wrap.getBoundingClientRect();
                 const h = rect.width / 2;
                 const v = rect.height / 2;
-                mouseX = e.clientX - rect.left - h;
-                mouseY = e.clientY - rect.top - v;
-            });
-
-            wrap.addEventListener('mouseleave', () => { 
-                mouseX = 0; 
-                mouseY = 0; 
-            });
-
-            function animateMagnetic() {
-                // 부드러운 감속 이동 (Lerp)
-                currentX += (mouseX - currentX) * 0.1;
-                currentY += (mouseY - currentY) * 0.1;
                 
-                inner.style.transform = `translate(${currentX * 0.3}px, ${currentY * 0.3}px)`;
-                if(text) text.style.transform = `translate(${currentX * 0.15}px, ${currentY * 0.15}px)`;
+                // 마우스가 컨테이너 중심에서 얼마나 떨어져 있는지 계산
+                const x = e.clientX - rect.left - h;
+                const y = e.clientY - rect.top - v;
                 
-                requestAnimationFrame(animateMagnetic);
-            }
-            animateMagnetic();
-        });
-
-        // ==========================================
-        // 3. [하이엔드 UI] 글래스모피즘 스팟라이트 효과 적용
-        // ==========================================
-        const premiumCards = document.querySelectorAll('.premium-card');
-        premiumCards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
+                // 마우스 위치로 부드럽게 당겨짐 (물리 엔진)
+                inner.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                text.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+            });
+            
+            wrap.addEventListener('mouseleave', () => {
+                // 마우스가 떠나면 원래 위치로 튕겨서 복귀
+                inner.style.transform = `translate(0px, 0px)`;
+                text.style.transform = `translate(0px, 0px)`;
             });
         });
 
         // ==========================================
-        // 4. 3D 틸트 카라셀 (팀원 소개 카드)
+        // 3. [스페셜 기프트 UI 2] 스크롤 가속 반응형 마키(Marquee) 티커
+        // ==========================================
+        const marqueeItems = document.querySelectorAll('.velocity-marquee-item');
+        let currentScroll = window.scrollY;
+        let currentSkew = 0;
+        
+        window.addEventListener('scroll', () => {
+            // 스크롤 속도(Delta)를 감지하여 텍스트를 사선으로 눕힘
+            let delta = window.scrollY - currentScroll;
+            currentScroll = window.scrollY;
+            
+            currentSkew = delta * 0.1; // 스큐(기울기) 강도
+            currentSkew = Math.max(-15, Math.min(15, currentSkew)); // 최대 15도 제한
+            
+            marqueeItems.forEach(item => {
+                item.style.transform = `skewX(${currentSkew}deg)`;
+            });
+        });
+
+        // 스크롤이 멈추면 제자리(0도)로 부드럽게 복구하는 루프 프레임
+        function smoothReturnSkew() {
+            currentSkew += (0 - currentSkew) * 0.1; // Lerp 보간법으로 부드러운 복귀
+            marqueeItems.forEach(item => {
+                item.style.transform = `skewX(${currentSkew}deg)`;
+            });
+            requestAnimationFrame(smoothReturnSkew);
+        }
+        smoothReturnSkew();
+
+
+        // ==========================================
+        // 4. [유지 사항] 3D 틸트 카라셀 (팀원 소개 카드)
         // ==========================================
         const tiltCards = document.querySelectorAll('.tilt-card');
         tiltCards.forEach(card => {
             const inner = card.querySelector('.tilt-card-inner');
             
             card.addEventListener('mousemove', (e) => {
-                // 뒤집힌 상태(is-flipped)일 때는 틸트 효과 비활성화
-                if(card.classList.contains('is-flipped')) return;
-
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left; 
                 const y = e.clientY - rect.top;  
+                
                 const centerX = (x - rect.width / 2) / (rect.width / 2);
                 const centerY = (y - rect.height / 2) / (rect.height / 2);
+                
                 const rotateX = -(centerY * 15);
                 const rotateY = centerX * 15;
                 
-                inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+                inner.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
             });
             
             card.addEventListener('mouseleave', () => {
-                if(!card.classList.contains('is-flipped')){
-                    inner.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                }
+                inner.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
             });
         });
 
-        // ==========================================
-        // 5. [새로운 이스터에그 1] 키보드 타이핑 "k9" ➔ 보물 폭발
-        // ==========================================
-        let keySequence = '';
-        window.addEventListener('keydown', (e) => {
-            keySequence += e.key.toLowerCase();
-            if (keySequence.includes('k9')) {
-                triggerPirateMode();
-                keySequence = ''; // 초기화
-            }
-            if (keySequence.length > 5) keySequence = keySequence.slice(-5);
-        });
-
-        function triggerPirateMode() {
-            var duration = 5 * 1000;
-            var end = Date.now() + duration;
-            // 금화와 반짝이를 연상시키는 색상
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999, shapes: ['circle'], colors: ['#FFD700', '#F59E0B', '#ffffff'] };
-            
-            // 시크릿 배너 등장
-            const banner = document.createElement('div');
-            banner.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-900/90 backdrop-blur-xl border-4 border-yellow-400 p-10 rounded-[3rem] z-[9999] text-center shadow-[0_0_100px_rgba(250,204,21,0.5)] animate-slide-up';
-            banner.innerHTML = `
-                <div class="text-6xl mb-4">🏴‍☠️🪙</div>
-                <h2 class="text-4xl font-black text-yellow-400 mb-4">K-9 PIRATES UNLOCKED!</h2>
-                <p class="text-white font-bold text-lg mb-6">이스터에그를 발견하셨군요! 이 프로젝트는 A+가 확실합니다.</p>
-                <button onclick="this.parentElement.remove()" class="px-8 py-3 bg-yellow-400 text-slate-900 font-black rounded-full hover:scale-105 transition">보물 챙기기</button>
-            `;
-            document.body.appendChild(banner);
-
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-            // 5초간 사방에서 팡팡 터지는 축포
-            var interval = setInterval(function() {
-                var timeLeft = end - Date.now();
-                if (timeLeft <= 0) { return clearInterval(interval); }
-                var particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
-        }
 
         // ==========================================
-        // 6. [이스터에그 2] K-9 시스템 오버라이드 해커 터미널
-        // ==========================================
-        let skullClicks = 0;
-        let skullTimer = null;
-        const triggerEl = document.getElementById('nav-logo-trigger');
-        const terminal = document.getElementById('secret-terminal');
-        const terminalContent = document.getElementById('terminal-content');
-        
-        const secretMessages = [
-            "ACCESS GRANTED.",
-            "Decrypting classified K-9 Pirates project files...",
-            "[SUCCESS]",
-            "",
-            "--- PROJECT TRUTH REPORT ---",
-            "1. Actual coffee consumed: 1,024 cups ☕",
-            "2. Mental breakdowns survived: 99+",
-            "3. Teamwork & Synergy Level: MAXIMUM",
-            "4. Hidden Goal: Getting an 'A+' on this project.",
-            "",
-            "MESSAGE TO JUDGES: \"We gave it our absolute all! Thank you for reading!\"",
-            "",
-            "[ Connection Terminated ]"
-        ];
-
-        triggerEl.addEventListener('click', () => {
-            skullClicks++;
-            clearTimeout(skullTimer);
-            skullTimer = setTimeout(() => { skullClicks = 0; }, 1000);
-            
-            if(skullClicks >= 3) {
-                activateSystemOverride();
-                skullClicks = 0; 
-            }
-        });
-
-        function activateSystemOverride() {
-            document.body.classList.add('override-active');
-            document.body.classList.add('glitch-effect');
-            
-            setTimeout(() => {
-                document.body.classList.remove('glitch-effect');
-                terminal.classList.remove('hidden');
-                terminal.classList.add('flex');
-                typeTerminalMessage();
-            }, 1000);
-        }
-
-        function closeTerminal() {
-            document.body.classList.remove('override-active');
-            terminal.classList.add('hidden');
-            terminal.classList.remove('flex');
-            terminalContent.innerHTML = ''; 
-        }
-
-        function typeTerminalMessage() {
-            terminalContent.innerHTML = '';
-            let lineIndex = 0;
-            
-            function typeLine() {
-                if (lineIndex < secretMessages.length) {
-                    const line = document.createElement('div');
-                    line.textContent = '> ' + secretMessages[lineIndex];
-                    terminalContent.appendChild(line);
-                    lineIndex++;
-                    setTimeout(typeLine, Math.random() * 200 + 100); 
-                }
-            }
-            typeLine();
-        }
-
-        // ==========================================
-        // 7. 공통 애니메이션 및 모달 제어
+        // 5. 기본 스크롤 애니메이션 및 공통 UI 스크립트
         // ==========================================
         function triggerConfettiAndModal() {
             var duration = 3 * 1000;
@@ -1247,9 +1232,14 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
+                    } else {
+                        entry.target.classList.remove('active');
                     }
                 });
-            }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+            }, {
+                threshold: 0.1, 
+                rootMargin: "0px 0px -50px 0px" 
+            });
 
             revealElements.forEach(el => revealObserver.observe(el));
 
@@ -1301,28 +1291,31 @@
                 });
             }
 
-            // 모던 앰비언트 오라 패럴랙스
-            window.addEventListener('scroll', () => {
-                const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-                const orb1 = document.getElementById('orb-1');
-                const orb2 = document.getElementById('orb-2');
-                
-                if(orb1 && orb2) {
-                    orb1.style.transform = `translate(${scrollPercent * 30}vw, ${scrollPercent * 80}vh)`;
-                    orb2.style.transform = `translate(${-scrollPercent * 30}vw, ${-scrollPercent * 60}vh)`;
-                    
-                    if (scrollPercent > 0.6) {
-                        orb1.style.background = 'rgba(16, 185, 129, 0.3)'; 
-                        orb2.style.background = 'rgba(8, 145, 178, 0.3)'; 
-                    } else if (scrollPercent > 0.3) {
-                        orb1.style.background = 'rgba(8, 145, 178, 0.3)'; 
-                        orb2.style.background = 'rgba(225, 29, 72, 0.2)'; 
-                    } else {
-                        orb1.style.background = 'rgba(8, 145, 178, 0.4)'; 
-                        orb2.style.background = 'rgba(225, 29, 72, 0.3)'; 
+            const counters = document.querySelectorAll('.counter');
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseFloat(counter.getAttribute('data-target'));
+                        const isFloat = !Number.isInteger(target);
+                        let count = 0;
+                        const inc = target / 50;
+                        
+                        const update = () => {
+                            if (count < target) {
+                                count += inc;
+                                counter.innerText = isFloat ? count.toFixed(2) : Math.ceil(count);
+                                requestAnimationFrame(update);
+                            } else { 
+                                counter.innerText = target;
+                            }
+                        };
+                        update();
+                        counterObserver.unobserve(counter); 
                     }
-                }
-            });
+                });
+            }, { threshold: 0.5 });
+            counters.forEach(c => counterObserver.observe(c));
         });
     </script>
 </body>
