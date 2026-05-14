@@ -679,28 +679,35 @@
 
             <!-- 스케일업 종합 리포트 -->
             <div class="premium-card rounded-[2.5rem] overflow-hidden mb-24 reveal-scale border border-slate-200">
-                <div class="p-8 md:p-12 bg-slate-900 text-white text-center">
-                    <h3 class="text-3xl font-black">📊 K-9적단 최종 캠페인 성과 요약</h3>
+                <div class="p-8 bg-slate-900 text-white text-center">
+                    <h3 class="text-2xl font-black">📊 K-9적단 최종 캠페인 성과 요약</h3>
                 </div>
-                <!-- 💡 세로(상하) 시원한 배치 및 전체 흐름에 맞춰 퀴즈팀 선배치, 글자 크기 대폭 상향 -->
-                <div class="flex flex-col divide-y divide-slate-200">
+                <!-- 💡 다시 좌우 배치로 복구하고, 순서를 퀴즈팀 -> 유형팀으로 유지 -->
+                <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
                     <!-- 1. 퀴즈 & 문화팀 -->
-                    <div class="p-10 md:p-16 space-y-8 bg-white hover:bg-slate-50 transition duration-300">
-                        <h4 class="font-black text-brand-cyan text-2xl md:text-3xl border-b pb-6 border-slate-200 flex items-center gap-3"><i class="ph-fill ph-lightbulb"></i> 퀴즈 & 문화팀 (새로운 방향)</h4>
-                        <div class="flex justify-between font-bold text-slate-600 text-lg md:text-xl"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900 text-xl md:text-2xl">112,277회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600 text-lg md:text-xl"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900 text-xl md:text-2xl">721회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600 text-lg md:text-xl"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900 text-xl md:text-2xl">107원</span></div>
-                        <!-- 💡 실측 데이터 반영 -->
-                        <div class="flex justify-between font-black text-2xl md:text-3xl mt-8 pt-8 border-t border-slate-200"><span class="text-slate-900">최종 전환 (행동 완료)</span><span class="text-brand-cyan text-right">37건 <span class="text-lg md:text-xl text-brand-cyan/80">(이벤트)</span><br/><span class="text-lg md:text-xl text-slate-500">20명 (사용자)</span></span></div>
+                    <div class="p-10 space-y-6 bg-white hover:bg-slate-50 transition duration-300">
+                        <h4 class="font-black text-brand-cyan text-xl border-b pb-4 border-slate-100 flex items-center gap-2"><i class="ph-fill ph-lightbulb"></i> 퀴즈 & 문화팀 (새로운 방향)</h4>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">112,277회</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">721회</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900">107원</span></div>
+                        <!-- 💡 텍스트 디테일 수정: (랜딩페이지 완료) -->
+                        <div class="flex justify-between items-center font-black mt-6 pt-6 border-t border-slate-100">
+                            <span class="text-slate-900 text-lg leading-tight">최종 전환<br/><span class="text-sm font-bold text-slate-500">(랜딩페이지 완료)</span></span>
+                            <span class="text-brand-cyan text-right text-xl">37건 <span class="text-sm text-brand-cyan/80">(이벤트)</span><br/><span class="text-sm text-slate-500">20명 (사용자)</span></span>
+                        </div>
                     </div>
                     
                     <!-- 2. 유형팀 -->
-                    <div class="p-10 md:p-16 space-y-8 bg-white hover:bg-slate-50 transition duration-300">
-                        <h4 class="font-black text-brand-pink text-2xl md:text-3xl border-b pb-6 border-slate-200 flex items-center gap-3"><i class="ph-fill ph-magnifying-glass"></i> 유형팀 (디자인 고도화)</h4>
-                        <div class="flex justify-between font-bold text-slate-600 text-lg md:text-xl"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900 text-xl md:text-2xl">98,758회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600 text-lg md:text-xl"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900 text-xl md:text-2xl">722회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600 text-lg md:text-xl"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900 text-xl md:text-2xl">107원</span></div>
-                        <div class="flex justify-between font-black text-2xl md:text-3xl mt-8 pt-8 border-t border-slate-200"><span class="text-slate-900">최종 전환 (행동 완료)</span><span class="text-brand-pink text-right">16건 <span class="text-lg md:text-xl text-brand-pink/80">(이벤트)</span><br/><span class="text-lg md:text-xl text-slate-500">5명 (사용자)</span></span></div>
+                    <div class="p-10 space-y-6 bg-white hover:bg-slate-50 transition duration-300">
+                        <h4 class="font-black text-brand-pink text-xl border-b pb-4 border-slate-100 flex items-center gap-2"><i class="ph-fill ph-magnifying-glass"></i> 유형팀 (디자인 고도화)</h4>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">98,758회</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">722회</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900">107원</span></div>
+                        <!-- 💡 텍스트 디테일 수정: (외부링크 VISIT KOREA 클릭) -->
+                        <div class="flex justify-between items-center font-black mt-6 pt-6 border-t border-slate-100">
+                            <span class="text-slate-900 text-lg leading-tight">최종 전환<br/><span class="text-sm font-bold text-slate-500">(외부링크 VISIT KOREA 클릭)</span></span>
+                            <span class="text-brand-pink text-right text-xl">16건 <span class="text-sm text-brand-pink/80">(이벤트)</span><br/><span class="text-sm text-slate-500">5명 (사용자)</span></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -746,14 +753,14 @@
 
             <!-- 5인 팀원 카드 -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 reveal-up delay-200">
-                <!-- Member 1 : 윤서영 (시안 Cyan) -->
-                <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-brand-cyan">
+                <!-- Member 1 : 윤서영 (에메랄드 Emerald로 수정 완료) -->
+                <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-emerald-400">
                     <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
                         <img src="https://drive.google.com/thumbnail?id=1uhmGR72hyXqs3bi-K66BmeqzGucrzwVX&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="윤서영">
-                        <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(8,145,178,0.15)] pointer-events-none transition duration-500"></div>
+                        <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(16,185,129,0.15)] pointer-events-none transition duration-500"></div>
                     </div>
                     <div class="p-5 text-center">
-                        <div class="text-[10px] font-black tracking-wider text-brand-cyan mb-1 uppercase">팀장 / PM</div>
+                        <div class="text-[10px] font-black tracking-wider text-emerald-500 mb-1 uppercase">팀장 / PM</div>
                         <div class="font-black text-xl text-slate-900">윤서영</div>
                     </div>
                 </div>
@@ -790,14 +797,14 @@
                         <div class="font-black text-xl text-slate-900">윤소이</div>
                     </div>
                 </div>
-                <!-- Member 5 : 강현아 (에메랄드 Emerald) -->
-                <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-emerald-400">
+                <!-- Member 5 : 강현아 (시안 Cyan으로 수정 완료) -->
+                <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-brand-cyan">
                     <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
                         <img src="https://drive.google.com/thumbnail?id=1RsMkfvcSUCucqU7fpdn5ky13iuCrqsz-&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="강현아">
-                        <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(16,185,129,0.15)] pointer-events-none transition duration-500"></div>
+                        <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(8,145,178,0.15)] pointer-events-none transition duration-500"></div>
                     </div>
                     <div class="p-5 text-center">
-                        <div class="text-[10px] font-black tracking-wider text-emerald-500 mb-1 uppercase">팀원 / Creator</div>
+                        <div class="text-[10px] font-black tracking-wider text-brand-cyan mb-1 uppercase">팀원 / Creator</div>
                         <div class="font-black text-xl text-slate-900">강현아</div>
                     </div>
                 </div>
