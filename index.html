@@ -237,42 +237,36 @@
         }
 
         /* 💡💡💡 모바일 뷰어 모드 (토글 활성화 시) 💡💡💡 */
-        /* 이 클래스가 body에 추가되면 목업이 사라지고 꽉 찬 화면으로 변경됨 */
         body.mobile-view-mode .phone-wrapper {
-            max-width: 100%; /* 부모 크기에 꽉 차게 */
-            padding: 0; /* 여백 제거하여 좌우 더 넓게 */
+            max-width: 414px; /* 💡 화면이 너무 넓게 퍼지는 것을 막고 폰 비율 유지 */
+            margin: 0 auto;
+            padding: 0; 
         }
         body.mobile-view-mode .phone-mockup {
-            height: 75vh; /* 💡 모바일 화면의 75%를 차지하여 동영상/랜딩이 큼직하게 보이도록 설정 */
-            min-height: 550px;
-            aspect-ratio: auto; /* 비율로 높이 자동 조절 해제 */
+            width: 100%;
+            height: auto !important;
+            aspect-ratio: 9 / 16 !important; /* 💡 숏폼 완벽 비율 강제 고정 (썸네일 홀쭉해짐, UI 깨짐 원천 차단) */
             background: #ffffff;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             border: 1px solid #e2e8f0;
             padding: 0;
-            border-radius: 12px; /* 목업 둥글기 제거하고 얇게 */
+            border-radius: 12px; 
             transform: none !important;
         }
         body.mobile-view-mode .phone-wrapper:hover .phone-mockup {
-            transform: none !important; /* 호버 효과 제거 */
+            transform: none !important; 
         }
         body.mobile-view-mode .phone-glow,
         body.mobile-view-mode .phone-mockup::before,
         body.mobile-view-mode .phone-mockup::after,
         body.mobile-view-mode .dynamic-island {
-            opacity: 0; /* 시각적 방해물 모두 숨김 */
+            opacity: 0; 
             display: none !important;
         }
         body.mobile-view-mode .phone-screen {
-            border-radius: 12px; /* 안쪽 라운드 감소 */
-            border: none; /* 깔끔한 테두리만 */
-        }
-        /* 💡 모바일 뷰어에서 JS가 동적으로 스케일링을 제어하므로 트랜지션 해제 및 100% 렌더링 강제 */
-        body.mobile-view-mode .iframe-scaler {
-            transition: none !important;
-            transform: none !important;
-            width: 100% !important;
-            height: 100% !important;
+            border-radius: 12px; 
+            border: none; 
+            background-color: #000; /* 영상 레터박스용 블랙 배경 */
         }
 
         /* 토글 스위치 디자인 */
@@ -585,9 +579,9 @@
                                     <div class="phone-glow glow-neon-green"></div>
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
-                                        <!-- 💡 영상 비율 깨짐 및 구글 드라이브 UI 오류 완벽 방지 패치 -->
-                                        <div class="phone-screen" style="background-color: #000; display: flex; align-items: center; justify-content: center;">
-                                            <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="phone-iframe" style="width: 100%; aspect-ratio: 9/16; height: auto;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                        <!-- 💡 구글 드라이브 인라인 스타일 제거 & 부모 비율(9:16) 100% 상속으로 UI 깨짐 방지 -->
+                                        <div class="phone-screen" style="background-color: #000;">
+                                            <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="phone-iframe" style="width: 100%; height: 100%;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -599,7 +593,7 @@
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <!-- 💡 박스 겹침 방지 (모바일에서도 선명하게 보이도록 구조화) -->
+                                            <!-- 💡 랜딩페이지 스케일러 -->
                                             <div class="iframe-scaler">
                                                 <iframe src="https://dima-1st-quiz.vercel.app/" class="phone-iframe"></iframe>
                                             </div>
@@ -629,9 +623,9 @@
                                     <div class="phone-glow glow-cyan"></div>
                                     <div class="phone-mockup border-cyan-800">
                                         <div class="dynamic-island"></div>
-                                        <!-- 💡 영상 비율 깨짐 방지 -->
-                                        <div class="phone-screen" style="background-color: #000; display: flex; align-items: center; justify-content: center;">
-                                            <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="phone-iframe" style="width: 100%; aspect-ratio: 9/16; height: auto;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                        <!-- 💡 구글 드라이브 UI 깨짐 방지 -->
+                                        <div class="phone-screen" style="background-color: #000;">
+                                            <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="phone-iframe" style="width: 100%; height: 100%;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -681,9 +675,9 @@
                                     <div class="phone-glow glow-neon-green"></div>
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
-                                        <!-- 💡 영상 비율 깨짐 방지 -->
-                                        <div class="phone-screen" style="background-color: #000; display: flex; align-items: center; justify-content: center;">
-                                            <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="phone-iframe" style="width: 100%; aspect-ratio: 9/16; height: auto;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                        <!-- 💡 구글 드라이브 UI 깨짐 방지 -->
+                                        <div class="phone-screen" style="background-color: #000;">
+                                            <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="phone-iframe" style="width: 100%; height: 100%;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -724,9 +718,9 @@
                                     <div class="phone-glow glow-pink"></div>
                                     <div class="phone-mockup border-rose-900">
                                         <div class="dynamic-island"></div>
-                                        <!-- 💡 영상 비율 깨짐 방지 -->
-                                        <div class="phone-screen" style="background-color: #000; display: flex; align-items: center; justify-content: center;">
-                                            <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="phone-iframe" style="width: 100%; aspect-ratio: 9/16; height: auto;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                        <!-- 💡 구글 드라이브 UI 깨짐 방지 -->
+                                        <div class="phone-screen" style="background-color: #000;">
+                                            <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="phone-iframe" style="width: 100%; height: 100%;" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -979,25 +973,22 @@
             setTimeout(adjustIframeScalers, 50);
         }
 
-        // 💡 랜딩페이지 비율 깨짐 방지용 동적 스케일링 함수
+        // 💡 랜딩페이지 잘림/비율 깨짐 완벽 방지용 동적 스케일링 함수
         function adjustIframeScalers() {
             const scalers = document.querySelectorAll('.iframe-scaler');
             scalers.forEach(scaler => {
                 const parent = scaler.parentElement;
-                if (document.body.classList.contains('mobile-view-mode')) {
-                    // 모바일 뷰어 모드일 때는 강제 스케일링을 풀고 100% 본래 해상도로 네이티브 구동되게 처리
-                    scaler.style.transform = '';
-                    scaler.style.width = '';
-                    scaler.style.height = '';
-                } else {
-                    // 데스크탑 모드(목업)에서는 목업 창 크기에 맞춰 414px 해상도를 조화롭게 축소해서 보여줌
-                    const parentWidth = parent.clientWidth;
-                    const parentHeight = parent.clientHeight;
-                    const scale = parentWidth / 414; 
-                    scaler.style.transform = `scale(${scale})`;
-                    scaler.style.width = '414px';
-                    scaler.style.height = `${parentHeight / scale}px`; 
-                }
+                const parentWidth = parent.clientWidth;
+                const parentHeight = parent.clientHeight;
+                
+                // 💡 항시 414px 기준으로 폭에 맞춰 줌인/줌아웃 되도록 비율 계산
+                const scale = parentWidth / 414; 
+                
+                scaler.style.transform = `scale(${scale})`;
+                scaler.style.transformOrigin = 'top left';
+                scaler.style.width = '414px';
+                // 💡 높이는 찌그러지거나 잘리지 않게 부모 컨테이너 비율에 맞춰 정확히 보정!
+                scaler.style.height = `${parentHeight / scale}px`; 
             });
         }
         window.addEventListener('resize', adjustIframeScalers);
