@@ -216,17 +216,28 @@
             background-color: #ffffff;
         }
 
-        /* 💡 1차 랜딩페이지 박스 겹침/잘림 원천 차단 (스케일링 트릭) */
+        /* 💡 모바일 친화적 패치: 화면 크기에 맞춰 iframe 내부 요소 조정 */
         .iframe-scaler {
-            width: 414px; 
-            height: 940px; 
-            transform: scale(0.81); 
-            transform-origin: top left;
-        }
-        .iframe-scaler iframe {
             width: 100%;
             height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f1f5f9;
+        }
+        .iframe-scaler iframe {
+            /* 모바일 화면 해상도 (예: iPhone 12 Pro) 비율로 강제 적용 */
+            width: 390px; 
+            height: 844px;
+            transform: scale(0.85); /* 부모 컨테이너(약 332x752)에 맞게 축소 */
+            transform-origin: center center;
             border: none;
+        }
+        @media (max-width: 640px) {
+            .iframe-scaler iframe {
+                transform: scale(0.75); /* 더 작은 화면에서는 더 축소 */
+            }
         }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -275,6 +286,9 @@
                 
                 <div class="absolute bottom-12 md:bottom-20 left-1/2 -translate-x-1/2 w-full flex flex-col items-center justify-center z-20">
                     <div class="relative group inline-block mb-4">
+                        <!-- 💡 강력한 배경 네온 빛 번짐 애니메이션 -->
+                        <div class="absolute inset-0 bg-brand-cyan/60 blur-[20px] rounded-full animate-pulse-glow group-hover:bg-brand-cyan/90 transition duration-500"></div>
+                        
                         <a href="#sec-01" class="solid-dark-btn flex items-center justify-center gap-3 font-black text-xl px-12 py-5 rounded-full z-10 relative">
                             작전 성과 확인하기
                             <!-- 💡 불필요한 원형 배경 제거 & 아이콘만 확실하게 바운스 -->
@@ -342,13 +356,15 @@
                     <div class="premium-card p-10 rounded-[2rem] bg-white reveal-up">
                         <div class="flex items-center gap-3 mb-8">
                             <span class="px-4 py-2 bg-slate-100 text-slate-800 font-black rounded-xl text-xs uppercase tracking-wider">Phase 1</span>
-                            <h4 class="text-xl font-black text-slate-900">1차 트래픽 캠페인 목표</h4>
+                            <!-- 💡 1차 캠페인 목표 색상을 회색 톤으로 조정하여 조화롭게 매칭 -->
+                            <h4 class="text-xl font-black text-slate-700">1차 트래픽 캠페인 목표</h4>
                         </div>
                         <div class="grid grid-cols-2 gap-4 text-sm font-bold readable-text">
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">도달 (Reach)</span>노출수 30,000회+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">흥미 (Hook)</span>2초 시청률 25%+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">유입 (Traffic)</span>클릭률(CTR) 1.0%+</div>
-                            <div class="p-5 bg-cyan-50 rounded-2xl border border-cyan-100 text-brand-cyan"><span class="block mb-1 opacity-70">참여 (랜딩 진입률)</span>5% 이상</div>
+                            <!-- 💡 '참여' 부분 배경색과 테두리 색상을 위쪽 div와 매칭 -->
+                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 text-slate-700"><span class="text-slate-400 block mb-1">참여 (랜딩 진입률)</span>5% 이상</div>
                         </div>
                     </div>
                     <!-- KPI Phase 2 -->
@@ -418,13 +434,15 @@
                     처음부터 100% 정답을 알 수는 없기에, 1차 캠페인에서 완전히 성격이 다른 2가지(성향 테스트형 vs 지식 퀴즈형) 광고를 동시에 노출하여 유저의 반응을 살폈습니다. 결과를 바탕으로 <strong>반응이 좋은 것은 더 뾰족하게 키우고, 안 된 것은 미련 없이 갈아엎는 빠른 전략 수정</strong>을 진행했습니다.
                 </p>
                 <div class="grid sm:grid-cols-2 gap-8">
-                    <div class="p-8 bg-rose-50 rounded-[2rem] border border-rose-100 hover:shadow-md transition">
-                        <span class="text-brand-pink font-black text-base flex items-center gap-2 mb-3"><i class="ph-bold ph-check-circle text-xl"></i> 성과가 확인된 전략 (유형팀)</span>
-                        <p class="text-slate-700 text-base leading-relaxed font-bold readable-text">초기 반응이 좋았던 '성향 테스트'는 디자인을 더 직관적으로 다듬고 버튼을 잘 보이게 고쳐서 <strong>성과를 확실하게 확대</strong> 했습니다.</p>
-                    </div>
-                    <div class="p-8 bg-cyan-50 rounded-[2rem] border border-cyan-100 hover:shadow-md transition">
+                    <!-- 💡 투트랙 전략: 퀴즈팀 먼저 배치 -->
+                    <div class="p-8 bg-cyan-50 rounded-[2rem] border border-cyan-100 hover:shadow-md transition order-1">
                         <span class="text-brand-cyan font-black text-base flex items-center gap-2 mb-3"><i class="ph-bold ph-arrows-clockwise text-xl"></i> 실패에서 배운 전략 (퀴즈팀)</span>
                         <p class="text-slate-700 text-base leading-relaxed font-bold readable-text">완주율 0%로 철저히 실패한 '지식 퀴즈'는 전면 폐기하고, 참여하기 아주 쉬운 <strong>새로운 기획(이미지 밸런스 퀴즈)으로 방향 전환</strong>을 단행했습니다.</p>
+                    </div>
+                    <!-- 💡 투트랙 전략: 유형팀 나중 배치 -->
+                    <div class="p-8 bg-rose-50 rounded-[2rem] border border-rose-100 hover:shadow-md transition order-2">
+                        <span class="text-brand-pink font-black text-base flex items-center gap-2 mb-3"><i class="ph-bold ph-check-circle text-xl"></i> 성과가 확인된 전략 (유형팀)</span>
+                        <p class="text-slate-700 text-base leading-relaxed font-bold readable-text">초기 반응이 좋았던 '성향 테스트'는 디자인을 더 직관적으로 다듬고 버튼을 잘 보이게 고쳐서 <strong>성과를 확실하게 확대</strong> 했습니다.</p>
                     </div>
                 </div>
             </div>
@@ -456,11 +474,12 @@
                         <div class="flex-1 space-y-6">
                             <div class="flex items-center gap-3 mb-4">
                                 <span class="text-slate-500 font-black text-sm uppercase tracking-widest">1차 캠페인 (과거)</span>
-                                <span class="text-rose-500 text-xs font-black bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100">완주율 0% 실패</span>
+                                <!-- 💡 1차 캠페인 배지 포인트 컬러 네온 그린으로 변경 -->
+                                <span class="text-brand-neonGreen text-xs font-black bg-brand-neonGreen/10 px-3 py-1.5 rounded-lg border border-brand-neonGreen/20">완주율 0% 실패</span>
                             </div>
                             <h4 class="text-3xl md:text-4xl font-black text-slate-900">지식 테스트가 만든 심리적 장벽</h4>
                             <p class="text-lg font-bold text-slate-600 leading-relaxed readable-text">
-                                공항 입국 심사라는 낯선 설정과, 수많은 영문 텍스트를 읽고 풀어야 하는 <strong class="text-rose-500">지식 테스트</strong>가 숏폼 유저들을 피곤하게 만들었습니다. 유입된 유저는 있었지만, 끝까지 문제를 푼 사람이 단 한 명도 없었습니다.
+                                공항 입국 심사라는 낯선 설정과, 수많은 영문 텍스트를 읽고 풀어야 하는 <strong class="text-brand-neonGreen">지식 테스트</strong>가 숏폼 유저들을 피곤하게 만들었습니다. 유입된 유저는 있었지만, 끝까지 문제를 푼 사람이 단 한 명도 없었습니다.
                             </p>
                         </div>
                         
@@ -485,7 +504,7 @@
                                     <div class="phone-mockup border-slate-300">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <!-- 💡 스케일링으로 1차 랜딩 겹침 방지 -->
+                                            <!-- 💡 모바일 친화적 스케일링 -->
                                             <div class="iframe-scaler">
                                                 <iframe src="https://dima-1st-quiz.vercel.app/" class="phone-iframe"></iframe>
                                             </div>
@@ -553,11 +572,12 @@
                         <div class="flex-1 space-y-6">
                             <div class="flex items-center gap-3 mb-4">
                                 <span class="text-slate-500 font-black text-sm uppercase tracking-widest">1차 캠페인 (과거)</span>
-                                <span class="text-orange-500 text-xs font-black bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-100">초기 유입은 성공적</span>
+                                <!-- 💡 유형팀 1차 캠페인 배지 포인트 컬러 네온 그린으로 변경 -->
+                                <span class="text-brand-neonGreen text-xs font-black bg-brand-neonGreen/10 px-3 py-1.5 rounded-lg border border-brand-neonGreen/20">초기 유입은 성공적</span>
                             </div>
                             <h4 class="text-3xl md:text-4xl font-black text-slate-900">호기심 유발 성공, 하지만 아쉬운 첫인상</h4>
                             <p class="text-lg font-bold text-slate-600 leading-relaxed readable-text">
-                                '나의 성향 파악'이라는 주제 자체는 타겟의 호기심을 끌어 유입 단가를 크게 낮췄습니다. 하지만 클릭하고 들어온 랜딩 첫 화면에 작고 복잡한 픽셀 아트와 텍스트가 너무 많아, 유저들이 <strong class="text-orange-500">직관성을 느끼지 못하고 바로 뒤로 가기를 누르는 병목 현상</strong>이 발생했습니다.
+                                '나의 성향 파악'이라는 주제 자체는 타겟의 호기심을 끌어 유입 단가를 크게 낮췄습니다. 하지만 클릭하고 들어온 랜딩 첫 화면에 작고 복잡한 픽셀 아트와 텍스트가 너무 많아, 유저들이 <strong class="text-brand-neonGreen">직관성을 느끼지 못하고 바로 뒤로 가기를 누르는 병목 현상</strong>이 발생했습니다.
                             </p>
                         </div>
 
@@ -582,7 +602,7 @@
                                     <div class="phone-mockup border-slate-300">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <!-- 💡 스케일링으로 1차 랜딩 겹침 방지 -->
+                                            <!-- 💡 모바일 친화적 스케일링 -->
                                             <div class="iframe-scaler">
                                                 <iframe src="https://triptokorea9jo.netlify.app/" class="phone-iframe"></iframe>
                                             </div>
@@ -606,7 +626,6 @@
                             </p>
                         </div>
                         
-                        <!-- 📱 스마트폰 목업 라이브 뷰 -->
                         <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8">
                             <div class="flex-1 w-full max-w-[360px] mx-auto">
                                 <div class="text-center text-sm font-bold text-brand-pink mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> 2차 영상 (디자인 고도화)</div>
@@ -682,7 +701,6 @@
                 <div class="p-8 bg-slate-900 text-white text-center">
                     <h3 class="text-2xl font-black">📊 K-9적단 최종 캠페인 성과 요약</h3>
                 </div>
-                <!-- 💡 다시 좌우 배치로 복구하고, 순서를 퀴즈팀 -> 유형팀으로 유지 -->
                 <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
                     <!-- 1. 퀴즈 & 문화팀 -->
                     <div class="p-10 space-y-6 bg-white hover:bg-slate-50 transition duration-300">
@@ -690,7 +708,6 @@
                         <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">112,277회</span></div>
                         <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">721회</span></div>
                         <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900">107원</span></div>
-                        <!-- 💡 텍스트 디테일 수정: (랜딩페이지 완료) -->
                         <div class="flex justify-between items-center font-black mt-6 pt-6 border-t border-slate-100">
                             <span class="text-slate-900 text-lg leading-tight">최종 전환<br/><span class="text-sm font-bold text-slate-500">(랜딩페이지 완료)</span></span>
                             <span class="text-brand-cyan text-right text-xl">37건 <span class="text-sm text-brand-cyan/80">(이벤트)</span><br/><span class="text-sm text-slate-500">20명 (사용자)</span></span>
@@ -703,7 +720,6 @@
                         <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">98,758회</span></div>
                         <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">722회</span></div>
                         <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900">107원</span></div>
-                        <!-- 💡 텍스트 디테일 수정: (외부링크 VISIT KOREA 클릭) -->
                         <div class="flex justify-between items-center font-black mt-6 pt-6 border-t border-slate-100">
                             <span class="text-slate-900 text-lg leading-tight">최종 전환<br/><span class="text-sm font-bold text-slate-500">(외부링크 VISIT KOREA 클릭)</span></span>
                             <span class="text-brand-pink text-right text-xl">16건 <span class="text-sm text-brand-pink/80">(이벤트)</span><br/><span class="text-sm text-slate-500">5명 (사용자)</span></span>
@@ -725,7 +741,7 @@
                         랜딩 첫 화면의 '시작 버튼'을 누르게 하는 것이 가장 큰 관건이었습니다. 3초 이내에 나가는 유저를 붙잡기 위해, <strong class="text-slate-900">광고 영상 제일 첫 부분에 확실한 보상이나 결과물을 미리 보여줘야 한다는 것</strong>을 배웠습니다.
                     </div>
                 </div>
-                <!-- 💡 넥스트 스텝 및 핵심 결론 (두루뭉술한 표현 배제, 탄탄한 실무 논리 및 계획 추가) -->
+                <!-- 💡 넥스트 스텝 및 핵심 결론 -->
                 <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200">
                     <h4 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-2"><i class="ph-fill ph-rocket-launch text-slate-800"></i> Next Step & 핵심 결론</h4>
                     <p class="text-slate-700 font-medium leading-relaxed mb-4 readable-text">
@@ -753,7 +769,7 @@
 
             <!-- 5인 팀원 카드 -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 reveal-up delay-200">
-                <!-- Member 1 : 윤서영 (에메랄드 Emerald로 수정 완료) -->
+                <!-- Member 1 : 윤서영 (에메랄드 Emerald) -->
                 <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-emerald-400">
                     <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
                         <img src="https://drive.google.com/thumbnail?id=1uhmGR72hyXqs3bi-K66BmeqzGucrzwVX&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="윤서영">
@@ -797,7 +813,7 @@
                         <div class="font-black text-xl text-slate-900">윤소이</div>
                     </div>
                 </div>
-                <!-- Member 5 : 강현아 (시안 Cyan으로 수정 완료) -->
+                <!-- Member 5 : 강현아 (시안 Cyan) -->
                 <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-brand-cyan">
                     <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
                         <img src="https://drive.google.com/thumbnail?id=1RsMkfvcSUCucqU7fpdn5ky13iuCrqsz-&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="강현아">
