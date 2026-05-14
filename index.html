@@ -4,65 +4,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K-9적단 | 남아공 틱톡 퍼널 최적화 리포트</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Pretendard Font -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Pretendard', 'sans-serif'] },
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    },
                     colors: {
-                        brand: { cyan: '#0891b2', pink: '#e11d48', neonGreen: '#10b981', slate900: '#0f172a', slate50: '#f8fafc' }
+                        brand: {
+                            cyan: '#0891b2', 
+                            pink: '#e11d48',
+                            neonGreen: '#10b981',
+                            slate900: '#0f172a',
+                            slate50: '#f8fafc',
+                        }
                     },
                     animation: {
-                        'float': 'float 6s ease-in-out infinite',
+                        'float': 'float 8s ease-in-out infinite',
+                        'gradient-x': 'gradient-x 15s ease infinite',
                         'pulse-glow': 'pulse-glow 3s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'logo-sequence': 'logoSequence 4.5s cubic-bezier(0.22, 1, 0.36, 1) forwards',
                     },
                     keyframes: {
-                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-                        'pulse-glow': { '0%': { opacity: 0.4, transform: 'scale(0.95)' }, '100%': { opacity: 0.8, transform: 'scale(1.05)' } }
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        },
+                        'gradient-x': {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' },
+                        },
+                        'pulse-glow': {
+                            '0%': { opacity: 0.3, transform: 'scale(0.95)' },
+                            '100%': { opacity: 0.6, transform: 'scale(1.05)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(40px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        logoSequence: {
+                            '0%': { opacity: '0', transform: 'scale(0.9)' },
+                            '15%': { opacity: '0.9', transform: 'scale(1)' },    
+                            '35%': { opacity: '0.9', transform: 'scale(1)' },    
+                            '100%': { opacity: '0.03', transform: 'scale(1.15)' },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #ffffff; color: #334155; overflow-x: hidden; word-break: keep-all; overflow-wrap: break-word; }
-        
-        /* 🍎 안정적인 스크롤 애니메이션 */
-        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .reveal-up.active { opacity: 1; transform: translateY(0); }
-        .delay-100 { transition-delay: 100ms; }
-        .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
+        body {
+            background-color: #ffffff;
+            color: #334155;
+            overflow-x: hidden;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
 
         /* 💎 다크 솔리드 CTA 버튼 */
         .solid-dark-btn {
-            position: relative; background: #000000; border: 1px solid rgba(8, 145, 178, 0.8);
-            box-shadow: 0 0 20px rgba(8, 145, 178, 0.4), inset 0 0 15px rgba(8, 145, 178, 0.3); color: #ffffff;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10;
+            position: relative;
+            background: #000000;
+            border: 1px solid rgba(8, 145, 178, 0.8);
+            box-shadow: 0 0 20px rgba(8, 145, 178, 0.4), inset 0 0 15px rgba(8, 145, 178, 0.3);
+            color: #ffffff;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10;
             animation: btn-neon-pulse 2s infinite alternate;
         }
         .solid-dark-btn:hover {
-            transform: translateY(-4px) scale(1.02); background: #0f172a;
+            transform: translateY(-4px) scale(1.02);
             box-shadow: 0 10px 30px rgba(8, 145, 178, 0.8), inset 0 0 25px rgba(8, 145, 178, 0.6);
+            background: #0f172a;
         }
+        
         @keyframes btn-neon-pulse {
             0% { box-shadow: 0 0 15px rgba(8, 145, 178, 0.3), inset 0 0 10px rgba(8, 145, 178, 0.2); }
             100% { box-shadow: 0 0 35px rgba(8, 145, 178, 0.7), inset 0 0 25px rgba(8, 145, 178, 0.5); }
         }
 
-        .readable-text { word-break: keep-all; line-height: 1.7; }
+        .readable-text {
+            word-break: keep-all;
+            line-height: 1.7;
+        }
         
-        .premium-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .premium-card:hover { box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.1); transform: translateY(-4px); border-color: #cbd5e1; }
+        /* 🍎 스크롤 애니메이션 */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(60px) scale(0.98);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-up.active { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+        }
 
-        /* 📱 스마트폰 목업 */
-        .phone-wrapper { position: relative; margin: 0 auto; width: 100%; max-width: 360px; }
-        .phone-glow { position: absolute; inset: -4px; border-radius: 4rem; filter: blur(12px); opacity: 0.8; z-index: 0; transition: all 0.5s ease; }
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.92);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-scale.active { opacity: 1; transform: scale(1); }
+
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
+        .premium-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .premium-card:hover {
+            box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+            border-color: #cbd5e1;
+        }
+
+        /* 📱 스마트폰 목업 (데스크탑 뷰 기본) */
+        .phone-wrapper {
+            position: relative;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 360px; 
+            transition: all 0.5s ease;
+        }
+        .phone-glow {
+            position: absolute;
+            inset: -4px; 
+            border-radius: 4rem;
+            filter: blur(12px);
+            opacity: 0.8;
+            z-index: 0;
+            transition: all 0.5s ease;
+        }
         .phone-wrapper:hover .phone-glow { filter: blur(18px); opacity: 1; inset: -6px; }
         
         .glow-neon-green { background: linear-gradient(135deg, #10b981, #34d399); }
@@ -70,33 +158,171 @@
         .glow-pink { background: linear-gradient(135deg, #e11d48, #f43f5e); }
 
         .phone-mockup {
-            position: relative; width: 100%; height: 780px; 
+            position: relative;
+            width: 100%;
+            height: 780px; 
             background: linear-gradient(145deg, #e2e8f0 0%, #cbd5e1 40%, #94a3b8 60%, #e2e8f0 100%);
-            border-radius: 3.5rem; padding: 12px; 
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9), inset 0 0 10px rgba(0,0,0,0.1), 0 20px 40px -10px rgba(0,0,0,0.2);
-            border: 1px solid #cbd5e1; z-index: 10; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 3.5rem; 
+            padding: 12px; 
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9), 
+                        inset 0 0 10px rgba(0,0,0,0.1),
+                        0 20px 40px -10px rgba(0,0,0,0.2);
+            border: 1px solid #cbd5e1;
+            z-index: 10;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .phone-wrapper:hover .phone-mockup { transform: translateY(-8px); }
-        .phone-mockup::before { content: ''; position: absolute; top: 160px; left: -3px; width: 3px; height: 35px; background: #94a3b8; border-radius: 3px 0 0 3px; box-shadow: 0 60px 0 0 #94a3b8, 0 120px 0 0 #94a3b8; }
-        .phone-mockup::after { content: ''; position: absolute; top: 190px; right: -3px; width: 3px; height: 55px; background: #94a3b8; border-radius: 0 3px 3px 0; }
-        .phone-mockup-dark { background: #1e293b; box-shadow: inset 0 0 0 1px #334155, 0 15px 30px -10px rgba(0, 0, 0, 0.15); }
+
+        .phone-mockup::before {
+            content: ''; position: absolute; top: 160px; left: -3px; width: 3px; height: 35px; background: #94a3b8; border-radius: 3px 0 0 3px;
+            box-shadow: 0 60px 0 0 #94a3b8, 0 120px 0 0 #94a3b8; 
+            transition: opacity 0.3s;
+        }
+        .phone-mockup::after {
+            content: ''; position: absolute; top: 190px; right: -3px; width: 3px; height: 55px; background: #94a3b8; border-radius: 0 3px 3px 0; 
+            transition: opacity 0.3s;
+        }
+
+        .phone-mockup-dark {
+            background: #1e293b;
+            box-shadow: inset 0 0 0 1px #334155, 0 15px 30px -10px rgba(0, 0, 0, 0.15);
+        }
         .phone-mockup-dark::before, .phone-mockup-dark::after { background: #334155; box-shadow: 0 60px 0 0 #334155, 0 120px 0 0 #334155; }
 
-        .phone-screen { width: 100%; height: 100%; background: #ffffff; border-radius: 2.8rem; overflow: hidden; position: relative; transform: translateZ(0); border: 2px solid #000; }
-        .dynamic-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 100px; height: 30px; background: #000000; border-radius: 20px; z-index: 50; pointer-events: none; }
-        .phone-iframe { width: 100%; height: 100%; border: none; background-color: #ffffff; }
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 2.8rem;
+            overflow: hidden;
+            position: relative;
+            transform: translateZ(0); 
+            border: 2px solid #000;
+            transition: border-radius 0.4s ease;
+        }
 
-        /* 💡 1차 랜딩페이지 박스 겹침 방지 (스케일링) */
-        .iframe-scaler { width: 414px; height: 940px; transform: scale(0.81); transform-origin: top left; }
-        .iframe-scaler iframe { width: 100%; height: 100%; border: none; }
+        .dynamic-island {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 30px;
+            background: #000000;
+            border-radius: 20px;
+            z-index: 50;
+            pointer-events: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: opacity 0.3s;
+        }
+
+        .phone-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #ffffff;
+        }
+
+        .iframe-scaler {
+            width: 414px; 
+            height: 940px; 
+            transform: scale(0.81); 
+            transform-origin: top left;
+            transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
+        }
+        .iframe-scaler iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 💡💡💡 모바일 뷰어 모드 (토글 활성화 시) 💡💡💡 */
+        /* 이 클래스가 body에 추가되면 목업이 사라지고 꽉 찬 화면으로 변경됨 */
+        body.mobile-view-mode .phone-wrapper {
+            max-width: 100%; /* 부모 크기에 꽉 차게 */
+            padding: 0 10px; /* 약간의 여백만 부여 */
+        }
+        body.mobile-view-mode .phone-mockup {
+            height: auto;
+            aspect-ratio: 9/16; /* 비율로 높이 자동 조절 */
+            background: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: none;
+            padding: 0;
+            border-radius: 1rem; /* 목업 둥글기 제거하고 얇게 */
+        }
+        body.mobile-view-mode .phone-wrapper:hover .phone-mockup {
+            transform: none; /* 호버 효과 제거 */
+        }
+        body.mobile-view-mode .phone-glow,
+        body.mobile-view-mode .phone-mockup::before,
+        body.mobile-view-mode .phone-mockup::after,
+        body.mobile-view-mode .dynamic-island {
+            opacity: 0; /* 시각적 방해물 모두 숨김 */
+            display: none;
+        }
+        body.mobile-view-mode .phone-screen {
+            border-radius: 1rem; /* 안쪽 라운드 감소 */
+            border: 1px solid #e2e8f0; /* 깔끔한 테두리만 */
+        }
+        /* 모바일 뷰어에서 스케일링 해제 (정사이즈로 선명하게 보임) */
+        body.mobile-view-mode .iframe-scaler {
+            width: 100%;
+            height: 100%;
+            transform: none;
+        }
+
+        /* 토글 스위치 디자인 */
+        .view-toggle-container {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 100;
+            background: white;
+            padding: 6px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        .toggle-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+        }
+        .toggle-btn.active {
+            background: #0f172a;
+            color: white;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.3);
+        }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        body.modal-open { overflow: hidden; }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-pink selection:text-white break-keep">
+
+    <!-- 💡 디바이스 뷰 토글 버튼 (화면 좌측 하단 고정) -->
+    <div class="view-toggle-container">
+        <button id="btnDesktopView" class="toggle-btn active" onclick="setViewMode('desktop')">
+            <i class="ph-fill ph-desktop"></i> DESKTOP
+        </button>
+        <button id="btnMobileView" class="toggle-btn" onclick="setViewMode('mobile')">
+            <i class="ph-fill ph-device-mobile"></i> MOBILE
+        </button>
+    </div>
 
     <!-- 고정 네비게이션 -->
     <nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-lg border-b border-slate-100 transition-all duration-300">
@@ -131,8 +357,7 @@
             </p>
             
             <div class="reveal-up active delay-300 relative w-full max-w-2xl mx-auto flex flex-col items-center justify-center mt-4">
-                <!-- 💡 초기 진입 시 완전 선명하게(opacity: 1) 유지되도록 수정 -->
-                <img id="mainLogo" src="https://drive.google.com/thumbnail?id=1ni_okeRngGumHYOOaCp2kZKEoPtTr--V&sz=w1200" alt="K-9 로고 배경" class="w-full object-contain drop-shadow-xl transition-all duration-200 ease-out" style="opacity: 1;">
+                <img id="mainLogo" src="https://drive.google.com/thumbnail?id=1ni_okeRngGumHYOOaCp2kZKEoPtTr--V&sz=w1200" alt="K-9 로고 배경" class="w-full object-contain drop-shadow-xl transition-all duration-200 ease-out" style="opacity: 0.9;">
                 
                 <div class="absolute bottom-12 md:bottom-20 left-1/2 -translate-x-1/2 w-full flex flex-col items-center justify-center z-20">
                     <div class="relative group inline-block mb-4">
@@ -340,6 +565,7 @@
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
+                                            <!-- 💡 박스 겹침 방지 (모바일에서도 선명하게 보이도록 구조화) -->
                                             <div class="iframe-scaler">
                                                 <iframe src="https://dima-1st-quiz.vercel.app/" class="phone-iframe"></iframe>
                                             </div>
@@ -451,7 +677,7 @@
                             </div>
                             <h4 class="text-3xl md:text-4xl font-black text-slate-900">클릭을 유도하는 직관적인 디자인 개편</h4>
                             <p class="text-lg font-bold text-slate-700 leading-relaxed readable-text">
-                                눈을 피곤하게 하던 복잡한 요소들을 과감히 다 지우고, 세련되고 귀여운 <strong class="text-brand-pink">3D 캐릭터</strong>로 화면 바꿨습니다. 또한 최종 목표인 <strong class="text-brand-pink">'결과 확인하기' 버튼을 맨 위로 올리고 깜빡이는 애니메이션</strong>을 주어 유저의 클릭을 확실하게 이끌어냈습니다.
+                                눈을 피곤하게 하던 복잡한 요소들을 과감히 다 지우고, 세련되고 귀여운 <strong class="text-brand-pink">3D 캐릭터</strong>로 화면을 바꿨습니다. 또한 최종 목표인 <strong class="text-brand-pink">'결과 확인하기' 버튼을 맨 위로 올리고 깜빡이는 애니메이션</strong>을 주어 유저의 클릭을 확실하게 이끌어냈습니다.
                             </p>
                         </div>
                         
@@ -527,10 +753,9 @@
 
             <!-- 스케일업 종합 리포트 -->
             <div class="premium-card rounded-[2.5rem] overflow-hidden mb-24 reveal-scale border border-slate-200">
-                <div class="p-8 md:p-12 bg-slate-900 text-white text-center">
-                    <h3 class="text-3xl font-black">📊 K-9적단 최종 캠페인 성과 요약</h3>
+                <div class="p-8 bg-slate-900 text-white text-center">
+                    <h3 class="text-2xl font-black">📊 K-9적단 최종 캠페인 성과 요약</h3>
                 </div>
-                <!-- 💡 퀴즈팀 -> 유형팀 순서 정렬 유지 -->
                 <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
                     <!-- 1. 퀴즈 & 문화팀 -->
                     <div class="p-10 space-y-6 bg-white hover:bg-slate-50 transition duration-300">
@@ -560,11 +785,11 @@
             
             <!-- 최종 결론 & 넥스트 스텝 -->
             <div class="premium-card p-12 md:p-16 rounded-[3rem] reveal-up delay-100 border-l-[12px] border-l-yellow-400">
-                <h3 class="text-3xl font-black mb-8 text-slate-900 flex items-center gap-4"><i class="ph-fill ph-flag-banner text-yellow-400 text-4xl"></i> 프로젝트 인사이트 & 넥스트 스텝</h3>
+                <h3 class="text-3xl font-black mb-8 text-slate-900 flex items-center gap-4"><i class="ph-fill ph-flag-banner text-yellow-400 text-4xl"></i> 프로젝트 인사이트 & 핵심 결론</h3>
                 <div class="grid md:grid-cols-2 gap-12 text-slate-600 font-medium leading-relaxed text-lg mb-12">
                     <div class="readable-text">
                         <p class="mb-3 text-slate-900 font-black flex items-center gap-2"><i class="ph-bold ph-coins text-brand-cyan"></i> 효율적인 예산 관리 입증</p>
-                        광고 노출을 1차보다 202%나 대폭 늘렸지만, 타겟팅을 정교하게 다듬어 <strong class="text-slate-900">유입 단가(CPC)를 107원으로 동일하게 방어</strong>하며 안정적으로 성과 규모 키웠습니다.
+                        광고 노출을 1차보다 202%나 대폭 늘렸지만, 타겟팅을 정교하게 다듬어 <strong class="text-slate-900">유입 단가(CPC)를 107원으로 동일하게 방어</strong>하며 안정적으로 성과 규모를 키웠습니다.
                     </div>
                     <div class="readable-text">
                         <p class="mb-3 text-slate-900 font-black flex items-center gap-2"><i class="ph-bold ph-clock text-brand-pink"></i> 이탈을 막는 3초의 법칙</p>
@@ -573,7 +798,6 @@
                 </div>
                 <!-- 💡 넥스트 스텝 및 핵심 결론 -->
                 <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200">
-                    <h4 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-2"><i class="ph-fill ph-rocket-launch text-slate-800"></i> Next Step & 핵심 결론</h4>
                     <p class="text-slate-700 font-medium leading-relaxed mb-4 readable-text">
                         이번 프로젝트의 진정한 성과는 남아공이라는 완전히 낯선 신규 시장에서 <strong>'작동하는 디지털 유입 공식'</strong>을 찾아냈다는 점입니다. 일방적인 관광 홍보물에는 전혀 반응하지 않던(1차 완주율 0%) 차가운 트래픽(Cold Traffic)을 상대로, 현지 밈(Now-Now)과 '인터랙티브 밸런스 게임'을 테스트한 결과 불과 20만 원 남짓한 소액 예산으로 <strong>총 53건의 자발적인 행동 전환(활성 사용자 25명)</strong>을 유도했습니다. 비록 초기 테스트라 절대적인 수치가 작아 보일 수 있으나, 이는 글로벌 유저가 한국 콘텐츠에 평균 10회 이상 능동적으로 개입하게 만들어 '0에서 1을 만들어낸' 매우 유의미한 질적 데이터입니다.
                     </p>
@@ -683,7 +907,7 @@
             <div class="w-20 h-20 bg-cyan-50 text-brand-cyan rounded-full flex items-center justify-center text-4xl mx-auto mb-6"><i class="ph-fill ph-confetti"></i></div>
             <h3 class="text-3xl font-black text-slate-900 mb-4">저희가 그만큼 마음에 드셨군요? 😉</h3>
             <p class="text-slate-600 font-bold text-lg leading-relaxed mb-4">
-                감사합니다! 1등 크루 K-9적단의 역량을 가장 먼저 알아봐 주셨네요.<br/>어떤 프로젝트든 확실한 데이터와 퍼포먼스로 증명해 드리겠습니다.
+                감사합니다! 1등 크루 K-9적단의 역량을 가장 먼저 알아봐 주셨네요.<br/>어떤 프로젝트든 확실한 데이터와 퍼포스로 증명해 드리겠습니다.
             </p>
             <p class="text-slate-400 text-sm font-medium mb-8">
                 (이 버튼을 누르셨다면 이미 저희에게 설득당하신 겁니다. 멋진 기회로 뵙겠습니다!)
@@ -700,6 +924,29 @@
 
     <!-- 스크립트 -->
     <script>
+        function setViewMode(mode) {
+            const body = document.body;
+            const btnDesktop = document.getElementById('btnDesktopView');
+            const btnMobile = document.getElementById('btnMobileView');
+
+            if (mode === 'mobile') {
+                body.classList.add('mobile-view-mode');
+                btnMobile.classList.add('active');
+                btnDesktop.classList.remove('active');
+            } else {
+                body.classList.remove('mobile-view-mode');
+                btnDesktop.classList.add('active');
+                btnMobile.classList.remove('active');
+            }
+        }
+
+        // 💡 화면 크기가 작으면 자동으로 모바일 뷰어 켜기, 그 외에는 기본적으로 데스크탑 뷰어 유지
+        if (window.innerWidth <= 768) {
+            setViewMode('mobile');
+        } else {
+            setViewMode('desktop');
+        }
+
         function triggerConfettiAndModal() {
             var duration = 3 * 1000;
             var animationEnd = Date.now() + duration;
@@ -766,20 +1013,18 @@
                 }
             });
 
-            // 💡 맥북 등 작은 화면에서 로고가 순식간에 사라지는 현상 해결
+            // 💡 로고 투명도 스크롤 애니메이션
             const mainLogo = document.getElementById('mainLogo');
             if (mainLogo) {
                 window.addEventListener('scroll', () => {
                     let scrollY = window.scrollY;
-                    // 맥북의 좁은 세로 해상도에서도 바로 사라지지 않도록 시작 구간(fadeStart)을 150px 이상으로 설정
                     let fadeStart = 150; 
-                    let fadeEnd = 800; // 충분히 넉넉한 스크롤 길이 보장
+                    let fadeEnd = 800; 
 
                     if (scrollY <= fadeStart) {
-                        mainLogo.style.opacity = 1; // 150px까지는 무조건 100% 선명
+                        mainLogo.style.opacity = 1; 
                         mainLogo.style.transform = `scale(1)`;
                     } else if (scrollY > fadeStart && scrollY < fadeEnd) {
-                        // 150px ~ 800px 사이에서 매우 완만하게 투명해짐
                         let progress = (scrollY - fadeStart) / (fadeEnd - fadeStart);
                         let opacity = 1 - (progress * 0.97); 
                         let scale = 1 + (progress * 0.15); 
