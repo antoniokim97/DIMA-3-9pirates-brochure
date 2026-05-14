@@ -245,16 +245,13 @@
         body.mobile-view-mode .phone-mockup {
             width: 100%;
             height: auto !important;
-            min-height: 0 !important; /* 💡 최소 높이 강제 해제하여 비율 사수 */
-            aspect-ratio: 9 / 16 !important; /* 💡 숏폼 완벽 비율 강제 고정 (썸네일 홀쭉해짐 원천 차단) */
+            aspect-ratio: 9 / 16 !important; /* 💡 숏폼 완벽 비율 강제 고정 (썸네일 홀쭉해짐, UI 깨짐 원천 차단) */
             background: #ffffff;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             border: 1px solid #e2e8f0;
             padding: 0;
             border-radius: 12px; 
             transform: none !important;
-            position: relative;
-            overflow: hidden; /* 💡 내부 요소 삐져나옴 방지 */
         }
         body.mobile-view-mode .phone-wrapper:hover .phone-mockup {
             transform: none !important; 
@@ -267,12 +264,9 @@
             display: none !important;
         }
         body.mobile-view-mode .phone-screen {
-            position: absolute; /* 💡 부모 비율에 완벽히 맞추기 위한 절대 위치 렌더링 */
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border-radius: 0; 
+            border-radius: 12px; 
             border: none; 
-            background-color: #000;
+            background-color: #000; /* 영상 레터박스용 블랙 배경 */
         }
 
         /* 💡 구글 드라이브 거대 UI 겹침 대참사 완벽 해결용 해킹 클래스 */
@@ -297,7 +291,9 @@
         .view-toggle-container {
             position: fixed;
             bottom: 24px;
-            left: 24px;
+            /* 💡 화면 하단 중앙으로 위치 변경 */
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 100;
             background: white;
             padding: 4px;
@@ -306,7 +302,7 @@
             display: flex;
             align-items: center;
             border: 1px solid #e2e8f0;
-            width: 260px; /* 💡 클릭 영역을 넓히고 텍스트가 잘리지 않게 고정 너비 적용 */
+            width: 260px; /* 💡 클릭 영역 고정 너비 적용 */
         }
         
         /* 💡 활성화된 버튼의 배경을 감싸는 슬라이더 요소 (비율 완벽 교정) */
@@ -316,7 +312,7 @@
             top: 4px;
             bottom: 4px;
             left: 4px;
-            width: calc(50% - 4px); /* 💡 컨테이너의 정확히 절반을 꽉 채우도록 비율 수학적 교정 */
+            width: calc(50% - 4px); /* 💡 컨테이너의 정확히 절반을 꽉 채우도록 비율 교정 */
             background: #0f172a;
             border-radius: 26px;
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
@@ -330,7 +326,7 @@
         }
 
         .toggle-btn {
-            flex: 1; /* 💡 공간을 50%씩 완벽하게 양분하여, 허공 어디를 눌러도 클릭되도록 적용 */
+            flex: 1; /* 💡 공간을 50%씩 완벽하게 양분 */
             padding: 12px 0;
             border-radius: 26px;
             font-size: 14px;
@@ -353,6 +349,16 @@
             color: white; /* 활성화 시 텍스트 흰색 */
         }
 
+        /* 💡 아이프레임 흔들림 방지: 모바일 모드에서 터치 이벤트를 막아버림 */
+        body.mobile-view-mode .phone-iframe {
+            pointer-events: auto; /* 아이프레임 내부 클릭 허용 */
+        }
+
+        body.mobile-view-mode .phone-screen {
+            overflow: auto; /* 모바일 모드에서 스크롤 허용 */
+            -webkit-overflow-scrolling: touch; /* iOS 스크롤 부드럽게 */
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -362,7 +368,7 @@
 </head>
 <body class="antialiased selection:bg-brand-pink selection:text-white break-keep">
 
-    <!-- 💡 디바이스 뷰 토글 버튼 (화면 좌측 하단 고정) -->
+    <!-- 💡 디바이스 뷰 토글 버튼 (화면 하단 중앙 고정) -->
     <div class="view-toggle-container">
         <button id="btnDesktopView" class="toggle-btn active" onclick="setViewMode('desktop')">
             <i class="ph-fill ph-desktop"></i> DESKTOP
@@ -472,16 +478,13 @@
                     <!-- KPI Phase 1 -->
                     <div class="premium-card p-10 rounded-[2rem] bg-white reveal-up">
                         <div class="flex items-center gap-3 mb-8">
-                            <!-- 💡 Phase 1 뱃지는 파란색 유지 -->
                             <span class="px-4 py-2 bg-blue-50 text-blue-600 font-black rounded-xl text-xs uppercase tracking-wider">Phase 1</span>
-                            <!-- 💡 제목 텍스트는 깔끔한 검정색으로 수정 -->
                             <h4 class="text-xl font-black text-slate-900">1차 트래픽 캠페인 목표</h4>
                         </div>
                         <div class="grid grid-cols-2 gap-4 text-sm font-bold readable-text">
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">도달 (Reach)</span>노출수 30,000회+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">흥미 (Hook)</span>2초 시청률 25%+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">유입 (Traffic)</span>클릭률(CTR) 1.0%+</div>
-                            <!-- 💡 참여 부분은 파란색 포인트 유지 -->
                             <div class="p-5 bg-blue-50 rounded-2xl border border-blue-100 text-blue-700"><span class="text-blue-500 block mb-1">참여 (랜딩 진입률)</span>5% 이상</div>
                         </div>
                     </div>
@@ -603,7 +606,6 @@
                                     <div class="phone-glow glow-neon-green"></div>
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
-                                        <!-- 💡 구글 드라이브 거대 UI 겹침 대참사 완벽 차단 -->
                                         <div class="phone-screen gdrive-video-wrapper">
                                             <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
@@ -617,7 +619,6 @@
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <!-- 💡 랜딩페이지 스케일러 -->
                                             <div class="iframe-scaler">
                                                 <iframe src="https://dima-1st-quiz.vercel.app/" class="phone-iframe"></iframe>
                                             </div>
@@ -647,7 +648,6 @@
                                     <div class="phone-glow glow-cyan"></div>
                                     <div class="phone-mockup border-cyan-800">
                                         <div class="dynamic-island"></div>
-                                        <!-- 💡 구글 드라이브 거대 UI 겹침 대참사 완벽 차단 -->
                                         <div class="phone-screen gdrive-video-wrapper">
                                             <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
@@ -699,7 +699,6 @@
                                     <div class="phone-glow glow-neon-green"></div>
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
-                                        <!-- 💡 구글 드라이브 거대 UI 겹침 대참사 완벽 차단 -->
                                         <div class="phone-screen gdrive-video-wrapper">
                                             <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
@@ -731,7 +730,7 @@
                             </div>
                             <h4 class="text-3xl md:text-4xl font-black text-slate-900">클릭을 유도하는 직관적인 디자인 개편</h4>
                             <p class="text-lg font-bold text-slate-700 leading-relaxed readable-text">
-                                눈을 피곤하게 하던 복잡한 요소들을 과감히 다 지우고, 세련되고 귀여운 <strong class="text-brand-pink">3D 캐릭터</strong>로 화면을 바꿨습니다. 또한 최종 목표인 <strong class="text-brand-pink">'결과 확인하기' 버튼을 맨 위로 올리고 깜빡이는 애니메이션</strong>을 주어 유저의 클릭을 확실하게 이끌어냈습니다.
+                                눈을 피곤하게 하던 복잡한 요소들을 과감히 다 지우고, 세련되고 귀여운 <strong class="text-brand-pink">3D 캐릭터</strong>로 화면 바꿨습니다. 또한 최종 목표인 <strong class="text-brand-pink">'결과 확인하기' 버튼을 맨 위로 올리고 깜빡이는 애니메이션</strong>을 주어 유저의 클릭을 확실하게 이끌어냈습니다.
                             </p>
                         </div>
                         
@@ -742,7 +741,6 @@
                                     <div class="phone-glow glow-pink"></div>
                                     <div class="phone-mockup border-rose-900">
                                         <div class="dynamic-island"></div>
-                                        <!-- 💡 구글 드라이브 거대 UI 겹침 대참사 완벽 차단 -->
                                         <div class="phone-screen gdrive-video-wrapper">
                                             <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
