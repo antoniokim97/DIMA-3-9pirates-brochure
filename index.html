@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-9적단 | 틱톡 퍼널 최적화 프리미엄 리포트</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            cyan: '#06b6d4',
+                            pink: '#e11d48',
+                            slate900: '#0f172a',
+                            slate50: '#f8fafc',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'gradient-x': 'gradient-x 10s ease infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        'gradient-x': {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, filter: 'drop-shadow(0 0 10px rgba(6,182,212,0.6))' },
+                            '50%': { opacity: .7, filter: 'drop-shadow(0 0 2px rgba(6,182,212,0.3))' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            overflow-x: hidden;
+        }
+
+        /* 💡 가독성 생명: 단어 중간에 줄바꿈 방지 */
+        .break-keep {
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 고급 스크롤 애니메이션 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 텍스트 그라데이션 */
+        .text-gradient-cyan {
+            background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-pink {
+            background: linear-gradient(135deg, #e11d48 0%, #fb7185 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Glassmorphism (유리 질감) 카드 - White Version */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
+        }
+        .glass-card:hover {
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        /* Iframe 라이브 프리뷰 */
+        .preview-iframe {
+            width: 400%;
+            height: 400%;
+            transform: scale(0.25);
+            transform-origin: top left;
+        }
+
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-pink selection:text-white break-keep">
+
+    <!-- 플로팅 배경 장식 (라이트 톤) -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-rose-100 opacity-40 rounded-full blur-[120px] animate-float"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-cyan-100 opacity-40 rounded-full blur-[150px] animate-float-delayed"></div>
+    </div>
+
+    <!-- 네비게이션 바 -->
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-20">
+                <div class="font-black text-2xl tracking-tighter flex items-center gap-2 text-slate-900">
+                    <i class="ph-fill ph-skull text-brand-pink animate-float"></i> K-9적단
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-bold text-slate-500">
+                    <a href="#sec-00" class="nav-link hover:text-brand-pink transition">00. 프로젝트 명</a>
+                    <a href="#sec-01" class="nav-link hover:text-brand-pink transition">01. 배경/목표</a>
+                    <a href="#sec-02" class="nav-link hover:text-brand-pink transition">02. 캠페인 설계</a>
+                    <a href="#sec-03" class="nav-link hover:text-brand-cyan transition">03. 성과/인사이트</a>
+                    <a href="#sec-04" class="nav-link hover:text-brand-pink transition">04. 팀 소개</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 00. 프로젝트 명 (Hero Banner) -->
+    <section id="sec-00" class="relative min-h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden pt-20">
+        <!-- 동적 그라데이션 오로라 배경 (엑박 이미지 대체) -->
+        <div class="absolute inset-0 z-0 bg-gradient-to-r from-rose-50 via-slate-50 to-cyan-50 animate-gradient-x opacity-60"></div>
+        
+        <div class="relative z-10 reveal active max-w-5xl mx-auto w-full pt-10">
+            <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-sm font-bold text-slate-600 tracking-widest uppercase mb-10">
+                <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span> 디마 3기 최종 프로젝트
+            </div>
+            
+            <h1 class="text-6xl md:text-[7rem] font-extrabold tracking-tighter mb-8 leading-[1.1] text-slate-900 drop-shadow-sm">
+                이 9역 전환은<br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-blue-600">우리가 접수한다</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-slate-600 font-bold mb-16 tracking-tight">
+                남아공 틱톡 K-9적단의 <strong class="text-brand-pink">퍼널 최적화 마스터클래스</strong>
+            </p>
+            
+            <a href="#sec-01" class="inline-flex items-center gap-3 bg-slate-900 text-white font-black text-lg px-10 py-5 rounded-full transition transform hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(15,23,42,0.2)]">
+                작전 기록 열람하기 <i class="ph-bold ph-arrow-down"></i>
+            </a>
+        </div>
+        
+        <!-- 시각적 장식 요소 (스크롤 유도) -->
+        <div class="absolute bottom-12 z-10 flex flex-col items-center">
+            <div class="w-8 h-12 border-2 border-slate-300 rounded-full flex justify-center pt-2">
+                <div class="w-1.5 h-3 bg-slate-400 rounded-full animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 01. 프로젝트 소개 -->
+    <section id="sec-01" class="py-24 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">01. Project Introduction</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-slate-900">배경 & 문제 정의</h2>
+                <p class="text-slate-500 text-lg font-medium">디지털 최적화 시장의 가능성과 숏폼 생태계의 허들</p>
+            </div>
+
+            <!-- 배경 & 문제 정의 -->
+            <div class="grid lg:grid-cols-2 gap-8 mb-24 reveal">
+                <div class="glass-card p-10 rounded-3xl">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-900">
+                        <div class="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center relative overflow-hidden shadow-inner">
+                            <i class="ph-fill ph-globe-hemisphere-east text-3xl text-brand-cyan absolute opacity-20"></i>
+                            <span class="text-2xl z-10 drop-shadow-sm">🇿🇦</span>
+                        </div>
+                        디지털 최적화 시장, Mzansi(남아공)
+                    </h3>
+                    <ul class="space-y-6 text-slate-600 font-medium">
+                        <li class="flex items-start gap-3"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-xl shrink-0"></i> <div class="leading-relaxed"><strong>압도적 매체 체류:</strong> 하루 평균 소셜미디어 사용 3시간 36분으로 세계 최상위권이며, 틱톡 내 정보 습득 비율이 33%에 달해 광고 수용도가 매우 높습니다.</div></li>
+                        <li class="flex items-start gap-3"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-xl shrink-0"></i> <div class="leading-relaxed"><strong>언어적 스케일업:</strong> 12개의 공식 언어가 존재하나 비즈니스 생태계는 100% 영어를 사용하므로, 단일 언어로 전 인종을 아우르는 정교한 퍼널 설계가 가능합니다.</div></li>
+                        <li class="flex items-start gap-3"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-xl shrink-0"></i> <div class="leading-relaxed"><strong>문화적 공감대 충돌:</strong> 현지의 미루는 시간 개념 'Now-Now' 및 고질적 순환 정전(Load Shedding)은 한국의 '빨리빨리'와 강력한 문화적 대비를 이룹니다.</div></li>
+                    </ul>
+                </div>
+
+                <div class="glass-card p-10 rounded-3xl border-rose-100">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-900">
+                        <div class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-brand-pink shadow-inner">
+                            <i class="ph-fill ph-warning-octagon text-2xl"></i>
+                        </div>
+                        문제 정의 (Pain Point)
+                    </h3>
+                    <ul class="space-y-6 text-slate-600 font-medium">
+                        <li class="flex items-start gap-3"><i class="ph-bold ph-x-circle text-brand-pink mt-1 text-xl shrink-0"></i> <div class="leading-relaxed"><strong>신뢰도 낮은 신규 채널:</strong> 틱톡을 통해 처음 접하는 낯선 한국 홍보 콘텐츠는 관여도가 낮습니다. 진입 직후 유저의 시선을 사로잡고 이탈을 막아낼 최적의 강력한 후킹 장치가 필수입니다.</div></li>
+                        <li class="flex items-start gap-3"><i class="ph-bold ph-x-circle text-brand-pink mt-1 text-xl shrink-0"></i> <div class="leading-relaxed"><strong>문화적 낯설음의 마찰:</strong> 일방적이고 웅장한 한국 홍보는 흥미롭기보단 현지인들에게 생소한 심리적 장벽으로 작용하여 피로도와 즉각적인 거부감을 높입니다.</div></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 프로젝트 목표 & 핵심 KPI -->
+            <div class="mb-24 reveal">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">프로젝트 목표 & 핵심 KPI</h3>
+                    <p class="text-slate-600 font-medium max-w-3xl mx-auto leading-relaxed">
+                        참여형 콘텐츠(게이미피케이션)를 통한 남아공 타깃 K-트래블 퍼널 최적화. <br class="hidden md:block"/>
+                        1차 소재 반응성 검증을 거쳐, 2차에서 타겟 페르소나를 정교화하고 최종 전환율을 극대화합니다.
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <!-- 1차 KPI -->
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="flex items-center gap-3 mb-8">
+                            <span class="px-4 py-1.5 bg-slate-100 text-slate-700 font-black rounded-lg text-sm tracking-wider">Phase 1</span>
+                            <h4 class="text-xl font-bold text-slate-900">1차 트래픽 캠페인 목표</h4>
+                        </div>
+                        <div class="space-y-3 text-sm font-bold">
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition">
+                                <span class="text-slate-500">도달 (Reach)</span>
+                                <span class="text-slate-900 text-base">노출수 30,000회+</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition">
+                                <span class="text-slate-500">흥미 (Hook)</span>
+                                <span class="text-slate-900 text-base">2초 시청률 25%+</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition">
+                                <span class="text-slate-500">유입 (Traffic)</span>
+                                <span class="text-slate-900 text-base">CTR 1.0%+</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-cyan-50 rounded-xl border border-cyan-200 shadow-inner">
+                                <span class="text-brand-cyan text-base">참여 (랜딩 진입률)</span>
+                                <span class="text-brand-cyan font-black text-lg">5% 이상</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2차 KPI -->
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="flex items-center gap-3 mb-8">
+                            <span class="px-4 py-1.5 bg-brand-pink/10 text-brand-pink font-black rounded-lg text-sm tracking-wider">Phase 2</span>
+                            <h4 class="text-xl font-bold text-slate-900">2차 전환 캠페인 목표</h4>
+                        </div>
+                        <div class="space-y-3 text-sm font-bold">
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition">
+                                <span class="text-slate-500">도달 (Reach)</span>
+                                <span class="text-slate-900 text-base">노출수 100,000회+</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition">
+                                <span class="text-slate-500">흥미 (Hook)</span>
+                                <span class="text-slate-900 text-base">2초 유지율 40%+</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition">
+                                <span class="text-slate-500">유입 (Traffic)</span>
+                                <span class="text-slate-900 text-base">진성 타겟 CTR 1.2%+</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-rose-50 rounded-xl border border-rose-200 shadow-inner">
+                                <span class="text-brand-pink text-base">최종 전환 (Conversion)</span>
+                                <span class="text-brand-pink font-black text-lg">총 30건 이상</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🔥 투트랙 검증 및 애자일 피봇팅 전략 (핵심 논리) -->
+                <div class="bg-slate-900 p-8 md:p-10 rounded-3xl text-white shadow-2xl relative overflow-hidden transform hover:-translate-y-1 transition duration-500">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/20 blur-[80px] rounded-full pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-brand-pink/20 blur-[80px] rounded-full pointer-events-none"></div>
+                    
+                    <div class="relative z-10">
+                        <h4 class="text-2xl md:text-3xl font-black mb-5 flex items-center gap-3">
+                            <i class="ph-fill ph-strategy text-brand-pink"></i> 투트랙(Two-Track) 검증과 피봇팅 전략
+                        </h4>
+                        <p class="text-slate-300 font-medium leading-relaxed text-lg">
+                            왜 1차에서 소재를 2개로 나누었을까요? <strong>빠른 가설 검증</strong>을 위해서입니다. 1차 캠페인에서 성격이 전혀 다른 2개의 랜딩페이지와 영상(유형 테스트형 / 지식 학습형)을 동시 테스트했습니다. 데이터를 바탕으로 <strong>성과가 입증된 소재(유형팀)는 UI/UX를 고도화하여 스케일업</strong>하고, <strong>완주율 0%로 실패한 부진 소재(학습형)는 미련 없이 폐기한 뒤 완전히 새로운 'C안(문화팀 밸런스 퀴즈)'으로 갈아엎는</strong> 실무적인 애자일(Agile) 퍼널 최적화를 단행했습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 타겟 및 페르소나 -->
+            <div class="glass-card p-10 md:p-12 rounded-3xl reveal">
+                <div class="flex items-center gap-4 mb-10">
+                    <span class="text-brand-pink font-black text-sm tracking-widest uppercase bg-brand-pink/10 px-5 py-2 rounded-full">Core Audience</span>
+                    <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900">타겟 페르소나</h3>
+                </div>
+                
+                <div class="grid lg:grid-cols-12 gap-12 items-stretch">
+                    <!-- 페르소나 이미지 -->
+                    <div class="lg:col-span-5 relative group h-full min-h-[400px]">
+                        <div class="absolute inset-0 bg-brand-pink/10 rounded-3xl transform translate-x-3 translate-y-3 group-hover:translate-x-5 group-hover:translate-y-5 transition duration-500"></div>
+                        <img src="https://drive.google.com/thumbnail?id=1c_hvgJH9TKCDTs9gPYIAfY4GdQd0y_wj&sz=w1000" alt="아마라 페르소나" class="absolute inset-0 w-full h-full object-cover rounded-3xl border border-slate-200 shadow-lg z-10">
+                    </div>
+                    
+                    <!-- 페르소나 상세 정보 -->
+                    <div class="lg:col-span-7 flex flex-col justify-center space-y-8">
+                        <div class="border-b border-slate-200 pb-6">
+                            <h4 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">아마라 (AMARA)</h4>
+                            <div class="flex flex-wrap gap-3 text-sm font-bold text-slate-600">
+                                <span class="bg-slate-100 px-4 py-2 rounded-lg shadow-sm">나이 : 27세</span>
+                                <span class="bg-slate-100 px-4 py-2 rounded-lg shadow-sm">거주 : 남아공 케이프타운</span>
+                                <span class="bg-slate-100 px-4 py-2 rounded-lg shadow-sm">직업 : 프리랜서 콘텐츠 에디터</span>
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-5">
+                            <div class="bg-white p-6 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md transition duration-300">
+                                <h5 class="font-bold text-slate-900 flex items-center gap-2 mb-3"><i class="ph-fill ph-warning-circle text-rose-500 text-xl"></i> 페인포인트</h5>
+                                <p class="text-slate-600 text-sm leading-relaxed font-medium">웅장한 풍경이나 텍스트 위주의 전형적인 관광 홍보물에 극도의 피로감을 느끼며, 본인의 일상적 공감대가 형성되지 않으면 3초 이내에 즉각 이탈함.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl border border-cyan-100 shadow-sm hover:shadow-md transition duration-300">
+                                <h5 class="font-bold text-slate-900 flex items-center gap-2 mb-3"><i class="ph-fill ph-star text-brand-cyan text-xl"></i> 니즈</h5>
+                                <p class="text-slate-600 text-sm leading-relaxed font-medium">복잡한 여행 정보의 학습 대신, 자신의 취향(먹방, 쇼핑, 힐링 등)을 콘텐츠에 즉각적으로 대입해 볼 수 있는 가벼운 유희적 상호작용을 요구함.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-300">
+                            <h5 class="font-bold text-slate-900 flex items-center gap-2 mb-3"><i class="ph-fill ph-target text-brand-pink text-xl"></i> 핵심 소구 (Hook Trigger)</h5>
+                            <p class="text-slate-600 text-sm leading-relaxed font-medium">"당신은 한국에서 어떤 유형 입니까?"라는 직관적 질문을 통해, 밸런스 퀴즈 등 자발적인 '여행 부캐' 탐색 놀이로 진입하게 만드는 공감대 형성.</p>
+                        </div>
+
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-300">
+                            <h5 class="font-bold text-slate-900 flex items-center gap-2 mb-3"><i class="ph-fill ph-device-mobile text-slate-700 text-xl"></i> 라이프스타일</h5>
+                            <p class="text-slate-600 text-sm leading-relaxed font-medium">숏폼 알고리즘 내에서 인터뷰나 A/B 분할 화면과 같은 직관적인 비교 콘텐츠를 빠르게 소비하며, 즉각적인 참여가 가능한 테스트 문화에 익숙함.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 02. 캠페인 설계 및 집행 (Live Preview 포함) -->
+    <section id="sec-02" class="py-24 px-6 bg-white border-y border-slate-200 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-pink font-black tracking-widest text-sm uppercase mb-3 block">02. Campaign Execution</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-slate-900">캠페인 설계 및 집행</h2>
+                <p class="text-slate-500 text-lg font-medium leading-relaxed">데이터 피드백을 통한 전면 개편과 메시지/소재 고도화 전략</p>
+            </div>
+
+            <!-- 매체 및 예산 요약 -->
+            <div class="flex flex-wrap justify-center gap-4 mb-20 reveal">
+                <div class="px-6 py-3 bg-slate-50 rounded-full border border-slate-200 text-slate-700 font-bold flex items-center gap-2 shadow-sm">
+                    <i class="ph-fill ph-tiktok text-black"></i> 틱톡 단일 매체 (총 예산: 227,000원)
+                </div>
+                <div class="px-6 py-3 bg-slate-50 rounded-full border border-slate-200 text-slate-600 font-bold flex items-center gap-2 shadow-sm">
+                    <i class="ph-fill ph-flask text-brand-cyan"></i> 1차 소재 테스트 (73,139원)
+                </div>
+                <div class="px-6 py-3 bg-slate-50 rounded-full border border-slate-200 text-slate-600 font-bold flex items-center gap-2 shadow-sm">
+                    <i class="ph-fill ph-rocket-launch text-brand-pink"></i> 2차 성과 최적화 (153,861원)
+                </div>
+            </div>
+
+            <!-- 👑 퀴즈 & 문화팀 영역 -->
+            <div class="mb-24 reveal">
+                <div class="flex items-center gap-4 mb-10">
+                    <h3 class="text-3xl font-black text-slate-900 flex items-center gap-2"><i class="ph-fill ph-crown text-brand-cyan"></i> 퀴즈 & 문화팀</h3>
+                    <div class="h-px flex-1 bg-slate-200"></div>
+                    <span class="text-brand-cyan font-black bg-cyan-50 px-4 py-1.5 rounded-full text-sm shadow-sm border border-cyan-100">학습형 ➔ 이지선다 밸런스 퀴즈 피봇팅</span>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-10">
+                    <!-- 1차 실패 -->
+                    <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-slate-600 font-black text-sm">1차 캠페인 (퀴즈팀)</span>
+                            <span class="text-rose-500 text-sm font-bold bg-rose-100 px-3 py-1 rounded-full shadow-sm"><i class="ph-fill ph-warning-circle"></i> 완주율 0%의 벽</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6 mb-6">
+                            <!-- 1차 영상 썸네일 -->
+                            <a href="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/view?usp=drive_link" target="_blank" class="block relative aspect-[9/16] bg-slate-900 rounded-2xl overflow-hidden group shadow-md">
+                                <img src="https://drive.google.com/thumbnail?id=1GixiCpPE3NSES3ccmrPp15thvPYrG59l&sz=w600" class="w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-500" alt="1차 영상" />
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-white">
+                                    <i class="ph-fill ph-play-circle text-4xl mb-2 group-hover:text-brand-cyan transition"></i>
+                                    <span class="text-[10px] font-bold bg-black/50 px-3 py-1 rounded-full">1차 영상 보기</span>
+                                </div>
+                            </a>
+                            <!-- 1차 랜딩 라이브 프리뷰 -->
+                            <a href="https://dima-1st-quiz.vercel.app/" target="_blank" class="block relative aspect-[9/16] bg-white rounded-2xl overflow-hidden group shadow-md border border-slate-200">
+                                <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition duration-300 z-10"></div>
+                                <iframe src="https://dima-1st-quiz.vercel.app/" class="preview-iframe opacity-90 group-hover:opacity-100 transition duration-500" tabindex="-1"></iframe>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-800 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition">
+                                    <span class="text-[10px] font-bold bg-white px-3 py-1 rounded-full shadow-lg">1차 랜딩 체험</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="space-y-3 text-sm font-medium text-slate-600 leading-relaxed">
+                            <p><strong class="text-slate-900">전략:</strong> 공항 입국 심사 상황극을 통한 지식 퀴즈 랜딩 연결.</p>
+                            <p><strong class="text-rose-500">결과:</strong> 복잡한 정보 학습과 수많은 영문 텍스트가 인지적 피로도를 유발하여 <strong>전원 이탈(완주율 0%)</strong>.</p>
+                        </div>
+                    </div>
+
+                    <!-- 2차 성공 (피봇팅) -->
+                    <div class="glass-card p-8 rounded-3xl border-brand-cyan/30 shadow-[0_10px_40px_rgba(0,180,216,0.15)] relative">
+                        <div class="absolute top-0 right-10 w-20 h-20 bg-brand-cyan/10 blur-[20px] rounded-full"></div>
+                        <div class="flex justify-between items-center mb-6 relative z-10">
+                            <span class="text-brand-cyan font-black text-sm">2차 캠페인 (문화팀)</span>
+                            <span class="text-white bg-brand-cyan text-sm font-bold px-3 py-1 rounded-full shadow-md"><i class="ph-fill ph-fire"></i> 리얼리티와 직관성</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6 mb-6 relative z-10">
+                            <!-- 2차 영상 썸네일 -->
+                            <a href="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/view?usp=drive_link" target="_blank" class="block relative aspect-[9/16] bg-slate-900 rounded-2xl overflow-hidden group shadow-lg">
+                                <img src="https://drive.google.com/thumbnail?id=1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4&sz=w600" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-500" alt="2차 영상" />
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-white">
+                                    <i class="ph-fill ph-play-circle text-4xl mb-2 text-brand-cyan group-hover:scale-110 transition"></i>
+                                    <span class="text-[10px] font-bold bg-brand-cyan text-white px-3 py-1 rounded-full shadow-md">2차 영상 보기</span>
+                                </div>
+                            </a>
+                            <!-- 2차 랜딩 라이브 프리뷰 -->
+                            <a href="https://dima3-9quiz.vercel.app/" target="_blank" class="block relative aspect-[9/16] bg-white rounded-2xl overflow-hidden group shadow-lg border border-brand-cyan/20">
+                                <iframe src="https://dima3-9quiz.vercel.app/" class="preview-iframe opacity-100 group-hover:scale-[0.26] transition duration-700" tabindex="-1"></iframe>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition bg-black/10">
+                                    <span class="text-[10px] font-bold bg-brand-cyan text-white px-3 py-1 rounded-full shadow-lg">라이브 체험하기</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="space-y-3 text-sm font-medium text-slate-600 relative z-10 leading-relaxed">
+                            <p><strong class="text-slate-900">전략 (Pivot):</strong> 작위적 설정을 벗고 '길거리 A/B 인터뷰'로 전환. 랜딩페이지는 텍스트를 제거하고 <strong>'이미지 기반 이지선다 밸런스 퀴즈'</strong>로 개편.</p>
+                            <p><strong class="text-brand-cyan">결과:</strong> 진입 마찰 최소화, 다국어 지원으로 타겟 몰입을 극대화하여 기적적인 완주율 스케일업 달성.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 👑 유형팀 영역 (1차 좌, 2차 우) -->
+            <div class="reveal">
+                <div class="flex items-center gap-4 mb-10">
+                    <h3 class="text-3xl font-black text-slate-900 flex items-center gap-2"><i class="ph-fill ph-crown text-brand-pink"></i> 유형팀</h3>
+                    <div class="h-px flex-1 bg-slate-200"></div>
+                    <span class="text-brand-pink font-black bg-rose-50 px-4 py-1.5 rounded-full text-sm shadow-sm border border-rose-100">테스트형 ➔ UX/UI 고도화</span>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-10">
+                    <!-- 1차 병목 (Left) -->
+                    <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-slate-600 font-black text-sm">1차 캠페인</span>
+                            <span class="text-orange-500 text-sm font-bold bg-orange-100 px-3 py-1 rounded-full shadow-sm"><i class="ph-fill ph-plugs"></i> 초기 랜딩 병목</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6 mb-6">
+                            <!-- 1차 영상 썸네일 -->
+                            <a href="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/view?usp=drive_link" target="_blank" class="block relative aspect-[9/16] bg-slate-900 rounded-2xl overflow-hidden group shadow-md">
+                                <img src="https://drive.google.com/thumbnail?id=1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0&sz=w600" class="w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-500" alt="1차 영상" />
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-white">
+                                    <i class="ph-fill ph-play-circle text-4xl mb-2 group-hover:text-brand-pink transition"></i>
+                                    <span class="text-[10px] font-bold bg-black/50 px-3 py-1 rounded-full">1차 영상 보기</span>
+                                </div>
+                            </a>
+                            <!-- 1차 랜딩 라이브 프리뷰 -->
+                            <a href="https://triptokorea9jo.netlify.app/" target="_blank" class="block relative aspect-[9/16] bg-white rounded-2xl overflow-hidden group shadow-md border border-slate-200">
+                                <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition duration-300 z-10"></div>
+                                <iframe src="https://triptokorea9jo.netlify.app/" class="preview-iframe opacity-90 group-hover:opacity-100 transition duration-500" tabindex="-1"></iframe>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-800 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition">
+                                    <span class="text-[10px] font-bold bg-white px-3 py-1 rounded-full shadow-lg">1차 랜딩 체험</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="space-y-3 text-sm font-medium text-slate-600 leading-relaxed">
+                            <p><strong class="text-slate-900">전략:</strong> 픽셀 아트 기반 화면 분할 대조적 선택지(K-Food vs K-Vibe) 및 성향 테스트.</p>
+                            <p><strong class="text-orange-500">결과:</strong> 본인 성향 파악 니즈는 통했으나(전환 1건), 복잡한 픽셀 아트와 텍스트로 인해 첫 화면에서 <strong>극심한 이탈(진입률 2.3%)</strong> 발생.</p>
+                        </div>
+                    </div>
+
+                    <!-- 2차 성공 (Right) -->
+                    <div class="glass-card p-8 rounded-3xl border-brand-pink/30 shadow-[0_10px_40px_rgba(225,29,72,0.15)] relative">
+                        <div class="absolute top-0 right-10 w-20 h-20 bg-brand-pink/10 blur-[20px] rounded-full"></div>
+                        <div class="flex justify-between items-center mb-6 relative z-10">
+                            <span class="text-brand-pink font-black text-sm">2차 캠페인</span>
+                            <span class="text-white bg-brand-pink text-sm font-bold px-3 py-1 rounded-full shadow-md"><i class="ph-fill ph-cursor-click"></i> 직관성 및 행동 유도</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6 mb-6 relative z-10">
+                            <!-- 2차 영상 썸네일 -->
+                            <a href="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/view?usp=drive_link" target="_blank" class="block relative aspect-[9/16] bg-slate-900 rounded-2xl overflow-hidden group shadow-lg">
+                                <img src="https://drive.google.com/thumbnail?id=1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX&sz=w600" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-500" alt="2차 영상" />
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-white">
+                                    <i class="ph-fill ph-play-circle text-4xl mb-2 text-brand-pink group-hover:scale-110 transition"></i>
+                                    <span class="text-[10px] font-bold bg-brand-pink text-white px-3 py-1 rounded-full shadow-md">2차 영상 보기</span>
+                                </div>
+                            </a>
+                            <!-- 2차 랜딩 라이브 프리뷰 -->
+                            <a href="https://dima3-9test.vercel.app/" target="_blank" class="block relative aspect-[9/16] bg-white rounded-2xl overflow-hidden group shadow-lg border border-brand-pink/20">
+                                <iframe src="https://dima3-9test.vercel.app/" class="preview-iframe opacity-100 group-hover:scale-[0.26] transition duration-700" tabindex="-1"></iframe>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition bg-black/10">
+                                    <span class="text-[10px] font-bold bg-brand-pink text-white px-3 py-1 rounded-full shadow-lg">라이브 체험하기</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="space-y-3 text-sm font-medium text-slate-600 relative z-10 leading-relaxed">
+                            <p><strong class="text-slate-900">전략 (Optimize):</strong> 복잡성을 덜고 3D 캐릭터와 'Now-Now' 현지 밈으로 직관화. 결과 페이지에 개인화 큐레이션 제공.</p>
+                            <p><strong class="text-brand-pink">결과:</strong> 외부 링크(KPI) 버튼을 전진 배치하고 애니메이션을 적용하여 최종 이탈을 성공적으로 방어.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 03. 성과 요약 & 인사이트 -->
+    <section id="sec-03" class="py-24 px-6 bg-slate-50 border-t border-slate-200 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">03. Performance & Insights</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-slate-900">트래픽의 양을 넘어 <span class="text-gradient-cyan">질(Quality)을 증명하다</span></h2>
+                <p class="text-slate-500 text-lg font-medium leading-relaxed">GA4 실측 데이터가 증명하는 뻥튀기 없는 진짜 '행동 전환'</p>
+            </div>
+
+            <!-- 핵심 성과 카운터 박스 (화이트 톤) -->
+            <div class="grid md:grid-cols-2 gap-8 mb-20 reveal">
+                <!-- 문화팀 -->
+                <div class="bg-white p-12 rounded-[2.5rem] text-center border border-slate-200 shadow-xl relative overflow-hidden group hover:border-brand-cyan transition duration-500">
+                    <div class="absolute -right-10 -top-10 text-9xl text-cyan-50 group-hover:scale-110 transition duration-500"><i class="ph-fill ph-fire"></i></div>
+                    <div class="relative z-10">
+                        <div class="text-brand-cyan mb-6 flex justify-center"><i class="ph-fill ph-fire text-5xl"></i></div>
+                        <p class="text-slate-500 font-bold mb-3 uppercase tracking-widest text-sm">👑 퀴즈 & 문화팀: 압도적 몰입력 입증</p>
+                        <h3 class="text-6xl md:text-7xl font-black text-slate-900 mb-2 flex items-baseline justify-center gap-2">
+                            <span class="text-brand-cyan counter" data-target="10.25">0</span><span class="text-3xl text-slate-400">회</span>
+                        </h3>
+                        <p class="text-lg text-slate-600 font-bold mb-8">인당 평균 퀴즈 문항 클릭</p>
+                        <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-50 rounded-full text-sm text-slate-600 font-bold border border-slate-200 shadow-sm">
+                            <i class="ph-fill ph-users text-brand-cyan"></i> 실제 활성 사용자 20명 / 문항 클릭 총 205건
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 유형팀 -->
+                <div class="bg-white p-12 rounded-[2.5rem] text-center border border-slate-200 shadow-xl relative overflow-hidden group hover:border-brand-pink transition duration-500">
+                    <div class="absolute -right-10 -top-10 text-9xl text-rose-50 group-hover:scale-110 transition duration-500"><i class="ph-fill ph-cursor-click"></i></div>
+                    <div class="relative z-10">
+                        <div class="text-brand-pink mb-6 flex justify-center"><i class="ph-fill ph-cursor-click text-5xl"></i></div>
+                        <p class="text-slate-500 font-bold mb-3 uppercase tracking-widest text-sm">👑 유형팀: 행동 유도 극대화</p>
+                        <h3 class="text-6xl md:text-7xl font-black text-slate-900 mb-2 flex items-baseline justify-center gap-2">
+                            <span class="text-brand-pink counter" data-target="3.2">0</span><span class="text-3xl text-slate-400">회</span>
+                        </h3>
+                        <p class="text-lg text-slate-600 font-bold mb-8">인당 평균 외부 링크(KPI) 클릭</p>
+                        <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-50 rounded-full text-sm text-slate-600 font-bold border border-slate-200 shadow-sm">
+                            <i class="ph-fill ph-link text-brand-pink"></i> 링크 도달 사용자 5명 / 클릭 총 16건
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 종합 지표 표 & 스케일업 요약 -->
+            <div class="bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 mb-20 reveal transform hover:-translate-y-1 transition duration-500">
+                <div class="p-8 bg-slate-50 border-b border-slate-200 text-center">
+                    <h3 class="text-2xl font-black text-slate-900">📊 K-9적단 최종 성과 리포트</h3>
+                </div>
+                
+                <div class="grid lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+                    <!-- 상세 테이블 -->
+                    <div class="lg:col-span-8 p-8 overflow-x-auto">
+                        <table class="w-full text-left whitespace-nowrap">
+                            <thead class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 block border-b border-slate-200 pb-4">
+                                <tr class="grid grid-cols-3">
+                                    <th>핵심 측정 지표</th>
+                                    <th class="text-brand-pink"><i class="ph-fill ph-crown"></i> 유형팀 (UX 고도화)</th>
+                                    <th class="text-brand-cyan"><i class="ph-fill ph-crown"></i> 문화팀 (피봇팅)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="block space-y-6 pt-4 text-slate-700 font-bold text-lg">
+                                <tr class="grid grid-cols-3 hover:text-slate-900 transition">
+                                    <td class="text-slate-500 text-sm flex items-center">광고 노출수</td>
+                                    <td>98,222 <span class="text-xs text-slate-400">회</span></td>
+                                    <td>111,747 <span class="text-xs text-slate-400">회</span></td>
+                                </tr>
+                                <tr class="grid grid-cols-3 hover:text-slate-900 transition">
+                                    <td class="text-slate-500 text-sm flex items-center">클릭수 (유입)</td>
+                                    <td>716 <span class="text-xs text-slate-400">회</span></td>
+                                    <td>714 <span class="text-xs text-slate-400">회</span></td>
+                                </tr>
+                                <tr class="grid grid-cols-3 hover:text-slate-900 transition">
+                                    <td class="text-slate-500 text-sm flex items-center">클릭률 (CTR)</td>
+                                    <td>0.73%</td>
+                                    <td>0.64%</td>
+                                </tr>
+                                <tr class="grid grid-cols-3 hover:text-slate-900 transition">
+                                    <td class="text-slate-500 text-sm flex items-center">클릭당 비용 (CPC)</td>
+                                    <td>108 <span class="text-xs text-slate-400">원</span></td>
+                                    <td>108 <span class="text-xs text-slate-400">원</span></td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="block mt-6 pt-6 border-t border-slate-200">
+                                <tr class="grid grid-cols-3 items-center">
+                                    <td class="font-black text-slate-900 text-base">최종 전환 (GA4 실측)</td>
+                                    <td class="text-3xl font-black text-brand-pink">16<span class="text-base font-medium text-slate-400 ml-1">건</span></td>
+                                    <td class="text-3xl font-black text-brand-cyan">37<span class="text-base font-medium text-slate-400 ml-1">건</span></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <!-- 핵심 스케일업 요약 우측 패널 -->
+                    <div class="lg:col-span-4 bg-slate-50 p-8 flex flex-col justify-center space-y-10">
+                        <div class="group">
+                            <p class="text-slate-400 text-xs font-black tracking-widest uppercase mb-1">Total Conversions</p>
+                            <div class="text-5xl font-black text-slate-900 mb-2 flex items-baseline gap-1 group-hover:scale-105 transition transform origin-left">
+                                <span class="counter" data-target="53">0</span><span class="text-2xl text-slate-500 font-medium">건</span>
+                            </div>
+                            <p class="text-emerald-500 text-sm font-bold flex items-center gap-1"><i class="ph-bold ph-trend-up"></i> 1차 대비 28배 폭발적 스케일업</p>
+                        </div>
+                        <div class="group">
+                            <p class="text-slate-400 text-xs font-black tracking-widest uppercase mb-1">UX Upgrade Impact</p>
+                            <div class="text-4xl font-black text-brand-pink mb-2 flex items-baseline gap-1 group-hover:scale-105 transition transform origin-left">
+                                <span class="counter" data-target="800">0</span><span class="text-xl text-slate-500 font-medium">%</span>
+                            </div>
+                            <p class="text-slate-500 text-sm font-medium leading-tight">유형팀 1차(2건) 대비 UI 개선 효과 증명</p>
+                        </div>
+                        <div class="group">
+                            <p class="text-slate-400 text-xs font-black tracking-widest uppercase mb-1">Engagement Boost</p>
+                            <div class="text-4xl font-black text-brand-cyan mb-2 flex items-baseline gap-1 group-hover:scale-105 transition transform origin-left">
+                                +<span class="counter" data-target="72">0</span><span class="text-xl text-slate-500 font-medium">%</span>
+                            </div>
+                            <p class="text-slate-500 text-sm font-medium leading-tight">문화팀 1차 영상 대비 평균 시청시간 급증</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 통합 인사이트 및 최종 결론 -->
+            <div class="bg-white p-10 rounded-3xl reveal border-l-[6px] border-l-yellow-400 shadow-lg">
+                <h3 class="text-2xl font-black mb-6 text-slate-900 flex items-center gap-3"><i class="ph-fill ph-lightbulb-filament text-yellow-400 text-3xl"></i> 캠페인 통합 인사이트 및 최종 결론</h3>
+                <div class="grid md:grid-cols-2 gap-8 text-slate-600 font-medium leading-relaxed">
+                    <p><strong class="text-slate-900 block mb-2 text-lg">규모의 경제 달성 (단가 안정화)</strong> 전체 노출량이 202% 폭발적으로 증가했음에도 불구하고, 정교한 타겟팅 최적화를 통해 양 팀 모두 <strong>클릭당 비용(CPC)을 108원으로 동일하게 방어</strong>하며 안정적인 양적 스케일업을 이루었습니다.</p>
+                    <p><strong class="text-slate-900 block mb-2 text-lg">보상 전진 배치 필수 (진입 장벽 완화)</strong> 첫 랜딩페이지에서 '시작 버튼'으로 넘어가는 초기 진입률이 한 자릿수에 머물고 있습니다. 3초 이내에 이탈하는 유저를 잡기 위해, <strong>광고 영상 초반 구간에 최종 리워드를 명확히 노출</strong>해야 합니다.</p>
+                </div>
+                <div class="mt-10 pt-8 border-t border-slate-100">
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">🎯 최종 결론 (Conclusion)</h4>
+                    <p class="text-slate-600 font-medium leading-relaxed">
+                        본 프로젝트를 통해 남아공 MZ세대는 일방적이고 생소한 정보 전달 앞에서는 쉽게 이탈한다는 점을 확인했습니다. 하지만 이를 <strong>'나를 발견하는 인터랙티브 놀이(성향 테스트, 밸런스 퀴즈)'</strong>로 치환하고, 현지화된 밈으로 훅(Hook)을 걸었을 때, 낯선 틱톡 채널에서도 <strong>폭발적인 자발적 참여와 외부 링크 전환(총 53건)</strong>이 일어남을 데이터로 완벽하게 입증했습니다. 결과적으로 K-9적단은 글로벌 잠재 고객을 소비자로 전환시키는 <strong>'디지털 퍼널 성공 방정식'</strong>을 성공적으로 구축해 냈습니다.
+                    </p>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- 04. 팀 소개 -->
+    <section id="sec-04" class="py-24 px-6 bg-slate-900 border-t border-slate-800 relative z-10 text-white">
+        <div class="max-w-7xl mx-auto reveal">
+            <div class="text-center mb-16">
+                <span class="text-slate-400 font-bold tracking-widest text-sm uppercase mb-3 block">04. The K-9 Pirates</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-4">이 구역의 전환 루팡,<br/><span class="text-brand-cyan">K-9적단을 소개합니다</span></h2>
+                <p class="text-slate-400 text-lg leading-relaxed">데이터를 무기로 전환율을 털어가는 5인의 크루</p>
+            </div>
+
+            <!-- 5인 팀원 카드 -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-20">
+                <!-- Member 1 -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-brand-cyan hover:-translate-y-2 transition duration-300">
+                    <div class="aspect-square bg-slate-700/50 flex flex-col items-center justify-center">
+                        <i class="ph-fill ph-user text-6xl text-slate-500"></i>
+                    </div>
+                    <div class="p-5 text-center">
+                        <div class="text-[10px] font-black tracking-widest text-brand-cyan mb-1 uppercase">Project Manager</div>
+                        <div class="font-bold text-lg">팀원 1</div>
+                    </div>
+                </div>
+                <!-- Member 2 -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-brand-pink hover:-translate-y-2 transition duration-300">
+                    <div class="aspect-square bg-slate-700/50 flex flex-col items-center justify-center">
+                        <i class="ph-fill ph-user text-6xl text-slate-500"></i>
+                    </div>
+                    <div class="p-5 text-center">
+                        <div class="text-[10px] font-black tracking-widest text-brand-pink mb-1 uppercase">Perf. Marketer</div>
+                        <div class="font-bold text-lg">팀원 2</div>
+                    </div>
+                </div>
+                <!-- Member 3 -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-yellow-400 hover:-translate-y-2 transition duration-300">
+                    <div class="aspect-square bg-slate-700/50 flex flex-col items-center justify-center">
+                        <i class="ph-fill ph-user text-6xl text-slate-500"></i>
+                    </div>
+                    <div class="p-5 text-center">
+                        <div class="text-[10px] font-black tracking-widest text-yellow-400 mb-1 uppercase">Data Analyst</div>
+                        <div class="font-bold text-lg">팀원 3</div>
+                    </div>
+                </div>
+                <!-- Member 4 -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-purple-400 hover:-translate-y-2 transition duration-300">
+                    <div class="aspect-square bg-slate-700/50 flex flex-col items-center justify-center">
+                        <i class="ph-fill ph-user text-6xl text-slate-500"></i>
+                    </div>
+                    <div class="p-5 text-center">
+                        <div class="text-[10px] font-black tracking-widest text-purple-400 mb-1 uppercase">UX/UI Designer</div>
+                        <div class="font-bold text-lg">팀원 4</div>
+                    </div>
+                </div>
+                <!-- Member 5 -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-emerald-400 hover:-translate-y-2 transition duration-300">
+                    <div class="aspect-square bg-slate-700/50 flex flex-col items-center justify-center">
+                        <i class="ph-fill ph-user text-6xl text-slate-500"></i>
+                    </div>
+                    <div class="p-5 text-center">
+                        <div class="text-[10px] font-black tracking-widest text-emerald-400 mb-1 uppercase">Content Creator</div>
+                        <div class="font-bold text-lg">팀원 5</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button class="px-10 py-5 bg-white text-slate-900 font-black rounded-full text-lg shadow-lg hover:bg-slate-200 transition transform hover:-translate-y-1 flex items-center gap-2 mx-auto">
+                    <i class="ph-fill ph-handshake text-2xl"></i> K-9적단 영입하기
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="py-10 border-t border-slate-800 text-center text-slate-500 text-sm bg-slate-950">
+        <div class="flex flex-wrap justify-center gap-4 mb-4">
+            <span class="px-3 py-1 rounded-full bg-slate-800">#이9역_전환은_우리가접수한다</span>
+            <span class="px-3 py-1 rounded-full bg-slate-800">#K_9적단_남아공접수완료</span>
+            <span class="px-3 py-1 rounded-full bg-slate-800">#디마3기_최종프로젝트</span>
+        </div>
+        <p>&nbsp;© 2026 K-9 Pirates. Crafted for Conversion.</p>
+    </footer>
+
+    <!-- 스크립트 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. 네비게이션 바 스크롤 효과
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('shadow-sm');
+                    navbar.classList.add('py-0');
+                    navbar.classList.remove('py-2');
+                } else {
+                    navbar.classList.remove('shadow-sm');
+                    navbar.classList.add('py-2');
+                    navbar.classList.remove('py-0');
+                }
+            });
+
+            // 2. 고급 스크롤 리빌 애니메이션
+            const reveals = document.querySelectorAll('.reveal');
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 100;
+                reveals.forEach((reveal) => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('active');
+                    }
+                });
+            };
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll();
+
+            // 3. 스크롤 스파이 (현재 섹션 하이라이트)
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('text-slate-900', 'font-black');
+                    link.classList.add('text-slate-500');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('text-slate-900', 'font-black');
+                        link.classList.remove('text-slate-500');
+                    }
+                });
+            });
+
+            // 4. 동적 숫자 카운터 애니메이션
+            const counters = document.querySelectorAll('.counter');
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.5 };
+            
+            const runCounter = (counter) => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                const count = parseFloat(counter.innerText);
+                const isFloat = !Number.isInteger(target);
+                const inc = target / 60; 
+                
+                if (count < target) {
+                    let nextCount = count + inc;
+                    counter.innerText = isFloat ? nextCount.toFixed(2) : Math.ceil(nextCount);
+                    setTimeout(() => runCounter(counter), 20);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+
+            const counterObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        runCounter(counter);
+                        observer.unobserve(counter);
+                    }
+                });
+            }, observerOptions);
+
+            counters.forEach(counter => {
+                counterObserver.observe(counter);
+            });
+        });
+    </script>
+</body>
+</html>
