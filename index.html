@@ -24,14 +24,17 @@
                         brand: {
                             cyan: '#0891b2', 
                             pink: '#e11d48',
+                            neonGreen: '#10b981',
                             slate900: '#0f172a',
                             slate50: '#f8fafc',
                         }
                     },
                     animation: {
-                        'float': 'float 6s ease-in-out infinite',
+                        'float': 'float 8s ease-in-out infinite',
                         'gradient-x': 'gradient-x 15s ease infinite',
                         'pulse-glow': 'pulse-glow 3s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'logo-sequence': 'logoSequence 4.5s cubic-bezier(0.22, 1, 0.36, 1) forwards',
                     },
                     keyframes: {
                         float: {
@@ -45,6 +48,16 @@
                         'pulse-glow': {
                             '0%': { opacity: 0.3, transform: 'scale(0.95)' },
                             '100%': { opacity: 0.6, transform: 'scale(1.05)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(40px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        logoSequence: {
+                            '0%': { opacity: '0', transform: 'scale(0.9)' },
+                            '15%': { opacity: '0.9', transform: 'scale(1)' },    
+                            '35%': { opacity: '0.9', transform: 'scale(1)' },    
+                            '100%': { opacity: '0.03', transform: 'scale(1.15)' },
                         }
                     }
                 }
@@ -56,19 +69,43 @@
             background-color: #ffffff;
             color: #334155;
             overflow-x: hidden;
+            /* 💡 가독성 최적화: 단어 중간 줄바꿈 완벽 방지 */
             word-break: keep-all;
             overflow-wrap: break-word;
         }
+
+        /* 💎 다크 솔리드 CTA 버튼 (시인성 극대화 및 네온 글로우) */
+        .solid-dark-btn {
+            position: relative;
+            background: #0f172a; /* 딥 다크 슬레이트 */
+            border: 1px solid rgba(8, 145, 178, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.6);
+            color: #ffffff;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10;
+        }
+        .solid-dark-btn:hover {
+            transform: translateY(-4px);
+            background: #000000; /* 호버 시 완전한 블랙 */
+            box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.8), 0 0 25px rgba(8, 145, 178, 0.6);
+            border-color: #0891b2;
+        }
+
+        /* 💡 추가 가독성 보장 클래스 */
+        .readable-text {
+            word-break: keep-all;
+            line-height: 1.7;
+        }
         
-        /* 🍎 양방향 반응형 스크롤 애니메이션 */
+        /* 🍎 애플 스타일 스크롤 애니메이션 */
         .reveal-up {
             opacity: 0;
-            transform: translateY(60px);
+            transform: translateY(60px) scale(0.98);
             transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal-up.active { 
             opacity: 1; 
-            transform: translateY(0); 
+            transform: translateY(0) scale(1); 
         }
 
         .reveal-scale {
@@ -80,8 +117,8 @@
 
         .delay-100 { transition-delay: 100ms; }
         .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
 
-        /* 프리미엄 화이트 카드 */
         .premium-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
@@ -94,25 +131,27 @@
             border-color: #cbd5e1;
         }
 
-        /* 📱 스마트폰 목업 (버튼 잘림 절대 방지용 롱바디) */
+        /* 📱 스마트폰 목업 */
         .phone-wrapper {
             position: relative;
             margin: 0 auto;
             width: 100%;
             max-width: 360px; 
         }
+
+        /* 💡 뒤에 은은하게 퍼지는 엣지 라이팅 효과 (1, 2차) */
         .phone-glow {
             position: absolute;
-            inset: -3px; 
+            inset: -4px; 
             border-radius: 4rem;
-            filter: blur(10px);
+            filter: blur(12px);
             opacity: 0.8;
             z-index: 0;
             transition: all 0.5s ease;
         }
-        .phone-wrapper:hover .phone-glow { filter: blur(15px); opacity: 1; inset: -4px; }
+        .phone-wrapper:hover .phone-glow { filter: blur(18px); opacity: 1; inset: -6px; }
         
-        .glow-1st { background: linear-gradient(135deg, #94a3b8, #cbd5e1); }
+        .glow-neon-green { background: linear-gradient(135deg, #10b981, #34d399); }
         .glow-cyan { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
         .glow-pink { background: linear-gradient(135deg, #e11d48, #f43f5e); }
 
@@ -139,13 +178,6 @@
         .phone-mockup::after {
             content: ''; position: absolute; top: 190px; right: -3px; width: 3px; height: 55px; background: #94a3b8; border-radius: 0 3px 3px 0; 
         }
-
-        /* 1차 캠페인 다크 목업 */
-        .phone-mockup-dark {
-            background: #1e293b;
-            box-shadow: inset 0 0 0 1px #334155, 0 15px 30px -10px rgba(0, 0, 0, 0.15);
-        }
-        .phone-mockup-dark::before, .phone-mockup-dark::after { background: #334155; box-shadow: 0 60px 0 0 #334155, 0 120px 0 0 #334155; }
 
         .phone-screen {
             width: 100%;
@@ -179,6 +211,19 @@
             background-color: #ffffff;
         }
 
+        /* 💡 1차 랜딩페이지 박스 겹침/잘림 원천 차단 (스케일링 트릭) */
+        .iframe-scaler {
+            width: 414px; 
+            height: 940px; 
+            transform: scale(0.81); 
+            transform-origin: top left;
+        }
+        .iframe-scaler iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -206,40 +251,42 @@
 
     <!-- 00. 프로젝트 명 -->
     <section id="sec-00" class="relative min-h-screen flex flex-col items-center justify-start text-center px-6 pt-32 pb-20 overflow-hidden">
-        <!-- 은은하고 고급스러운 배경 그라데이션 -->
         <div class="absolute inset-0 z-0 bg-gradient-to-tr from-rose-50 via-white to-cyan-50 animate-gradient-x opacity-80"></div>
         
         <div class="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center">
-            <div class="reveal-up inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-sm font-bold text-slate-500 tracking-widest uppercase mb-8">
+            <div class="reveal-up active inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-sm font-bold text-slate-500 tracking-widest uppercase mb-8">
                 디마 3기 최종 프로젝트
             </div>
-            <h1 class="reveal-up delay-100 text-6xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter mb-6 leading-[1.1] text-slate-900 drop-shadow-sm">
+            <h1 class="reveal-up active text-6xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter mb-6 leading-[1.1] text-slate-900 drop-shadow-sm" style="transition-delay: 100ms;">
                 이 9역 전환은<br />
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-blue-700">우리가 접수한다</span>
             </h1>
-            <p class="reveal-up delay-200 text-xl md:text-2xl text-slate-600 font-bold mb-10 max-w-3xl mx-auto leading-relaxed">
-                남아공 틱톡 유저들의 마음을 완벽하게 훔친<br/> K-9적단의 <strong class="text-brand-pink underline decoration-4 underline-offset-4">고객 유입 및 전환 성공 스토리</strong>
+            <p class="reveal-up active text-xl md:text-2xl text-slate-600 font-bold mb-10 max-w-3xl mx-auto leading-relaxed readable-text" style="transition-delay: 200ms;">
+                남아공 틱톡 유저들의 마음을 완벽하게 훔친<br/> K-9적단의 <strong class="text-brand-pink underline decoration-4 underline-offset-4">참여형 퍼널 최적화 및 액션 전환 스토리</strong>
             </p>
             
-            <!-- 💡 투명 로고 배경과 중앙 CTA 버튼 조합 -->
-            <div class="reveal-up delay-300 relative w-full max-w-2xl mx-auto flex flex-col items-center justify-center mt-4">
-                <!-- 로고 이미지 (우아하게 떠있는 느낌 유지) -->
-                <img src="https://drive.google.com/thumbnail?id=1ni_okeRngGumHYOOaCp2kZKEoPtTr--V&sz=w1200" alt="K-9 로고 배경" class="w-full object-contain opacity-90 drop-shadow-xl animate-float">
+            <div class="reveal-up active delay-300 relative w-full max-w-2xl mx-auto flex flex-col items-center justify-center mt-4">
+                <img id="mainLogo" src="https://drive.google.com/thumbnail?id=1ni_okeRngGumHYOOaCp2kZKEoPtTr--V&sz=w1200" alt="K-9 로고 배경" class="w-full object-contain drop-shadow-xl transition-all duration-200 ease-out" style="opacity: 0.9;">
                 
-                <!-- CTA 버튼 (로고 하단 중앙에 오버랩) -->
-                <div class="absolute bottom-12 md:bottom-20 left-1/2 -translate-x-1/2 w-full flex justify-center z-20">
-                    <div class="relative group inline-block">
-                        <!-- 네온 빛 효과 -->
-                        <div class="absolute inset-0 bg-brand-cyan/50 blur-2xl rounded-full animate-pulse-glow"></div>
-                        <div class="absolute inset-0 bg-brand-pink/40 blur-2xl rounded-full animate-pulse-glow" style="animation-delay: 1s;"></div>
+                <div class="absolute bottom-12 md:bottom-20 left-1/2 -translate-x-1/2 w-full flex flex-col items-center justify-center z-20">
+                    <div class="relative group inline-block mb-4">
+                        <!-- 💡 강력한 배경 네온 빛 번짐 애니메이션 -->
+                        <div class="absolute inset-0 bg-brand-cyan/60 blur-[20px] rounded-full animate-pulse-glow group-hover:bg-brand-cyan/90 transition duration-500"></div>
                         
-                        <!-- 💡 간결하고 강렬한 CTA & 손가락 애니메이션 -->
-                        <a href="#sec-01" class="relative flex items-center justify-center gap-3 bg-slate-900 text-white font-black text-xl px-10 py-5 rounded-full transition-all duration-300 transform group-hover:scale-105 shadow-[0_10px_40px_rgba(15,23,42,0.4)] border border-slate-700/50 hover:bg-black">
-                            작전 성과 확인
-                            <span class="flex items-center justify-center bg-white/10 rounded-full w-10 h-10 group-hover:bg-brand-cyan/20 transition-colors">
-                                <i class="ph-bold ph-hand-pointing-down text-2xl text-brand-cyan group-hover:text-white animate-bounce"></i>
+                        <a href="#sec-01" class="solid-dark-btn flex items-center justify-center gap-3 font-black text-xl px-10 py-5 rounded-full z-10 relative">
+                            작전 성과 확인하기
+                            <!-- 💡 통통 튀는 손가락 애니메이션 적용 -->
+                            <span class="flex items-center justify-center bg-white/10 rounded-full w-10 h-10 transition-colors group-hover:bg-brand-cyan/40 text-2xl animate-bounce">
+                                👇
                             </span>
                         </a>
+                    </div>
+                    <!-- 💡 스크롤 유도 인디케이터 -->
+                    <div class="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition mt-2">
+                        <span class="text-[10px] font-black tracking-[0.2em] uppercase text-slate-500">Scroll Down</span>
+                        <div class="w-5 h-8 border-2 border-slate-400 rounded-full flex justify-center pt-1.5">
+                            <div class="w-1 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -252,7 +299,7 @@
             <div class="text-center mb-20 reveal-up">
                 <span class="text-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">01. Background</span>
                 <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">배경 & 문제 정의</h2>
-                <p class="text-slate-500 text-lg font-medium">왜 하필 '남아공'이었고, 어떤 점이 가장 큰 어려움이었을까요?</p>
+                <p class="text-slate-500 text-lg font-medium readable-text">왜 하필 '남아공'이었고, 어떤 점이 가장 큰 어려움이었을까요?</p>
             </div>
 
             <!-- 배경 & 문제 -->
@@ -262,7 +309,7 @@
                         <img src="https://drive.google.com/thumbnail?id=1Ab_QM2rgY-J3GDY2D-lpgdoYOHyCEMmM&sz=w200" alt="남아공 국기" class="w-12 h-12 object-cover rounded-full shadow-md border border-slate-200">
                         디지털 친화적인 시장, Mzansi(남아공)
                     </h3>
-                    <div class="space-y-6 text-slate-600 font-medium text-lg leading-relaxed">
+                    <div class="space-y-6 text-slate-600 font-medium text-lg leading-relaxed readable-text">
                         <p class="flex items-start gap-4"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-2xl shrink-0"></i> <div><strong>압도적인 틱톡 사용량:</strong> 하루 평균 소셜미디어 3시간 36분 사용! (세계 최상위권). 틱톡을 통해 정보를 얻는 데 매우 익숙한 시장입니다.</div></p>
                         <p class="flex items-start gap-4"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-2xl shrink-0"></i> <div><strong>영어 기반의 비즈니스:</strong> 12개의 언어가 있지만 비즈니스는 100% 영어를 사용합니다. 즉, 영어 콘텐츠 하나로 모든 인종을 공략할 수 있습니다.</div></p>
                         <p class="flex items-start gap-4"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-2xl shrink-0"></i> <div><strong>문화적 공감 포인트:</strong> 현지의 미루는 습관 'Now-Now'와 한국의 '빨리빨리' 문화가 만나면 광고의 훌륭한 재미 요소가 됩니다.</div></p>
@@ -274,7 +321,7 @@
                         <div class="w-12 h-12 rounded-full bg-rose-50 shadow-sm flex items-center justify-center text-brand-pink border border-rose-100"><i class="ph-fill ph-warning-octagon text-3xl"></i></div>
                         우리가 해결해야 했던 숙제
                     </h3>
-                    <div class="space-y-6 text-slate-600 font-medium text-lg leading-relaxed">
+                    <div class="space-y-6 text-slate-600 font-medium text-lg leading-relaxed readable-text">
                         <p class="flex items-start gap-4"><i class="ph-bold ph-x-circle text-brand-pink mt-1 text-2xl shrink-0"></i> <div><strong>낯선 한국 홍보물:</strong> 틱톡에서 처음 보는 한국 홍보 영상은 유저들의 관심도가 낮습니다. 시작하자마자 시선을 확 사로잡지 못하면 바로 스크롤을 내려버립니다.</div></p>
                         <p class="flex items-start gap-4"><i class="ph-bold ph-x-circle text-brand-pink mt-1 text-2xl shrink-0"></i> <div><strong>일방적인 정보 전달의 지루함:</strong> 멋진 풍경이나 설명만 가득한 일방적인 광고는 피로감을 줍니다. 타겟의 일상에 녹아드는 친근하고 가벼운 접근이 필요했습니다.</div></p>
                     </div>
@@ -285,7 +332,7 @@
             <div class="mb-24">
                 <div class="text-center mb-16 reveal-up">
                     <h3 class="text-3xl md:text-4xl font-black text-slate-900 mb-6">프로젝트 목표 & 성과 지표 (KPI)</h3>
-                    <p class="text-slate-600 text-lg font-medium max-w-4xl mx-auto leading-relaxed">
+                    <p class="text-slate-600 text-lg font-medium max-w-4xl mx-auto leading-relaxed readable-text">
                         그냥 쓱 보고 지나가는 광고가 아니라, <strong>직접 버튼을 누르고 참여하게 만드는 <br class="hidden md:block"/>놀이형 콘텐츠(테스트, 퀴즈)</strong>를 통해 한국 여행에 대한 관심을 실제 행동으로 이끌어내는 것입니다.
                     </p>
                 </div>
@@ -297,7 +344,7 @@
                             <span class="px-4 py-2 bg-slate-100 text-slate-800 font-black rounded-xl text-xs uppercase tracking-wider">Phase 1</span>
                             <h4 class="text-xl font-black text-slate-900">1차 트래픽 캠페인 목표</h4>
                         </div>
-                        <div class="grid grid-cols-2 gap-4 text-sm font-bold">
+                        <div class="grid grid-cols-2 gap-4 text-sm font-bold readable-text">
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">도달 (Reach)</span>노출수 30,000회+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">흥미 (Hook)</span>2초 시청률 25%+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">유입 (Traffic)</span>클릭률(CTR) 1.0%+</div>
@@ -310,7 +357,7 @@
                             <span class="px-4 py-2 bg-rose-50 text-brand-pink font-black rounded-xl text-xs uppercase tracking-wider">Phase 2</span>
                             <h4 class="text-xl font-black text-slate-900">2차 전환 캠페인 목표</h4>
                         </div>
-                        <div class="grid grid-cols-2 gap-4 text-sm font-bold">
+                        <div class="grid grid-cols-2 gap-4 text-sm font-bold readable-text">
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">도달 (Reach)</span>노출수 100,000회+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">흥미 (Hook)</span>2초 유지율 40%+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">유입 (Traffic)</span>진성 타겟 CTR 1.2%+</div>
@@ -331,20 +378,20 @@
                         <div>
                             <span class="text-brand-pink font-black text-sm tracking-widest uppercase mb-3 block">Target Persona</span>
                             <h4 class="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">아마라 (AMARA), 27세</h4>
-                            <p class="text-slate-500 font-bold text-lg">케이프타운 거주 | 프리랜서 콘텐츠 에디터 | 글로벌 힙스터</p>
+                            <p class="text-slate-500 font-bold text-lg readable-text">케이프타운 거주 | 프리랜서 콘텐츠 에디터 | 글로벌 힙스터</p>
                         </div>
                         <div class="grid sm:grid-cols-2 gap-6">
                             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
                                 <h5 class="font-black text-slate-900 mb-3 text-base flex items-center gap-2"><i class="ph-fill ph-warning-circle text-brand-pink"></i> 듣기 싫은 이야기</h5>
-                                <p class="text-slate-600 text-sm leading-relaxed font-medium">정보만 나열하거나, 자랑만 하는 웅장한 관광 홍보물에는 흥미가 없습니다. 공감되지 않으면 3초 안에 넘겨버립니다.</p>
+                                <p class="text-slate-600 text-sm leading-relaxed font-medium readable-text">정보만 나열하거나, 자랑만 하는 웅장한 관광 홍보물에는 흥미가 없습니다. 공감되지 않으면 3초 안에 넘겨버립니다.</p>
                             </div>
                             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
                                 <h5 class="font-black text-slate-900 mb-3 text-base flex items-center gap-2"><i class="ph-fill ph-star text-yellow-400"></i> 가장 듣고 싶은 이야기</h5>
-                                <p class="text-slate-600 text-sm leading-relaxed font-medium">거창한 여행 지식보다는 나의 취향(먹방, 쇼핑 등)을 가볍게 알아보고 대입해 볼 수 있는 '성향 테스트'에 열광합니다.</p>
+                                <p class="text-slate-600 text-sm leading-relaxed font-medium readable-text">거창한 여행 지식보다는 나의 취향(먹방, 쇼핑 등)을 가볍게 알아보고 대입해 볼 수 있는 '성향 테스트'에 열광합니다.</p>
                             </div>
                             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm sm:col-span-2 hover:shadow-md transition">
                                 <h5 class="font-black text-slate-900 mb-3 text-base flex items-center gap-2"><i class="ph-fill ph-cursor-click text-brand-cyan"></i> 참여 스타일 (Hook Trigger)</h5>
-                                <p class="text-slate-600 text-sm leading-relaxed font-medium"><strong>"당신은 한국에서 어떤 여행자가 될까요?"</strong> 같은 직관적인 질문으로 시선을 끕니다. 틱톡을 넘기다가 빠른 비교(A vs B) 선택지가 나오면 가벼운 재미로 참여하고, 결과를 지인들에게 공유합니다.</p>
+                                <p class="text-slate-600 text-sm leading-relaxed font-medium readable-text"><strong>"당신은 한국에서 어떤 여행자가 될까요?"</strong> 같은 직관적인 질문으로 시선을 끕니다. 틱톡을 넘기다가 빠른 비교(A vs B) 선택지가 나오면 가벼운 재미로 참여하고, 결과를 지인들에게 공유합니다.</p>
                             </div>
                         </div>
                     </div>
@@ -359,7 +406,7 @@
             <div class="text-center mb-16 reveal-up">
                 <span class="text-brand-pink font-black tracking-widest text-sm uppercase mb-3 block">02. Strategy & Execution</span>
                 <h2 class="text-4xl md:text-5xl font-black mb-8 text-slate-900">전략 및 집행 기록</h2>
-                <p class="text-slate-500 text-lg font-medium leading-relaxed">데이터를 분석하여 빠르게 방향을 전환하고 성과를 만들어낸 과정입니다.</p>
+                <p class="text-slate-500 text-lg font-medium leading-relaxed readable-text">데이터를 분석하여 빠르게 방향을 전환하고 성과를 만들어낸 과정입니다.</p>
             </div>
 
             <!-- 투트랙 전략 설명 -->
@@ -367,30 +414,30 @@
                 <h4 class="text-2xl md:text-3xl font-black mb-6 text-slate-900 flex items-center gap-3">
                     <i class="ph-fill ph-git-branch text-brand-pink"></i> 두 가지 방향 동시 테스트 (투트랙 전략)
                 </h4>
-                <p class="text-slate-600 font-medium leading-relaxed text-lg mb-10">
+                <p class="text-slate-600 font-medium leading-relaxed text-lg mb-10 readable-text">
                     처음부터 100% 정답을 알 수는 없기에, 1차 캠페인에서 완전히 성격이 다른 2가지(성향 테스트형 vs 지식 퀴즈형) 광고를 동시에 노출하여 유저의 반응을 살폈습니다. 결과를 바탕으로 <strong>반응이 좋은 것은 더 뾰족하게 키우고, 안 된 것은 미련 없이 갈아엎는 빠른 전략 수정</strong>을 진행했습니다.
                 </p>
                 <div class="grid sm:grid-cols-2 gap-8">
                     <div class="p-8 bg-rose-50 rounded-[2rem] border border-rose-100 hover:shadow-md transition">
                         <span class="text-brand-pink font-black text-base flex items-center gap-2 mb-3"><i class="ph-bold ph-check-circle text-xl"></i> 성과가 확인된 전략 (유형팀)</span>
-                        <p class="text-slate-700 text-base leading-relaxed font-bold">초기 반응이 좋았던 '성향 테스트'는 디자인을 더 직관적으로 다듬고 버튼을 잘 보이게 고쳐서 <strong>성과를 확실하게 확대</strong> 했습니다.</p>
+                        <p class="text-slate-700 text-base leading-relaxed font-bold readable-text">초기 반응이 좋았던 '성향 테스트'는 디자인을 더 직관적으로 다듬고 버튼을 잘 보이게 고쳐서 <strong>성과를 확실하게 확대</strong> 했습니다.</p>
                     </div>
                     <div class="p-8 bg-cyan-50 rounded-[2rem] border border-cyan-100 hover:shadow-md transition">
                         <span class="text-brand-cyan font-black text-base flex items-center gap-2 mb-3"><i class="ph-bold ph-arrows-clockwise text-xl"></i> 실패에서 배운 전략 (퀴즈팀)</span>
-                        <p class="text-slate-700 text-base leading-relaxed font-bold">완주율 0%로 철저히 실패한 '지식 퀴즈'는 전면 폐기하고, 참여하기 아주 쉬운 <strong>새로운 기획(이미지 밸런스 퀴즈)으로 방향 전환</strong>을 단행했습니다.</p>
+                        <p class="text-slate-700 text-base leading-relaxed font-bold readable-text">완주율 0%로 철저히 실패한 '지식 퀴즈'는 전면 폐기하고, 참여하기 아주 쉬운 <strong>새로운 기획(이미지 밸런스 퀴즈)으로 방향 전환</strong>을 단행했습니다.</p>
                     </div>
                 </div>
             </div>
 
             <!-- 매체 및 예산 요약 -->
             <div class="flex flex-wrap justify-center gap-4 mb-24 reveal-up">
-                <div class="px-6 py-4 bg-white rounded-full border border-slate-200 text-slate-700 font-bold flex items-center gap-2 shadow-sm">
+                <div class="px-6 py-4 bg-white rounded-full border border-slate-200 text-slate-700 font-bold flex items-center gap-2 shadow-sm readable-text">
                     <i class="ph-fill ph-tiktok text-black text-xl"></i> 틱톡 집중 (총 예산 227,000원)
                 </div>
-                <div class="px-6 py-4 bg-white rounded-full border border-slate-200 text-slate-600 font-bold flex items-center gap-2 shadow-sm">
+                <div class="px-6 py-4 bg-white rounded-full border border-slate-200 text-slate-600 font-bold flex items-center gap-2 shadow-sm readable-text">
                     <i class="ph-fill ph-magnifying-glass text-brand-cyan text-xl"></i> 1차 소재 테스트: 26.05.01 ~ 05.04 (73,139원)
                 </div>
-                <div class="px-6 py-4 bg-white rounded-full border border-slate-200 text-slate-600 font-bold flex items-center gap-2 shadow-sm">
+                <div class="px-6 py-4 bg-white rounded-full border border-slate-200 text-slate-600 font-bold flex items-center gap-2 shadow-sm readable-text">
                     <i class="ph-fill ph-rocket-launch text-brand-pink text-xl"></i> 2차 성과 확대: 26.05.08 ~ 05.14 (153,861원)
                 </div>
             </div>
@@ -404,25 +451,26 @@
                 </div>
 
                 <div class="flex flex-col gap-16">
-                    <!-- 1차 실패 (다크 목업) -->
-                    <div class="premium-card p-10 md:p-16 rounded-[3rem] bg-white flex flex-col xl:flex-row gap-16 items-center opacity-90 grayscale-[15%] hover:grayscale-0 transition duration-500 reveal-up">
+                    <!-- 1차 실패 -->
+                    <div class="premium-card p-10 md:p-16 rounded-[3rem] bg-white flex flex-col xl:flex-row gap-16 items-center opacity-90 grayscale-[10%] hover:grayscale-0 transition duration-500 reveal-up">
                         <div class="flex-1 space-y-6">
                             <div class="flex items-center gap-3 mb-4">
                                 <span class="text-slate-500 font-black text-sm uppercase tracking-widest">1차 캠페인 (과거)</span>
                                 <span class="text-rose-500 text-xs font-black bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100">완주율 0% 실패</span>
                             </div>
                             <h4 class="text-3xl md:text-4xl font-black text-slate-900">지식 테스트가 만든 심리적 장벽</h4>
-                            <p class="text-lg font-bold text-slate-600 leading-relaxed">
+                            <p class="text-lg font-bold text-slate-600 leading-relaxed readable-text">
                                 공항 입국 심사라는 낯선 설정과, 수많은 영문 텍스트를 읽고 풀어야 하는 <strong class="text-rose-500">지식 테스트</strong>가 숏폼 유저들을 피곤하게 만들었습니다. 유입된 유저는 있었지만, 끝까지 문제를 푼 사람이 단 한 명도 없었습니다.
                             </p>
                         </div>
                         
-                        <!-- 📱 완벽한 사이즈의 롱바디 스마트폰 목업 -->
+                        <!-- 📱 완벽한 롱바디 스마트폰 목업 + 1차 네온그린 라이팅 -->
                         <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8">
                             <div class="flex-1 w-full max-w-[360px] mx-auto">
                                 <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> 1차 광고 영상</div>
                                 <div class="phone-wrapper">
-                                    <div class="phone-mockup phone-mockup-dark">
+                                    <div class="phone-glow glow-neon-green"></div>
+                                    <div class="phone-mockup border-slate-300">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
                                             <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="phone-iframe" allow="autoplay"></iframe>
@@ -431,12 +479,16 @@
                                 </div>
                             </div>
                             <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> 1차 랜딩페이지 (실제 구동 화면)</div>
+                                <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> 1차 랜딩페이지 (구동 화면)</div>
                                 <div class="phone-wrapper">
-                                    <div class="phone-mockup phone-mockup-dark">
+                                    <div class="phone-glow glow-neon-green"></div>
+                                    <div class="phone-mockup border-slate-300">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <iframe src="https://dima-1st-quiz.vercel.app/" class="phone-iframe"></iframe>
+                                            <!-- 💡 스케일링으로 1차 랜딩 겹침 방지 -->
+                                            <div class="iframe-scaler">
+                                                <iframe src="https://dima-1st-quiz.vercel.app/" class="phone-iframe"></iframe>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -444,7 +496,7 @@
                         </div>
                     </div>
 
-                    <!-- 2차 성공 (메탈 목업) -->
+                    <!-- 2차 성공 -->
                     <div class="premium-card p-10 md:p-16 rounded-[3rem] bg-white border-2 border-brand-cyan/30 shadow-[0_20px_60px_rgba(8,145,178,0.12)] flex flex-col xl:flex-row gap-16 items-center reveal-up">
                         <div class="flex-1 space-y-6">
                             <div class="flex items-center gap-3 mb-4">
@@ -452,12 +504,11 @@
                                 <span class="text-brand-cyan text-xs font-black bg-cyan-50 px-3 py-1.5 rounded-lg border border-cyan-100 animate-pulse-soft">기적의 완주율 달성</span>
                             </div>
                             <h4 class="text-3xl md:text-4xl font-black text-slate-900">글씨 대신 직관적인 그림으로 승부하다</h4>
-                            <p class="text-lg font-bold text-slate-700 leading-relaxed">
+                            <p class="text-lg font-bold text-slate-700 leading-relaxed readable-text">
                                 어려운 퀴즈를 과감히 버리고, 현지인들의 문화를 비교하는 친근한 <strong class="text-brand-cyan">'길거리 인터뷰' 영상</strong>으로 바꿨습니다. 랜딩페이지 역시 복잡한 글씨를 없애고 그림만 보고 1초 만에 탭하는 <strong class="text-brand-cyan">'A/B 밸런스 게임'</strong>으로 바꾸자 유저들이 이탈 없이 끝까지 몰입했습니다.
                             </p>
                         </div>
                         
-                        <!-- 📱 완벽한 사이즈의 롱바디 스마트폰 목업 -->
                         <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8">
                             <div class="flex-1 w-full max-w-[360px] mx-auto">
                                 <div class="text-center text-sm font-bold text-brand-cyan mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> 2차 영상 (새로운 기획)</div>
@@ -497,7 +548,7 @@
                 </div>
 
                 <div class="flex flex-col gap-16">
-                    <!-- 1차 병목 (다크 목업) -->
+                    <!-- 1차 병목 -->
                     <div class="premium-card p-10 md:p-16 rounded-[3rem] bg-white flex flex-col xl:flex-row gap-16 items-center reveal-up opacity-90 grayscale-[10%] hover:grayscale-0 transition duration-500">
                         <div class="flex-1 space-y-6">
                             <div class="flex items-center gap-3 mb-4">
@@ -505,17 +556,18 @@
                                 <span class="text-orange-500 text-xs font-black bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-100">초기 유입은 성공적</span>
                             </div>
                             <h4 class="text-3xl md:text-4xl font-black text-slate-900">호기심 유발 성공, 하지만 아쉬운 첫인상</h4>
-                            <p class="text-lg font-bold text-slate-600 leading-relaxed">
+                            <p class="text-lg font-bold text-slate-600 leading-relaxed readable-text">
                                 '나의 성향 파악'이라는 주제 자체는 타겟의 호기심을 끌어 유입 단가를 크게 낮췄습니다. 하지만 클릭하고 들어온 랜딩 첫 화면에 작고 복잡한 픽셀 아트와 텍스트가 너무 많아, 유저들이 <strong class="text-orange-500">직관성을 느끼지 못하고 바로 뒤로 가기를 누르는 병목 현상</strong>이 발생했습니다.
                             </p>
                         </div>
 
-                        <!-- 📱 스마트폰 목업 라이브 뷰 -->
+                        <!-- 📱 스마트폰 목업 + 네온 그린 빛 -->
                         <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8">
                             <div class="flex-1 w-full max-w-[360px] mx-auto">
                                 <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> 1차 광고 영상</div>
                                 <div class="phone-wrapper">
-                                    <div class="phone-mockup phone-mockup-dark">
+                                    <div class="phone-glow glow-neon-green"></div>
+                                    <div class="phone-mockup border-slate-300">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
                                             <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="phone-iframe" allow="autoplay"></iframe>
@@ -524,12 +576,16 @@
                                 </div>
                             </div>
                             <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> 1차 랜딩페이지 (실제 구동 화면)</div>
+                                <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> 1차 랜딩페이지 (구동 화면)</div>
                                 <div class="phone-wrapper">
-                                    <div class="phone-mockup phone-mockup-dark">
+                                    <div class="phone-glow glow-neon-green"></div>
+                                    <div class="phone-mockup border-slate-300">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <iframe src="https://triptokorea9jo.netlify.app/" class="phone-iframe"></iframe>
+                                            <!-- 💡 스케일링으로 1차 랜딩 겹침 방지 -->
+                                            <div class="iframe-scaler">
+                                                <iframe src="https://triptokorea9jo.netlify.app/" class="phone-iframe"></iframe>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -545,7 +601,7 @@
                                 <span class="text-brand-pink text-xs font-black bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100">전환율 800% 성장</span>
                             </div>
                             <h4 class="text-3xl md:text-4xl font-black text-slate-900">클릭을 유도하는 직관적인 디자인 개편</h4>
-                            <p class="text-lg font-bold text-slate-700 leading-relaxed">
+                            <p class="text-lg font-bold text-slate-700 leading-relaxed readable-text">
                                 눈을 피곤하게 하던 복잡한 요소들을 과감히 다 지우고, 세련되고 귀여운 <strong class="text-brand-pink">3D 캐릭터</strong>로 화면을 바꿨습니다. 또한 최종 목표인 <strong class="text-brand-pink">'결과 확인하기' 버튼을 맨 위로 올리고 깜빡이는 애니메이션</strong>을 주어 유저의 클릭을 확실하게 이끌어냈습니다.
                             </p>
                         </div>
@@ -589,7 +645,7 @@
             <div class="text-center mb-20 reveal-up">
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">03. Real Data & Results</span>
                 <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">숫자로 증명하는 변화의 힘</h2>
-                <p class="text-slate-500 text-lg font-medium">단순히 조회수만 높은 가짜 성과가 아닙니다. 유저가 진짜 행동한 '실측 데이터'입니다.</p>
+                <p class="text-slate-500 text-lg font-medium readable-text">단순히 조회수만 높은 가짜 성과가 아닙니다. 유저가 진짜 행동한 '실측 데이터'입니다.</p>
             </div>
 
             <!-- 핵심 성과 카운터 -->
@@ -603,7 +659,7 @@
                     </h3>
                     <p class="text-xl text-slate-700 font-black mb-8">한 사람당 평균 문제 풀이 터치 횟수</p>
                     <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-left">
-                        <p class="text-slate-600 font-medium leading-relaxed text-sm"><strong class="text-brand-cyan block mb-2"><i class="ph-bold ph-magnifying-glass"></i> 실무 데이터 분석 :</strong>단순히 화면을 보다가 나간 것이 아닙니다. 20명의 실제 유저가 총 205번이나 문제를 클릭하며 <strong class="text-slate-900">본인 스스로 평균 10번 이상 터치하며 콘텐츠에 완벽히 몰입</strong>했습니다.</p>
+                        <p class="text-slate-600 font-medium leading-relaxed text-sm readable-text"><strong class="text-brand-cyan block mb-2"><i class="ph-bold ph-magnifying-glass"></i> 실무 데이터 분석 :</strong>단순히 화면을 보다가 나간 것이 아닙니다. 총 <strong class="text-slate-900">205건 (이벤트) / 20명 (사용자)</strong>의 실측 데이터가 증명하듯, 본인 스스로 평균 10번 이상 터치하며 콘텐츠에 완벽히 몰입했습니다.</p>
                     </div>
                 </div>
 
@@ -616,7 +672,7 @@
                     </h3>
                     <p class="text-xl text-slate-700 font-black mb-8">1차 대비 최종 클릭 성공률 성장</p>
                     <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-left">
-                        <p class="text-slate-600 font-medium leading-relaxed text-sm"><strong class="text-brand-pink block mb-2"><i class="ph-bold ph-magic-wand"></i> 실무 데이터 분석 :</strong>단순 호기심 클릭을 배제하고, 버튼 위치와 디자인을 바꾸는 최적화 작업만으로도 <strong class="text-slate-900">최종 목적지(한국 홍보 사이트) 클릭수가 1차 대비 8배(16건)로 폭증</strong>했습니다.</p>
+                        <p class="text-slate-600 font-medium leading-relaxed text-sm readable-text"><strong class="text-brand-pink block mb-2"><i class="ph-bold ph-magic-wand"></i> 실무 데이터 분석 :</strong>단순 호기심 클릭을 배제하고, 버튼 위치와 디자인을 바꾸는 최적화 작업만으로도 <strong class="text-slate-900">최종 목적지 클릭수가 1차(2건) 대비 8배인 16건 (이벤트) / 5명 (사용자)</strong>으로 폭증했습니다.</p>
                     </div>
                 </div>
             </div>
@@ -629,45 +685,53 @@
                 <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
                     <div class="p-10 space-y-6 bg-white hover:bg-slate-50 transition duration-300">
                         <h4 class="font-black text-brand-pink text-xl border-b pb-4 border-slate-100 flex items-center gap-2"><i class="ph-fill ph-magnifying-glass"></i> 유형팀 (디자인 고도화)</h4>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">98,222회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">716회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 가성비(CPC)</span><span class="text-slate-900">108원</span></div>
-                        <div class="flex justify-between font-black text-xl mt-6 pt-6 border-t border-slate-100"><span class="text-slate-900">최종 전환 (행동 완료)</span><span class="text-brand-pink">16건</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">98,758회</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">722회</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900">107원</span></div>
+                        <div class="flex justify-between font-black text-xl mt-6 pt-6 border-t border-slate-100"><span class="text-slate-900">최종 전환 (행동 완료)</span><span class="text-brand-pink text-right">16건 (이벤트)<br/><span class="text-sm text-slate-500">5명 (사용자)</span></span></div>
                     </div>
                     <div class="p-10 space-y-6 bg-white hover:bg-slate-50 transition duration-300">
                         <h4 class="font-black text-brand-cyan text-xl border-b pb-4 border-slate-100 flex items-center gap-2"><i class="ph-fill ph-lightbulb"></i> 퀴즈 & 문화팀 (새로운 방향)</h4>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">111,747회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">714회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 가성비(CPC)</span><span class="text-slate-900">108원</span></div>
-                        <div class="flex justify-between font-black text-xl mt-6 pt-6 border-t border-slate-100"><span class="text-slate-900">최종 전환 (행동 완료)</span><span class="text-brand-cyan">37건</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">112,277회</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">721회</span></div>
+                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900">107원</span></div>
+                        <!-- 💡 실측 데이터 반영 -->
+                        <div class="flex justify-between font-black text-xl mt-6 pt-6 border-t border-slate-100"><span class="text-slate-900">최종 전환 (행동 완료)</span><span class="text-brand-cyan text-right">37건 (이벤트)<br/><span class="text-sm text-slate-500">20명 (사용자)</span></span></div>
                     </div>
                 </div>
             </div>
             
-            <!-- 최종 결론 -->
+            <!-- 최종 결론 & 넥스트 스텝 -->
             <div class="premium-card p-12 md:p-16 rounded-[3rem] reveal-up delay-100 border-l-[12px] border-l-yellow-400">
-                <h3 class="text-3xl font-black mb-8 text-slate-900 flex items-center gap-4"><i class="ph-fill ph-flag-banner text-yellow-400 text-4xl"></i> 프로젝트 인사이트 & 최종 결론</h3>
+                <h3 class="text-3xl font-black mb-8 text-slate-900 flex items-center gap-4"><i class="ph-fill ph-flag-banner text-yellow-400 text-4xl"></i> 프로젝트 인사이트 & 넥스트 스텝</h3>
                 <div class="grid md:grid-cols-2 gap-12 text-slate-600 font-medium leading-relaxed text-lg mb-12">
-                    <div>
+                    <div class="readable-text">
                         <p class="mb-3 text-slate-900 font-black flex items-center gap-2"><i class="ph-bold ph-coins text-brand-cyan"></i> 효율적인 예산 관리 입증</p>
-                        광고 노출을 1차보다 202%나 대폭 늘렸지만, 타겟팅을 정교하게 다듬어 <strong class="text-slate-900">유입 단가(CPC)를 108원으로 동일하게 방어</strong>하며 안정적으로 성과 규모를 키웠습니다.
+                        광고 노출을 1차보다 202%나 대폭 늘렸지만, 타겟팅을 정교하게 다듬어 <strong class="text-slate-900">유입 단가(CPC)를 107원으로 동일하게 방어</strong>하며 안정적으로 성과 규모를 키웠습니다.
                     </div>
-                    <div>
+                    <div class="readable-text">
                         <p class="mb-3 text-slate-900 font-black flex items-center gap-2"><i class="ph-bold ph-clock text-brand-pink"></i> 이탈을 막는 3초의 법칙</p>
                         랜딩 첫 화면의 '시작 버튼'을 누르게 하는 것이 가장 큰 관건이었습니다. 3초 이내에 나가는 유저를 붙잡기 위해, <strong class="text-slate-900">광고 영상 제일 첫 부분에 확실한 보상이나 결과물을 미리 보여줘야 한다는 것</strong>을 배웠습니다.
                     </div>
                 </div>
+                <!-- 💡 넥스트 스텝 및 핵심 결론 (전문적이고 구체적인 실무 워딩으로 압축 및 고도화) -->
                 <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200">
-                    <h4 class="text-xl font-black text-slate-900 mb-4">🎯 성과 요약 (Conclusion)</h4>
-                    <p class="text-slate-700 font-medium leading-relaxed">
-                        이번 프로젝트를 통해 남아공 MZ세대에게 일방적이고 딱딱한 정보 전달은 통하지 않는다는 것을 직접 확인했습니다. 하지만 그 내용을 <strong>'나의 성향을 알아보는 즐거운 놀이'</strong>로 바꾸고, 현지에서 유행하는 언어로 접근했을 때, 지구 반대편의 타겟들도 낯선 한국 사이트에서 <strong>자발적으로 참여하고 버튼을 누른다(총 53건의 최종 전환)</strong>는 것을 완벽한 데이터로 증명했습니다. 결과적으로 K-9적단은 모르는 사람을 우리 브랜드의 팬으로 만드는 <strong>'디지털 고객 유입 성공 공식'</strong>을 구축해 냈습니다.
+                    <h4 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-2"><i class="ph-fill ph-rocket-launch text-slate-800"></i> Next Step & 핵심 결론</h4>
+                    <p class="text-slate-700 font-medium leading-relaxed mb-4 readable-text">
+                        본 캠페인은 신규 시장 진입 시 발생하는 극심한 인지적 마찰(초기 완주율 0%)을 '초개인화 인터랙티브 콘텐츠'를 통해 성공적으로 해결한 퍼널 최적화 사례입니다. 현지화된 밈(Now-Now)과 밸런스 게임을 결합하여 이탈률을 방어한 결과, 소액의 테스트 예산만으로 <strong>총 53건의 유의미한 행동 전환(이벤트 53건 / 활성 사용자 25명)</strong>을 달성했습니다. 이는 단순 노출을 넘어, 유저가 콘텐츠에 평균 10회 이상 능동적으로 개입하도록 유도함으로써 진성 잠재 고객을 확보할 수 있음을 데이터로 입증한 성과입니다.
+                    </p>
+                    <p class="text-slate-700 font-bold leading-relaxed border-t border-slate-200 pt-4 readable-text">
+                        👉 <span class="text-brand-cyan">Next Step:</span> 확보된 유효 트래픽과 사용자 행동 데이터를 기반으로 퍼널을 더욱 고도화합니다.<br/>
+                        1) <strong>소재 다각화 및 스케일업:</strong> 전환율이 검증된 'A/B 밸런스 게임' 포맷을 템플릿화하여 초기 트래픽 볼륨을 적극적으로 확대합니다.<br/>
+                        2) <strong>퍼널 진입 최적화:</strong> 영상 첫 3초의 훅(Hook) 단계에서 '개인화된 큐레이션 결과'의 매력도를 선제적으로 노출해 랜딩 첫 화면의 이탈을 원천 방어합니다.<br/>
+                        3) <strong>데이터 기반 리타겟팅:</strong> 틱톡 픽셀(Pixel)로 수집된 캠페인 완료 유저(진성 타겟)에게 한국 관광 포털의 혜택을 직접 소구하는 리타겟팅(Re-targeting)을 전개하여, 최종 목적지로의 유입 단가(CPA)를 혁신적으로 절감하겠습니다.
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 04. 팀 소개 (💡 팀장 시안 / Creator 에메랄드 완벽 수정!) -->
+    <!-- 04. 팀 소개 -->
     <section id="sec-04" class="py-32 px-6 bg-slate-50 border-t border-slate-200 relative z-10">
         <div class="max-w-7xl mx-auto reveal-up">
             <div class="text-center mb-24">
@@ -676,6 +740,7 @@
                 <p class="text-slate-500 text-xl font-medium">데이터를 무기로 성과를 만들어낸 5인의 프로 마케터</p>
             </div>
 
+            <!-- 5인 팀원 카드 -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 reveal-up delay-200">
                 <!-- Member 1 : 윤서영 (시안 Cyan) -->
                 <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-brand-cyan">
@@ -752,7 +817,7 @@
         <p class="font-bold tracking-tighter text-slate-400">&copy; 2026 K-9 Pirates. Crafted for the 1st Place.</p>
     </footer>
 
-    <!-- 💡 재치있는 영입 제안 팝업 모달 (센스 만점 멘트 적용) -->
+    <!-- 💡 재치있는 영입 제안 팝업 모달 -->
     <div id="hireModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleModal()"></div>
         <div class="bg-white rounded-[2rem] p-10 md:p-12 max-w-lg w-full relative z-10 shadow-2xl animate-slide-up text-center border-t-8 border-t-brand-cyan">
@@ -806,21 +871,19 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. 애플 스타일 다채로운 애니메이션 (reveal-up, reveal-scale) 양방향 반응형 완벽 구현!
+            // 1. 애플 스타일 다채로운 애니메이션 양방향 반응형 완벽 구현
             const revealElements = document.querySelectorAll('.reveal, .reveal-up, .reveal-scale');
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    // 화면 안에 들어올 때 active 추가
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
                     } else {
-                        // 화면을 벗어나면 active 제거 (다시 스크롤 시 재등장)
                         entry.target.classList.remove('active');
                     }
                 });
             }, {
-                threshold: 0.1, // 요소가 10% 이상 보일 때 작동
-                rootMargin: "0px 0px -50px 0px" // 약간의 여유 마진
+                threshold: 0.1, 
+                rootMargin: "0px 0px -50px 0px" 
             });
 
             revealElements.forEach(el => revealObserver.observe(el));
@@ -851,6 +914,22 @@
                     backToTopBtn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
                 }
             });
+
+            // 💡 스크롤 내리면 메인 로고가 부드럽게 배경으로 스며드는 애니메이션
+            const mainLogo = document.getElementById('mainLogo');
+            if (mainLogo) {
+                window.addEventListener('scroll', () => {
+                    let scrollY = window.scrollY;
+                    if (scrollY < 500) {
+                        let opacity = 0.9 - (scrollY / 400); // 스크롤 내릴수록 점점 투명해짐
+                        let scale = 1 + (scrollY / 2500); // 미세하게 커지면서 퍼지는 느낌
+                        mainLogo.style.opacity = Math.max(opacity, 0.03); // 최소 투명도 3% 유지
+                        mainLogo.style.transform = `scale(${scale})`;
+                    } else {
+                        mainLogo.style.opacity = 0.03;
+                    }
+                });
+            }
 
             // 4. 숫자 카운터 롤링 애니메이션
             const counters = document.querySelectorAll('.counter');
