@@ -243,33 +243,33 @@
             padding: 0 10px; /* 약간의 여백만 부여 */
         }
         body.mobile-view-mode .phone-mockup {
-            height: auto;
-            aspect-ratio: 9/16; /* 비율로 높이 자동 조절 */
-            background: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: none;
+            height: 75vh; /* 💡 모바일 화면의 75%를 차지하여 동영상/랜딩이 큼직하게 보이도록 설정 */
+            min-height: 550px;
+            aspect-ratio: auto; /* 비율로 높이 자동 조절 해제 */
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
             padding: 0;
-            border-radius: 1rem; /* 목업 둥글기 제거하고 얇게 */
+            border-radius: 12px; /* 목업 둥글기 제거하고 얇게 */
+            transform: none !important;
         }
         body.mobile-view-mode .phone-wrapper:hover .phone-mockup {
-            transform: none; /* 호버 효과 제거 */
+            transform: none !important; /* 호버 효과 제거 */
         }
         body.mobile-view-mode .phone-glow,
         body.mobile-view-mode .phone-mockup::before,
         body.mobile-view-mode .phone-mockup::after,
         body.mobile-view-mode .dynamic-island {
             opacity: 0; /* 시각적 방해물 모두 숨김 */
-            display: none;
+            display: none !important;
         }
         body.mobile-view-mode .phone-screen {
-            border-radius: 1rem; /* 안쪽 라운드 감소 */
-            border: 1px solid #e2e8f0; /* 깔끔한 테두리만 */
+            border-radius: 12px; /* 안쪽 라운드 감소 */
+            border: none; /* 깔끔한 테두리만 */
         }
-        /* 모바일 뷰어에서 스케일링 해제 (정사이즈로 선명하게 보임) */
+        /* 💡 모바일 뷰어에서 JS가 동적으로 스케일링을 제어하므로 트랜지션 해제 */
         body.mobile-view-mode .iframe-scaler {
-            width: 100%;
-            height: 100%;
-            transform: none;
+            transition: none;
         }
 
         /* 토글 스위치 디자인 */
@@ -279,30 +279,57 @@
             left: 24px;
             z-index: 100;
             background: white;
-            padding: 6px;
+            padding: 4px;
             border-radius: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
-            gap: 4px;
             border: 1px solid #e2e8f0;
+            width: 260px; /* 💡 클릭 영역을 넓히고 텍스트가 잘리지 않게 고정 너비 적용 */
         }
+        
+        /* 💡 활성화된 버튼의 배경을 감싸는 슬라이더 요소 (비율 완벽 교정) */
+        .view-toggle-container::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            left: 4px;
+            width: calc(50% - 4px); /* 💡 컨테이너의 정확히 절반을 꽉 채우도록 비율 수학적 교정 */
+            background: #0f172a;
+            border-radius: 26px;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 0;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.3);
+        }
+
+        /* 💡 모바일 모드일 때 슬라이더를 우측으로 정확히 100% 이동 */
+        body.mobile-view-mode .view-toggle-container::before {
+            transform: translateX(100%);
+        }
+
         .toggle-btn {
-            padding: 8px 16px;
-            border-radius: 20px;
+            flex: 1; /* 💡 공간을 50%씩 완벽하게 양분하여, 허공 어디를 눌러도 클릭되도록 적용 */
+            padding: 12px 0;
+            border-radius: 26px;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: color 0.4s ease;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
             color: #64748b;
+            z-index: 1;
+            background: transparent !important; /* 개별 버튼 배경 제거 */
+            box-shadow: none !important;
+            border: none;
+            outline: none;
         }
+        
         .toggle-btn.active {
-            background: #0f172a;
-            color: white;
-            box-shadow: 0 2px 8px rgba(15,23,42,0.3);
+            color: white; /* 활성화 시 텍스트 흰색 */
         }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -424,13 +451,16 @@
                     <!-- KPI Phase 1 -->
                     <div class="premium-card p-10 rounded-[2rem] bg-white reveal-up">
                         <div class="flex items-center gap-3 mb-8">
+                            <!-- 💡 Phase 1 뱃지는 파란색 유지 -->
                             <span class="px-4 py-2 bg-blue-50 text-blue-600 font-black rounded-xl text-xs uppercase tracking-wider">Phase 1</span>
+                            <!-- 💡 제목 텍스트는 깔끔한 검정색으로 수정 -->
                             <h4 class="text-xl font-black text-slate-900">1차 트래픽 캠페인 목표</h4>
                         </div>
                         <div class="grid grid-cols-2 gap-4 text-sm font-bold readable-text">
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">도달 (Reach)</span>노출수 30,000회+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">흥미 (Hook)</span>2초 시청률 25%+</div>
                             <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">유입 (Traffic)</span>클릭률(CTR) 1.0%+</div>
+                            <!-- 💡 참여 부분은 파란색 포인트 유지 -->
                             <div class="p-5 bg-blue-50 rounded-2xl border border-blue-100 text-blue-700"><span class="text-blue-500 block mb-1">참여 (랜딩 진입률)</span>5% 이상</div>
                         </div>
                     </div>
@@ -553,7 +583,8 @@
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="phone-iframe" allow="autoplay"></iframe>
+                                            <!-- 💡 영상 전체화면(Fullscreen) 가능하도록 속성 추가 -->
+                                            <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="phone-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -596,7 +627,8 @@
                                     <div class="phone-mockup border-cyan-800">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="phone-iframe" allow="autoplay"></iframe>
+                                            <!-- 💡 영상 전체화면(Fullscreen) 가능하도록 속성 추가 -->
+                                            <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="phone-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -647,7 +679,8 @@
                                     <div class="phone-mockup phone-mockup-dark">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="phone-iframe" allow="autoplay"></iframe>
+                                            <!-- 💡 영상 전체화면(Fullscreen) 가능하도록 속성 추가 -->
+                                            <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="phone-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -689,7 +722,8 @@
                                     <div class="phone-mockup border-rose-900">
                                         <div class="dynamic-island"></div>
                                         <div class="phone-screen">
-                                            <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="phone-iframe" allow="autoplay"></iframe>
+                                            <!-- 💡 영상 전체화면(Fullscreen) 가능하도록 속성 추가 -->
+                                            <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="phone-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -938,7 +972,30 @@
                 btnDesktop.classList.add('active');
                 btnMobile.classList.remove('active');
             }
+            // 💡 뷰 모드 변경 시 아이프레임 스케일러 재조정 (렌더링 딜레이 보장)
+            setTimeout(adjustIframeScalers, 50);
         }
+
+        // 💡 1차 랜딩페이지 비율 깨짐 방지용 동적 스케일링 함수
+        function adjustIframeScalers() {
+            const scalers = document.querySelectorAll('.iframe-scaler');
+            scalers.forEach(scaler => {
+                const parent = scaler.parentElement;
+                if (document.body.classList.contains('mobile-view-mode')) {
+                    const parentWidth = parent.clientWidth;
+                    const parentHeight = parent.clientHeight;
+                    const scale = parentWidth / 414; // 414px 기준 모바일 폰 너비에 맞춰 축소 비율 계산
+                    scaler.style.transform = `scale(${scale})`;
+                    scaler.style.width = '414px';
+                    scaler.style.height = `${parentHeight / scale}px`; // 축소된 만큼 세로 길이를 늘려 빈 공간 방지
+                } else {
+                    scaler.style.transform = 'scale(0.81)';
+                    scaler.style.width = '414px';
+                    scaler.style.height = '940px';
+                }
+            });
+        }
+        window.addEventListener('resize', adjustIframeScalers);
 
         // 💡 화면 크기가 작으면 자동으로 모바일 뷰어 켜기, 그 외에는 기본적으로 데스크탑 뷰어 유지
         if (window.innerWidth <= 768) {
@@ -946,6 +1003,7 @@
         } else {
             setViewMode('desktop');
         }
+        window.addEventListener('load', adjustIframeScalers);
 
         function triggerConfettiAndModal() {
             var duration = 3 * 1000;
