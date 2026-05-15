@@ -13,673 +13,1204 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Pretendard', 'sans-serif'] },
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                        mono: ['Courier New', 'monospace'],
+                    },
                     colors: {
                         brand: { cyan: '#0891b2', pink: '#e11d48', neonGreen: '#10b981', slate900: '#0f172a', slate50: '#f8fafc' }
                     },
                     animation: {
-                        'float': 'float 6s ease-in-out infinite',
+                        'float': 'float 8s ease-in-out infinite',
                         'pulse-glow': 'pulse-glow 3s ease-in-out infinite alternate',
-                    },
-                    keyframes: {
-                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-                        'pulse-glow': { '0%': { opacity: 0.4, transform: 'scale(0.95)' }, '100%': { opacity: 0.8, transform: 'scale(1.05)' } }
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #ffffff; color: #334155; overflow-x: hidden; word-break: keep-all; overflow-wrap: break-word; }
-        
-        /* 🍎 안정적인 스크롤 애니메이션 */
-        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .reveal-up.active { opacity: 1; transform: translateY(0); }
-        .delay-100 { transition-delay: 100ms; }
-        .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
+        /* 💡 기본 세팅 */
+        @media (pointer: fine) {
+            body { cursor: none; }
+            a, button, .cursor-pointer, .tilt-card, .solid-dark-btn, #easter-egg-trigger, #nav-logo-trigger, #terminal-trigger-btn { cursor: none !important; }
+        }
 
-        /* 💎 다크 솔리드 CTA 버튼 */
+        body {
+            background-color: #ffffff;
+            color: #334155;
+            overflow-x: hidden;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+
+        .ambient-orb {
+            position: fixed; border-radius: 50%; filter: blur(100px); opacity: 0.5;
+            pointer-events: none; z-index: 0; transition: transform 0.5s ease-out; will-change: transform;
+        }
+        #orb-1 { width: 50vw; height: 50vw; top: -10%; left: -10%; background: rgba(8, 145, 178, 0.3); } 
+        #orb-2 { width: 60vw; height: 60vw; bottom: -10%; right: -10%; background: rgba(225, 29, 72, 0.2); }
+
+        /* 💡 리퀴드 커서 */
+        #liquid-cursor {
+            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999999;
+            background: #0f172a; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 900; color: white; opacity: 0; 
+            transform-origin: center; will-change: transform, width, height;
+            transition: width 0.3s cubic-bezier(0.19, 1, 0.22, 1), height 0.3s cubic-bezier(0.19, 1, 0.22, 1), background-color 0.3s ease;
+            width: 12px; height: 12px;
+        }
+        #liquid-cursor span { opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+        #liquid-cursor.hover-member { width: 80px; height: 80px; background: #e11d48; }
+        #liquid-cursor.hover-member span { opacity: 1; transform: scale(1); }
+        @media (max-width: 768px) { #liquid-cursor { display: none !important; } }
+
+        .magnetic-wrap { display: inline-block; padding: 20px; margin: -20px; cursor: none; }
+        .magnetic-inner { display: flex; will-change: transform; }
+        .magnetic-text { display: flex; will-change: transform; }
+
         .solid-dark-btn {
-            position: relative; background: #000000; border: 1px solid rgba(8, 145, 178, 0.8);
-            box-shadow: 0 0 20px rgba(8, 145, 178, 0.4), inset 0 0 15px rgba(8, 145, 178, 0.3); color: #ffffff;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10;
-            animation: btn-neon-pulse 2s infinite alternate;
+            background: #000000; border: 1px solid rgba(8, 145, 178, 0.8);
+            box-shadow: 0 0 20px rgba(8, 145, 178, 0.4), inset 0 0 15px rgba(8, 145, 178, 0.3); color: #ffffff; transition: all 0.3s ease;
         }
-        .solid-dark-btn:hover {
-            transform: translateY(-4px) scale(1.02); background: #0f172a;
-            box-shadow: 0 10px 30px rgba(8, 145, 178, 0.8), inset 0 0 25px rgba(8, 145, 178, 0.6);
-        }
-        @keyframes btn-neon-pulse {
-            0% { box-shadow: 0 0 15px rgba(8, 145, 178, 0.3), inset 0 0 10px rgba(8, 145, 178, 0.2); }
-            100% { box-shadow: 0 0 35px rgba(8, 145, 178, 0.7), inset 0 0 25px rgba(8, 145, 178, 0.5); }
-        }
+        .solid-dark-btn:hover { box-shadow: 0 10px 30px rgba(8, 145, 178, 0.8), inset 0 0 25px rgba(8, 145, 178, 0.6); background: #0f172a; }
 
         .readable-text { word-break: keep-all; line-height: 1.7; }
         
-        .premium-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .premium-card:hover { box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.1); transform: translateY(-4px); border-color: #cbd5e1; }
+        /* 🍎 스크롤 애니메이션 */
+        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+        .reveal-scale { opacity: 0; transform: scale(0.95); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-scale.active { opacity: 1; transform: scale(1); }
+        .blur-reveal { filter: blur(12px); opacity: 0; transform: translateY(20px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .blur-reveal.active { filter: blur(0); opacity: 1; transform: translateY(0); }
 
-        /* 📱 스마트폰 목업 */
-        .phone-wrapper { position: relative; margin: 0 auto; width: 100%; max-width: 360px; }
+        .premium-card {
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden;
+        }
+        
+        /* 3D 틸트 카드 */
+        .tilt-card { perspective: 1200px; cursor: none; }
+        .tilt-wrapper { width: 100%; height: 100%; transition: transform 0.15s ease-out; transform-style: preserve-3d; will-change: transform; pointer-events: none; }
+        .flip-inner { width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; position: relative; }
+        .flip-inner.is-flipped { transform: rotateY(180deg); }
+        .card-front, .card-back { -webkit-backface-visibility: hidden; backface-visibility: hidden; width: 100%; height: 100%; border-radius: 2rem; position: absolute; inset: 0; pointer-events: auto; }
+        .card-front { position: relative; z-index: 2; }
+        .card-back { background: #0f172a; color: white; transform: rotateY(180deg); display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); border: 1px solid #334155; padding: 1rem; }
+
+        /* 💡 데스크탑 단일 목업 렌더링 💡 */
+        .phone-wrapper { position: relative; margin: 0 auto; width: 360px; height: 780px; max-width: 100vw; transition: transform 0.3s ease; }
         .phone-glow { position: absolute; inset: -4px; border-radius: 4rem; filter: blur(12px); opacity: 0.8; z-index: 0; transition: all 0.5s ease; }
         .phone-wrapper:hover .phone-glow { filter: blur(18px); opacity: 1; inset: -6px; }
-        
+        .phone-wrapper:hover { transform: translateY(-8px); }
         .glow-neon-green { background: linear-gradient(135deg, #10b981, #34d399); }
         .glow-cyan { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
         .glow-pink { background: linear-gradient(135deg, #e11d48, #f43f5e); }
 
         .phone-mockup {
-            position: relative; width: 100%; height: 780px; 
+            position: relative; width: 100%; height: 100%; 
             background: linear-gradient(145deg, #e2e8f0 0%, #cbd5e1 40%, #94a3b8 60%, #e2e8f0 100%);
-            border-radius: 3.5rem; padding: 12px; 
+            border-radius: 3.5rem; padding: 12px;
             box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9), inset 0 0 10px rgba(0,0,0,0.1), 0 20px 40px -10px rgba(0,0,0,0.2);
-            border: 1px solid #cbd5e1; z-index: 10; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid #cbd5e1; z-index: 10;
         }
-        .phone-wrapper:hover .phone-mockup { transform: translateY(-8px); }
-        .phone-mockup::before { content: ''; position: absolute; top: 160px; left: -3px; width: 3px; height: 35px; background: #94a3b8; border-radius: 3px 0 0 3px; box-shadow: 0 60px 0 0 #94a3b8, 0 120px 0 0 #94a3b8; }
+        .phone-mockup-dark { background: #1e293b; box-shadow: inset 0 0 0 1px #334155, 0 15px 30px -10px rgba(0, 0, 0, 0.15); border-color: #334155; }
+        .phone-mockup::before { content: ''; position: absolute; top: 160px; left: -3px; width: 3px; height: 35px; background: #94a3b8; border-radius: 3px 0 0 3px; }
         .phone-mockup::after { content: ''; position: absolute; top: 190px; right: -3px; width: 3px; height: 55px; background: #94a3b8; border-radius: 0 3px 3px 0; }
-        .phone-mockup-dark { background: #1e293b; box-shadow: inset 0 0 0 1px #334155, 0 15px 30px -10px rgba(0, 0, 0, 0.15); }
-        .phone-mockup-dark::before, .phone-mockup-dark::after { background: #334155; box-shadow: 0 60px 0 0 #334155, 0 120px 0 0 #334155; }
+        .dynamic-island { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); width: 30%; height: 26px; background: #000000; border-radius: 20px; z-index: 50; pointer-events: none; }
 
-        .phone-screen { width: 100%; height: 100%; background: #ffffff; border-radius: 2.8rem; overflow: hidden; position: relative; transform: translateZ(0); border: 2px solid #000; }
-        .dynamic-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 100px; height: 30px; background: #000000; border-radius: 20px; z-index: 50; pointer-events: none; }
-        .phone-iframe { width: 100%; height: 100%; border: none; background-color: #ffffff; }
-
-        /* 💡 1차 랜딩페이지 박스 겹침 방지 (스케일링) */
-        .iframe-scaler { width: 414px; height: 940px; transform: scale(0.81); transform-origin: top left; }
+        .phone-screen { position: relative; width: 100%; height: 100%; background: #ffffff; border-radius: 2.8rem; overflow: hidden; border: 2px solid #000; }
+        
+        .iframe-scaler-wrap { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; background: #fff; }
+        .iframe-scaler { position: absolute; top: 0; left: 0; width: 414px; height: 940px; transform: scale(0.811594); transform-origin: 0 0; }
         .iframe-scaler iframe { width: 100%; height: 100%; border: none; }
 
-        ::-webkit-scrollbar { width: 8px; }
+        .gdrive-video-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; overflow: hidden; }
+        .gdrive-video-iframe { position: absolute; top: 50%; left: 50%; width: 150%; height: 150%; transform: translate(-50%, -50%) scale(0.666667); border: none; }
+
+        @media (max-width: 380px) {
+            .phone-wrapper { transform: scale(0.85); transform-origin: top center; margin-bottom: -100px; }
+            .phone-wrapper:hover { transform: scale(0.85) translateY(-8px); }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* 💡 KPI 테이블 스타일링 (가독성 최적화 & 글씨 크기 확대) */
+        .kpi-table th { border-bottom: 2px solid #e2e8f0; vertical-align: middle; padding: 1.25rem 1rem; font-size: 0.95rem; }
+        .kpi-table td { border-bottom: 1px solid #f1f5f9; vertical-align: middle; padding: 1.25rem 1rem; font-size: 1rem; }
+        .kpi-table tr:last-child th, .kpi-table tr:last-child td { border-bottom: none; }
+        .kpi-table tbody tr:hover { background-color: #f8fafc; transition: background-color 0.2s; }
+        
+        /* 증감 뱃지 */
+        .badge-increase { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 0.85rem; font-weight: 900; margin-left: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .badge-decrease { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 6px; background: rgba(225, 29, 72, 0.15); color: #e11d48; font-size: 0.85rem; font-weight: 900; margin-left: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* 💡 KPI 달성 상태 애니메이션 뱃지 (더욱 극적이고 직관적인 표현) */
+        .status-badge { display: inline-flex; align-items: center; justify-content: center; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 6px; }
+        
+        /* 초과 달성: 눈에 띄는 네온 블루 글로우 애니메이션 */
+        .status-overachieve { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; animation: pulse-overachieve 2s infinite cubic-bezier(0.4, 0, 0.6, 1); border: 1px solid #60a5fa; }
+        @keyframes pulse-overachieve { 
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 
+            50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); transform: scale(1.05); } 
+        }
+
+        /* 달성: 안정적인 에메랄드 그린 */
+        .status-success { background: #ecfdf5; color: #059669; border: 1px solid #34d399; }
+        
+        /* 미달성: 직관적인 경고 레드 펄스 애니메이션 */
+        .status-failed { background: #fff1f2; color: #e11d48; border: 1px solid #fb7185; animation: pulse-failed 2s infinite; }
+        @keyframes pulse-failed { 
+            0%, 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); } 
+            50% { box-shadow: 0 0 0 6px rgba(225, 29, 72, 0); } 
+        }
+
+        /* 해커 터미널 이스터에그 */
+        #hacker-terminal {
+            display: none; position: fixed; inset: 0; background-color: transparent; z-index: 9999999;
+            flex-direction: column; justify-content: flex-start; align-items: flex-start;
+            padding: 3rem 5%; font-family: 'Courier New', Courier, monospace;
+            color: #10b981; text-shadow: 0 0 8px rgba(16,185,129,0.6); overflow-y: auto; overflow-x: hidden;
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+        .terminal-line { font-size: 14px; margin-bottom: 8px; line-height: 1.4; word-break: break-all; }
+        @media (min-width: 768px) { .terminal-line { font-size: 18px; margin-bottom: 10px; } }
+        .typing-cursor::after { content: '█'; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* 메탈릭 영수증 프린터 */
+        #receipt-modal {
+            position: fixed; inset: 0; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            padding-top: 5vh; opacity: 0; visibility: hidden; transition: all 0.3s ease; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+        }
+        #receipt-modal.show { opacity: 1; visibility: visible; }
+        .printer-container { position: relative; width: 440px; max-width: 95vw; display: flex; flex-direction: column; align-items: center; }
+        
+        .printer-machine {
+            width: 480px; max-width: 100vw; height: 90px;
+            background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 30%, #94a3b8 70%, #64748b 100%);
+            border-radius: 16px; border: 1px solid #94a3b8; box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 2px 5px rgba(255,255,255,1);
+            position: relative; z-index: 20; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 12px;
+        }
+        .printer-machine::before { content: ''; position: absolute; top: 15px; right: 30px; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981, inset 0 1px 2px rgba(255,255,255,0.8); }
+        .printer-slot { width: 400px; max-width: 90vw; height: 12px; background: #000; border-radius: 6px; box-shadow: inset 0 4px 8px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.4); }
+
+        .receipt-paper-wrapper {
+            width: 400px; max-width: 90vw; height: 75vh; overflow-y: auto; overflow-x: hidden; position: relative; z-index: 10; scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .receipt-paper-wrapper::-webkit-scrollbar { display: none; }
+        .receipt-paper {
+            background: #fff; color: #1a1a1a; font-family: 'Courier New', Courier, monospace; 
+            padding: 3rem; width: 100%; box-shadow: 0 25px 60px rgba(0,0,0,0.5); position: relative;
+            transform: translateY(-100%); opacity: 0; transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.5s ease;
+        }
+        #receipt-modal.show .receipt-paper { transform: translateY(0); opacity: 1; } 
+        
+        .receipt-paper::after {
+            content: ""; position: absolute; left: 0; right: 0; height: 14px; background-size: 28px 28px; bottom: -14px;
+            background-image: linear-gradient(135deg, #fff 50%, transparent 50%), linear-gradient(225deg, #fff 50%, transparent 50%); background-position: bottom left, bottom left;
+        }
+        .receipt-divider { border-top: 2px dashed #1a1a1a; margin: 24px 0; opacity: 0.5; }
+        .receipt-text-glow { text-shadow: 0 0 5px rgba(0,0,0,0.2); }
     </style>
 </head>
-<body class="antialiased selection:bg-brand-pink selection:text-white break-keep">
+<body class="antialiased selection:bg-brand-pink selection:text-white break-keep bg-slate-50 relative">
 
-    <!-- 고정 네비게이션 -->
-    <nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-lg border-b border-slate-100 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
-            <div class="font-black text-2xl tracking-tighter flex items-center gap-2 text-slate-900">
-                <i class="ph-fill ph-skull text-brand-pink animate-float"></i> K-9적단
-            </div>
-            <div class="hidden md:flex space-x-8 text-sm font-bold text-slate-500">
-                <a href="#sec-00" class="nav-link hover:text-brand-pink transition">00. 프로젝트 명</a>
-                <a href="#sec-01" class="nav-link hover:text-brand-pink transition">01. 소개 & 타겟</a>
-                <a href="#sec-02" class="nav-link hover:text-brand-pink transition">02. 전략 & 실행</a>
-                <a href="#sec-03" class="nav-link hover:text-brand-cyan transition">03. 성과 & 결론</a>
-                <a href="#sec-04" class="nav-link hover:text-brand-pink transition">04. 크루 소개</a>
-            </div>
-        </div>
-    </nav>
+    <div id="liquid-cursor"><span>CLICK</span></div>
 
-    <!-- 00. 프로젝트 명 -->
-    <section id="sec-00" class="relative min-h-screen flex flex-col items-center justify-start text-center px-6 pt-32 pb-20 overflow-hidden">
-        <div class="absolute inset-0 z-0 bg-gradient-to-tr from-rose-50 via-slate-50 to-cyan-50 opacity-80"></div>
-        
-        <div class="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center">
-            <div class="reveal-up active inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-sm font-bold text-slate-500 tracking-widest uppercase mb-8">
-                디마 3기 최종 프로젝트
+    <!-- 복사 완료 토스트 알림 -->
+    <div id="copyToast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-brand-neonGreen text-white px-6 py-3 rounded-full font-bold shadow-lg opacity-0 transition-opacity z-[999999]">
+        <i class="ph-bold ph-check-circle text-lg align-middle mr-1"></i> Copied to clipboard!
+    </div>
+
+    <div id="orb-1" class="ambient-orb"></div>
+    <div id="orb-2" class="ambient-orb"></div>
+
+    <!-- 💡 화면 반전을 위한 메인 컨텐츠 래퍼 -->
+    <main id="main-content" class="relative z-10 w-full h-full transition-[filter] duration-700">
+
+        <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-slate-100 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
+                <div class="font-black text-2xl tracking-tighter flex items-center gap-2 text-slate-900 select-none">
+                    <i class="ph-fill ph-skull text-brand-pink animate-float pointer-events-none"></i> K-9적단
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-bold text-slate-500">
+                    <a href="#sec-00" class="nav-link hover-target hover:text-brand-pink transition">00. 프로젝트 명</a>
+                    <a href="#sec-summary" class="nav-link hover-target hover:text-brand-pink transition">0.5 Summary</a>
+                    <a href="#sec-02" class="nav-link hover-target hover:text-brand-pink transition">02. 전략 & 실행</a>
+                    <a href="#sec-03" class="nav-link hover-target hover:text-brand-cyan transition">03. KPI 성과 분석</a>
+                    <a href="#sec-04" class="nav-link hover-target hover:text-brand-pink transition">04. 크루 소개</a>
+                </div>
             </div>
-            <h1 class="reveal-up active delay-100 text-6xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter mb-6 leading-[1.1] text-slate-900 drop-shadow-sm">
-                이 9역 전환은<br />
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-blue-700">우리가 접수한다</span>
-            </h1>
-            <p class="reveal-up active delay-200 text-xl md:text-2xl text-slate-600 font-bold mb-10 max-w-3xl mx-auto leading-relaxed readable-text">
-                남아공 틱톡 유저들의 마음을 완벽하게 훔친<br/> K-9적단의 <strong class="text-brand-pink underline decoration-4 underline-offset-4">참여형 퍼널 최적화 및 액션 전환 스토리</strong>
-            </p>
-            
-            <div class="reveal-up active delay-300 relative w-full max-w-2xl mx-auto flex flex-col items-center justify-center mt-4">
-                <!-- 💡 초기 진입 시 완전 선명하게(opacity: 1) 유지되도록 수정 -->
-                <img id="mainLogo" src="https://drive.google.com/thumbnail?id=1ni_okeRngGumHYOOaCp2kZKEoPtTr--V&sz=w1200" alt="K-9 로고 배경" class="w-full object-contain drop-shadow-xl transition-all duration-200 ease-out" style="opacity: 1;">
+        </nav>
+
+        <section id="sec-00" class="relative min-h-screen flex flex-col items-center justify-start text-center px-6 pt-32 pb-20 overflow-hidden">
+            <div class="absolute inset-0 z-0 bg-gradient-to-tr from-rose-50 via-slate-50 to-cyan-50 opacity-80"></div>
+            <div class="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center">
                 
-                <div class="absolute bottom-12 md:bottom-20 left-1/2 -translate-x-1/2 w-full flex flex-col items-center justify-center z-20">
-                    <div class="relative group inline-block mb-4">
-                        <div class="absolute inset-0 bg-brand-cyan/60 blur-[20px] rounded-full animate-pulse-glow group-hover:bg-brand-cyan/90 transition duration-500"></div>
-                        <a href="#sec-01" class="solid-dark-btn flex items-center justify-center gap-3 font-black text-xl px-12 py-5 rounded-full z-10 relative">
-                            작전 성과 확인하기
-                            <i class="ph-bold ph-hand-pointing-down text-3xl text-brand-cyan group-hover:text-white animate-bounce transition-colors"></i>
-                        </a>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition mt-2">
-                        <span class="text-[10px] font-black tracking-[0.2em] uppercase text-slate-500">Scroll Down</span>
-                        <div class="w-5 h-8 border-2 border-slate-400 rounded-full flex justify-center pt-1.5">
-                            <div class="w-1 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 01. 프로젝트 소개 -->
-    <section id="sec-01" class="py-32 px-6 relative bg-white border-t border-slate-100">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-20 reveal-up">
-                <span class="text-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">01. Background</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">배경 & 문제 정의</h2>
-                <p class="text-slate-500 text-lg font-medium readable-text">왜 하필 '남아공'이었고, 어떤 점이 가장 큰 어려움이었을까요?</p>
-            </div>
-
-            <div class="grid lg:grid-cols-2 gap-10 mb-24">
-                <div class="premium-card p-10 md:p-12 rounded-[2.5rem] bg-slate-50/50 reveal-up">
-                    <h3 class="text-2xl font-black mb-8 flex items-center gap-4 text-slate-900">
-                        <img src="https://drive.google.com/thumbnail?id=1Ab_QM2rgY-J3GDY2D-lpgdoYOHyCEMmM&sz=w200" alt="남아공 국기" class="w-12 h-12 object-cover rounded-full shadow-md border border-slate-200">
-                        디지털 친화적인 시장, Mzansi(남아공)
-                    </h3>
-                    <div class="space-y-6 text-slate-600 font-medium text-lg leading-relaxed readable-text">
-                        <p class="flex items-start gap-4"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-2xl shrink-0"></i> <div><strong>압도적인 틱톡 사용량:</strong> 하루 평균 소셜미디어 3시간 36분 사용! (세계 최상위권). 틱톡을 통해 정보를 얻는 데 매우 익숙한 시장입니다.</div></p>
-                        <p class="flex items-start gap-4"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-2xl shrink-0"></i> <div><strong>영어 기반의 비즈니스:</strong> 12개의 언어가 있지만 비즈니스는 100% 영어를 사용합니다. 즉, 영어 콘텐츠 하나로 모든 인종을 공략할 수 있습니다.</div></p>
-                        <p class="flex items-start gap-4"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-2xl shrink-0"></i> <div><strong>문화적 공감 포인트:</strong> 현지의 미루는 습관 'Now-Now'와 한국의 '빨리빨리' 문화가 만나면 광고의 훌륭한 재미 요소가 됩니다.</div></p>
-                    </div>
+                <!-- 💡 해커 터미널 트리거 (디마 3기 원형 박스 3번 클릭) -->
+                <div id="terminal-trigger-btn" onclick="triggerTerminal()" class="blur-reveal active inline-flex items-center gap-2 px-5 py-2 rounded-full bg-slate-900 border border-slate-700 shadow-xl text-sm font-bold text-brand-neonGreen tracking-widest uppercase mb-8 cursor-pointer hover-target transition hover:bg-slate-800" title="Tap 3 times">
+                    <i class="ph-fill ph-terminal-window text-lg pointer-events-none"></i> <span class="pointer-events-none">디마 3기 최종 프로젝트</span>
                 </div>
 
-                <div class="premium-card p-10 md:p-12 rounded-[2.5rem] border-rose-100 reveal-up delay-100">
-                    <h3 class="text-2xl font-black mb-8 flex items-center gap-4 text-slate-900">
-                        <div class="w-12 h-12 rounded-full bg-rose-50 shadow-sm flex items-center justify-center text-brand-pink border border-rose-100"><i class="ph-fill ph-warning-octagon text-3xl"></i></div>
-                        우리가 해결해야 했던 숙제
-                    </h3>
-                    <div class="space-y-6 text-slate-600 font-medium text-lg leading-relaxed readable-text">
-                        <p class="flex items-start gap-4"><i class="ph-bold ph-x-circle text-brand-pink mt-1 text-2xl shrink-0"></i> <div><strong>낯선 한국 홍보물:</strong> 틱톡에서 처음 보는 한국 홍보 영상은 유저들의 관심도가 낮습니다. 시작하자마자 시선을 확 사로잡지 못하면 바로 스크롤을 내려버립니다.</div></p>
-                        <p class="flex items-start gap-4"><i class="ph-bold ph-x-circle text-brand-pink mt-1 text-2xl shrink-0"></i> <div><strong>일방적인 정보 전달의 지루함:</strong> 멋진 풍경이나 설명만 가득한 일방적인 광고는 피로감을 줍니다. 타겟의 일상에 녹아드는 친근하고 가벼운 접근이 필요했습니다.</div></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-24">
-                <div class="text-center mb-16 reveal-up">
-                    <h3 class="text-3xl md:text-4xl font-black text-slate-900 mb-6">프로젝트 목표 & 성과 지표 (KPI)</h3>
-                    <p class="text-slate-600 text-lg font-medium max-w-4xl mx-auto leading-relaxed readable-text">
-                        그냥 쓱 보고 지나가는 광고가 아니라, <strong>직접 버튼을 누르고 참여하게 만드는 <br class="hidden md:block"/>놀이형 콘텐츠(테스트, 퀴즈)</strong>를 통해 한국 여행에 대한 관심을 실제 행동으로 이끌어내는 것입니다.
-                    </p>
-                </div>
-                
-                <div class="grid md:grid-cols-2 gap-8">
-                    <!-- KPI Phase 1 -->
-                    <div class="premium-card p-10 rounded-[2rem] bg-white reveal-up">
-                        <div class="flex items-center gap-3 mb-8">
-                            <span class="px-4 py-2 bg-blue-50 text-blue-600 font-black rounded-xl text-xs uppercase tracking-wider">Phase 1</span>
-                            <h4 class="text-xl font-black text-slate-900">1차 트래픽 캠페인 목표</h4>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 text-sm font-bold readable-text">
-                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">도달 (Reach)</span>노출수 30,000회+</div>
-                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">흥미 (Hook)</span>2초 시청률 25%+</div>
-                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">유입 (Traffic)</span>클릭률(CTR) 1.0%+</div>
-                            <div class="p-5 bg-blue-50 rounded-2xl border border-blue-100 text-blue-700"><span class="text-blue-500 block mb-1">참여 (랜딩 진입률)</span>5% 이상</div>
-                        </div>
-                    </div>
-                    <!-- KPI Phase 2 -->
-                    <div class="premium-card p-10 rounded-[2rem] bg-white reveal-up delay-100">
-                        <div class="flex items-center gap-3 mb-8">
-                            <span class="px-4 py-2 bg-rose-50 text-brand-pink font-black rounded-xl text-xs uppercase tracking-wider">Phase 2</span>
-                            <h4 class="text-xl font-black text-slate-900">2차 전환 캠페인 목표</h4>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 text-sm font-bold readable-text">
-                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">도달 (Reach)</span>노출수 100,000회+</div>
-                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">흥미 (Hook)</span>2초 유지율 40%+</div>
-                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100"><span class="text-slate-400 block mb-1">유입 (Traffic)</span>진성 타겟 CTR 1.2%+</div>
-                            <div class="p-5 bg-rose-50 rounded-2xl border border-rose-100 text-brand-pink"><span class="block mb-1 opacity-70">최종 전환 (Conversion)</span>총 30건 이상</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="premium-card p-10 md:p-14 rounded-[3rem] bg-gradient-to-br from-slate-50 to-white reveal-scale">
-                <div class="flex flex-col md:flex-row items-center gap-12">
-                    <div class="w-full md:w-5/12 relative group">
-                        <div class="absolute inset-0 bg-brand-pink/10 rounded-[2.5rem] transform translate-x-4 translate-y-4 group-hover:translate-x-6 group-hover:translate-y-6 transition duration-500"></div>
-                        <img src="https://drive.google.com/thumbnail?id=1c_hvgJH9TKCDTs9gPYIAfY4GdQd0y_wj&sz=w1000" alt="아마라 페르소나" class="relative z-10 w-full object-cover rounded-[2.5rem] border border-slate-200 shadow-xl">
-                    </div>
-                    <div class="w-full md:w-7/12 space-y-8">
-                        <div>
-                            <span class="text-brand-pink font-black text-sm tracking-widest uppercase mb-3 block">Target Persona</span>
-                            <h4 class="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">아마라 (AMARA), 27세</h4>
-                            <p class="text-slate-500 font-bold text-lg readable-text">케이프타운 거주 | 프리랜서 콘텐츠 에디터 | 글로벌 힙스터</p>
-                        </div>
-                        <div class="grid sm:grid-cols-2 gap-6">
-                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                                <h5 class="font-black text-slate-900 mb-3 text-base flex items-center gap-2"><i class="ph-fill ph-warning-circle text-brand-pink"></i> 듣기 싫은 이야기</h5>
-                                <p class="text-slate-600 text-sm leading-relaxed font-medium readable-text">정보만 나열하거나, 자랑만 하는 웅장한 관광 홍보물에는 흥미가 없습니다. 공감되지 않으면 3초 안에 넘겨버립니다.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                                <h5 class="font-black text-slate-900 mb-3 text-base flex items-center gap-2"><i class="ph-fill ph-star text-yellow-400"></i> 가장 듣고 싶은 이야기</h5>
-                                <p class="text-slate-600 text-sm leading-relaxed font-medium readable-text">거창한 여행 지식보다는 나의 취향(먹방, 쇼핑 등)을 가볍게 알아보고 대입해 볼 수 있는 '성향 테스트'에 열광합니다.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm sm:col-span-2 hover:shadow-md transition">
-                                <h5 class="font-black text-slate-900 mb-3 text-base flex items-center gap-2"><i class="ph-fill ph-cursor-click text-brand-cyan"></i> 참여 스타일 (Hook Trigger)</h5>
-                                <p class="text-slate-600 text-sm leading-relaxed font-medium readable-text"><strong>"당신은 한국에서 어떤 여행자가 될까요?"</strong> 같은 직관적인 질문으로 시선을 끕니다. 틱톡을 넘기다가 빠른 비교(A vs B) 선택지가 나오면 가벼운 재미로 참여하고, 결과를 지인들에게 공유합니다.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 02. 캠페인 설계 및 집행 -->
-    <section id="sec-02" class="py-32 px-6 bg-slate-50 border-y border-slate-200 relative z-10">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 reveal-up">
-                <span class="text-brand-pink font-black tracking-widest text-sm uppercase mb-3 block">02. Strategy & Execution</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-8 text-slate-900">전략 및 집행 기록</h2>
-                <p class="text-slate-500 text-lg font-medium leading-relaxed readable-text">데이터를 분석하여 빠르게 방향을 전환하고 성과를 만들어낸 과정입니다.</p>
-            </div>
-
-            <!-- 투트랙 전략 설명 -->
-            <div class="max-w-5xl mx-auto mb-20 premium-card p-10 md:p-14 rounded-[3rem] bg-white text-left shadow-lg reveal-scale">
-                <h4 class="text-2xl md:text-3xl font-black mb-6 text-slate-900 flex items-center gap-3">
-                    <i class="ph-fill ph-git-branch text-brand-pink"></i> 두 가지 방향 동시 테스트 (투트랙 전략)
-                </h4>
-                <p class="text-slate-600 font-medium leading-relaxed text-lg mb-10 readable-text">
-                    처음부터 100% 정답을 알 수는 없기에, 1차 캠페인에서 완전히 성격이 다른 2가지(성향 테스트형 vs 지식 퀴즈형) 광고를 동시에 노출하여 유저의 반응을 살폈습니다. 결과를 바탕으로 <strong>반응이 좋은 것은 더 뾰족하게 키우고, 안 된 것은 미련 없이 갈아엎는 빠른 전략 수정</strong>을 진행했습니다.
+                <h1 class="blur-reveal active delay-100 text-6xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter mb-6 leading-[1.1] text-slate-900 drop-shadow-sm">
+                    이 9역 전환은<br />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-blue-700">우리가 접수한다</span>
+                </h1>
+                <p class="blur-reveal active delay-200 text-xl md:text-2xl text-slate-600 font-bold mb-10 max-w-3xl mx-auto leading-relaxed readable-text">
+                    남아공 틱톡 유저들의 마음을 완벽하게 훔친<br/> K-9적단의 <strong class="text-brand-pink underline decoration-4 underline-offset-4">참여형 퍼널 최적화 및 액션 전환 스토리</strong>
                 </p>
-                <div class="grid sm:grid-cols-2 gap-8">
-                    <div class="p-8 bg-cyan-50 rounded-[2rem] border border-cyan-100 hover:shadow-md transition order-1">
-                        <span class="text-brand-cyan font-black text-base flex items-center gap-2 mb-3"><i class="ph-bold ph-arrows-clockwise text-xl"></i> 실패에서 배운 전략 (퀴즈팀)</span>
-                        <p class="text-slate-700 text-base leading-relaxed font-bold readable-text">완주율 0%로 철저히 실패한 '지식 퀴즈'는 전면 폐기하고, 참여하기 아주 쉬운 <strong>새로운 기획(이미지 밸런스 퀴즈)으로 방향 전환</strong>을 단행했습니다.</p>
-                    </div>
-                    <div class="p-8 bg-rose-50 rounded-[2rem] border border-rose-100 hover:shadow-md transition order-2">
-                        <span class="text-brand-pink font-black text-base flex items-center gap-2 mb-3"><i class="ph-bold ph-check-circle text-xl"></i> 성과가 확인된 전략 (유형팀)</span>
-                        <p class="text-slate-700 text-base leading-relaxed font-bold readable-text">초기 반응이 좋았던 '성향 테스트'는 디자인을 더 직관적으로 다듬고 버튼을 잘 보이게 고쳐서 <strong>성과를 확실하게 확대</strong> 했습니다.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 매체 및 예산 요약 -->
-            <div class="flex flex-wrap justify-center gap-4 mb-24 reveal-up">
-                <div class="px-6 py-4 bg-white rounded-full border border-slate-200 text-slate-700 font-bold flex items-center gap-2 shadow-sm readable-text">
-                    <i class="ph-fill ph-tiktok text-black text-xl"></i> 틱톡 집중 (총 예산 227,000원)
-                </div>
-                <div class="px-6 py-4 bg-white rounded-full border border-slate-200 text-slate-600 font-bold flex items-center gap-2 shadow-sm readable-text">
-                    <i class="ph-fill ph-magnifying-glass text-brand-cyan text-xl"></i> 1차 소재 테스트: 26.05.01 ~ 05.04 (73,139원)
-                </div>
-                <div class="px-6 py-4 bg-white rounded-full border border-slate-200 text-slate-600 font-bold flex items-center gap-2 shadow-sm readable-text">
-                    <i class="ph-fill ph-rocket-launch text-brand-pink text-xl"></i> 2차 성과 확대: 26.05.08 ~ 05.14 (153,861원)
-                </div>
-            </div>
-
-            <!-- 💡 퀴즈 & 문화팀 실행 내역 -->
-            <div class="mb-32">
-                <div class="flex items-center gap-4 mb-12 reveal-up">
-                    <h3 class="text-3xl font-black text-slate-900 shrink-0 flex items-center gap-2"><i class="ph-fill ph-lightbulb text-brand-cyan"></i> 퀴즈 & 문화팀</h3>
-                    <div class="h-px flex-1 bg-slate-300"></div>
-                    <span class="text-brand-cyan font-black bg-white px-5 py-2 rounded-full text-sm shadow-sm border border-slate-200 shrink-0">어려운 퀴즈 ➔ 쉬운 밸런스 게임으로 방향 전환</span>
-                </div>
-
-                <div class="flex flex-col gap-16">
-                    <div class="premium-card p-10 md:p-16 rounded-[3rem] bg-white flex flex-col xl:flex-row gap-16 items-center opacity-90 grayscale-[10%] hover:grayscale-0 transition duration-500 reveal-up">
-                        <div class="flex-1 space-y-6">
-                            <div class="flex items-center gap-3 mb-4">
-                                <span class="text-slate-500 font-black text-sm uppercase tracking-widest">1차 캠페인 (과거)</span>
-                                <span class="text-brand-neonGreen text-xs font-black bg-brand-neonGreen/10 px-3 py-1.5 rounded-lg border border-brand-neonGreen/20">완주율 0% 실패</span>
-                            </div>
-                            <h4 class="text-3xl md:text-4xl font-black text-slate-900">지식 테스트가 만든 심리적 장벽</h4>
-                            <p class="text-lg font-bold text-slate-600 leading-relaxed readable-text">
-                                공항 입국 심사라는 낯선 설정과, 수많은 영문 텍스트를 읽고 풀어야 하는 <strong class="text-brand-neonGreen">지식 테스트</strong>가 숏폼 유저들을 피곤하게 만들었습니다. 유입된 유저는 있었지만, 끝까지 문제를 푼 사람이 단 한 명도 없었습니다.
-                            </p>
-                        </div>
-                        
-                        <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8">
-                            <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> 1차 광고 영상</div>
-                                <div class="phone-wrapper">
-                                    <div class="phone-glow glow-neon-green"></div>
-                                    <div class="phone-mockup phone-mockup-dark">
-                                        <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="phone-iframe" allow="autoplay"></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> 1차 랜딩페이지 (구동 화면)</div>
-                                <div class="phone-wrapper">
-                                    <div class="phone-glow glow-neon-green"></div>
-                                    <div class="phone-mockup phone-mockup-dark">
-                                        <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <div class="iframe-scaler">
-                                                <iframe src="https://dima-1st-quiz.vercel.app/" class="phone-iframe"></iframe>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="premium-card p-10 md:p-16 rounded-[3rem] bg-white border-2 border-brand-cyan/30 shadow-[0_20px_60px_rgba(8,145,178,0.12)] flex flex-col xl:flex-row gap-16 items-center reveal-up">
-                        <div class="flex-1 space-y-6">
-                            <div class="flex items-center gap-3 mb-4">
-                                <span class="text-brand-cyan font-black text-sm uppercase tracking-widest">2차 캠페인 (현재)</span>
-                                <span class="text-brand-cyan text-xs font-black bg-cyan-50 px-3 py-1.5 rounded-lg border border-cyan-100 animate-pulse-soft">기적의 완주율 달성</span>
-                            </div>
-                            <h4 class="text-3xl md:text-4xl font-black text-slate-900">글씨 대신 직관적인 그림으로 승부하다</h4>
-                            <p class="text-lg font-bold text-slate-700 leading-relaxed readable-text">
-                                어려운 퀴즈를 과감히 버리고, 현지인들의 문화를 비교하는 친근한 <strong class="text-brand-cyan">'길거리 인터뷰' 영상</strong>으로 바꿨습니다. 랜딩페이지 역시 복잡한 글씨를 없애고 그림만 보고 1초 만에 탭하는 <strong class="text-brand-cyan">'A/B 밸런스 게임'</strong>으로 바꾸자 유저들이 이탈 없이 끝까지 몰입했습니다.
-                            </p>
-                        </div>
-                        
-                        <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8">
-                            <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-brand-cyan mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> 2차 영상 (새로운 기획)</div>
-                                <div class="phone-wrapper">
-                                    <div class="phone-glow glow-cyan"></div>
-                                    <div class="phone-mockup border-cyan-800">
-                                        <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="phone-iframe" allow="autoplay"></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-brand-cyan mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-hand-tap text-lg"></i> 2차 랜딩 (직접 터치해보세요!)</div>
-                                <div class="phone-wrapper">
-                                    <div class="phone-glow glow-cyan"></div>
-                                    <div class="phone-mockup border-cyan-800">
-                                        <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <iframe src="https://dima3-9quiz.vercel.app/" class="phone-iframe" style="position: relative; z-index: 10;"></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 🔍 유형팀 실행 내역 -->
-            <div class="reveal-up">
-                <div class="flex items-center gap-4 mb-12">
-                    <h3 class="text-3xl font-black text-slate-900 shrink-0 flex items-center gap-2"><i class="ph-fill ph-magnifying-glass text-brand-pink"></i> 유형팀</h3>
-                    <div class="h-px flex-1 bg-slate-300"></div>
-                    <span class="text-brand-pink font-black bg-white px-5 py-2 rounded-full text-sm shadow-sm border border-slate-200 shrink-0">좋은 반응을 더 확실한 전환으로 확대</span>
-                </div>
-
-                <div class="flex flex-col gap-16">
-                    <div class="premium-card p-10 md:p-16 rounded-[3rem] bg-white flex flex-col xl:flex-row gap-16 items-center reveal-up opacity-90 grayscale-[10%] hover:grayscale-0 transition duration-500">
-                        <div class="flex-1 space-y-6">
-                            <div class="flex items-center gap-3 mb-4">
-                                <span class="text-slate-500 font-black text-sm uppercase tracking-widest">1차 캠페인 (과거)</span>
-                                <span class="text-brand-neonGreen text-xs font-black bg-brand-neonGreen/10 px-3 py-1.5 rounded-lg border border-brand-neonGreen/20">초기 유입은 성공적</span>
-                            </div>
-                            <h4 class="text-3xl md:text-4xl font-black text-slate-900">호기심 유발 성공, 하지만 아쉬운 첫인상</h4>
-                            <p class="text-lg font-bold text-slate-600 leading-relaxed readable-text">
-                                '나의 성향 파악'이라는 주제 자체는 타겟의 호기심을 끌어 유입 단가를 크게 낮췄습니다. 하지만 클릭하고 들어온 랜딩 첫 화면에 작고 복잡한 픽셀 아트와 텍스트가 너무 많아, 유저들이 <strong class="text-brand-neonGreen">직관성을 느끼지 못하고 바로 뒤로 가기를 누르는 병목 현상</strong>이 발생했습니다.
-                            </p>
-                        </div>
-
-                        <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8">
-                            <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> 1차 광고 영상</div>
-                                <div class="phone-wrapper">
-                                    <div class="phone-glow glow-neon-green"></div>
-                                    <div class="phone-mockup phone-mockup-dark">
-                                        <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="phone-iframe" allow="autoplay"></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> 1차 랜딩페이지 (구동 화면)</div>
-                                <div class="phone-wrapper">
-                                    <div class="phone-glow glow-neon-green"></div>
-                                    <div class="phone-mockup phone-mockup-dark">
-                                        <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <div class="iframe-scaler">
-                                                <iframe src="https://triptokorea9jo.netlify.app/" class="phone-iframe"></iframe>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="premium-card p-10 md:p-16 rounded-[3rem] bg-white border-2 border-brand-pink/30 shadow-[0_20px_60px_rgba(225,29,72,0.12)] flex flex-col xl:flex-row gap-16 items-center reveal-up">
-                        <div class="flex-1 space-y-6">
-                            <div class="flex items-center gap-3 mb-4">
-                                <span class="text-brand-pink font-black text-sm uppercase tracking-widest">2차 캠페인 (현재)</span>
-                                <span class="text-brand-pink text-xs font-black bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100">전환율 800% 성장</span>
-                            </div>
-                            <h4 class="text-3xl md:text-4xl font-black text-slate-900">클릭을 유도하는 직관적인 디자인 개편</h4>
-                            <p class="text-lg font-bold text-slate-700 leading-relaxed readable-text">
-                                눈을 피곤하게 하던 복잡한 요소들을 과감히 다 지우고, 세련되고 귀여운 <strong class="text-brand-pink">3D 캐릭터</strong>로 화면 바꿨습니다. 또한 최종 목표인 <strong class="text-brand-pink">'결과 확인하기' 버튼을 맨 위로 올리고 깜빡이는 애니메이션</strong>을 주어 유저의 클릭을 확실하게 이끌어냈습니다.
-                            </p>
-                        </div>
-                        
-                        <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8">
-                            <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-brand-pink mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> 2차 영상 (디자인 고도화)</div>
-                                <div class="phone-wrapper">
-                                    <div class="phone-glow glow-pink"></div>
-                                    <div class="phone-mockup border-rose-900">
-                                        <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="phone-iframe" allow="autoplay"></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-1 w-full max-w-[360px] mx-auto">
-                                <div class="text-center text-sm font-bold text-brand-pink mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-hand-tap text-lg"></i> 2차 랜딩 (직접 터치해보세요!)</div>
-                                <div class="phone-wrapper">
-                                    <div class="phone-glow glow-pink"></div>
-                                    <div class="phone-mockup border-rose-900">
-                                        <div class="dynamic-island"></div>
-                                        <div class="phone-screen">
-                                            <iframe src="https://dima3-9test.vercel.app/" class="phone-iframe" style="position: relative; z-index: 10;"></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 03. 성과 요약 & 인사이트 -->
-    <section id="sec-03" class="py-32 px-6 bg-white relative z-10 border-t border-slate-200">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-20 reveal-up">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">03. Real Data & Results</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">숫자로 증명하는 변화의 힘</h2>
-                <p class="text-slate-500 text-lg font-medium readable-text">단순히 조회수만 높은 가짜 성과가 아닙니다. 유저가 진짜 행동한 '실측 데이터'입니다.</p>
-            </div>
-
-            <!-- 핵심 성과 카운터 -->
-            <div class="grid md:grid-cols-2 gap-8 mb-24 reveal-up delay-100">
-                <!-- 문화팀 -->
-                <div class="premium-card p-12 rounded-[3rem] text-center border-t-8 border-t-brand-cyan shadow-lg">
-                    <div class="text-brand-cyan mb-6 flex justify-center"><i class="ph-fill ph-fire text-6xl"></i></div>
-                    <p class="text-slate-400 font-bold mb-3 uppercase text-sm tracking-widest">💡 퀴즈 & 문화팀</p>
-                    <h3 class="text-6xl md:text-8xl font-black text-slate-900 mb-2 flex items-baseline justify-center gap-2 tracking-tighter">
-                        <span class="counter" data-target="10.25">0</span><span class="text-3xl text-slate-400">회</span>
-                    </h3>
-                    <p class="text-xl text-slate-700 font-black mb-8">한 사람당 평균 문제 풀이 터치 횟수</p>
-                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-left">
-                        <p class="text-slate-600 font-medium leading-relaxed text-sm readable-text"><strong class="text-brand-cyan block mb-2"><i class="ph-bold ph-magnifying-glass"></i> 실무 데이터 분석 :</strong>단순히 화면을 보다가 나간 것이 아닙니다. 총 <strong class="text-slate-900">205건 (이벤트) / 20명 (사용자)</strong>의 실측 데이터가 증명하듯, 본인 스스로 평균 10번 이상 터치하며 콘텐츠에 완벽히 몰입했습니다.</p>
-                    </div>
-                </div>
-
-                <!-- 유형팀 -->
-                <div class="premium-card p-12 rounded-[3rem] text-center border-t-8 border-t-brand-pink shadow-lg">
-                    <div class="text-brand-pink mb-6 flex justify-center"><i class="ph-fill ph-hand-tap text-6xl"></i></div>
-                    <p class="text-slate-400 font-bold mb-3 uppercase text-sm tracking-widest">🔍 유형팀</p>
-                    <h3 class="text-6xl md:text-8xl font-black text-slate-900 mb-2 flex items-baseline justify-center gap-2 tracking-tighter">
-                        <span class="counter" data-target="800">0</span><span class="text-3xl text-slate-400">%</span>
-                    </h3>
-                    <p class="text-xl text-slate-700 font-black mb-8">1차 대비 최종 클릭 성공률 성장</p>
-                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-left">
-                        <p class="text-slate-600 font-medium leading-relaxed text-sm readable-text"><strong class="text-brand-pink block mb-2"><i class="ph-bold ph-magic-wand"></i> 실무 데이터 분석 :</strong>단순 호기심 클릭을 배제하고, 버튼 위치와 디자인을 바꾸는 최적화 작업만으로도 <strong class="text-slate-900">최종 목적지 클릭수가 1차(2건) 대비 8배인 16건 (이벤트) / 5명 (사용자)</strong>으로 폭증했습니다.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 스케일업 종합 리포트 -->
-            <div class="premium-card rounded-[2.5rem] overflow-hidden mb-24 reveal-scale border border-slate-200">
-                <div class="p-8 md:p-12 bg-slate-900 text-white text-center">
-                    <h3 class="text-3xl font-black">📊 K-9적단 최종 캠페인 성과 요약</h3>
-                </div>
-                <!-- 💡 퀴즈팀 -> 유형팀 순서 정렬 유지 -->
-                <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-                    <!-- 1. 퀴즈 & 문화팀 -->
-                    <div class="p-10 space-y-6 bg-white hover:bg-slate-50 transition duration-300">
-                        <h4 class="font-black text-brand-cyan text-xl border-b pb-4 border-slate-100 flex items-center gap-2"><i class="ph-fill ph-lightbulb"></i> 퀴즈 & 문화팀 (새로운 방향)</h4>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">112,277회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">721회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900">107원</span></div>
-                        <div class="flex justify-between items-center font-black mt-6 pt-6 border-t border-slate-100">
-                            <span class="text-slate-900 text-lg leading-tight">최종 전환<br/><span class="text-sm font-bold text-slate-500">(랜딩페이지 완료)</span></span>
-                            <span class="text-brand-cyan text-right text-xl">37건 <span class="text-sm text-brand-cyan/80">(이벤트)</span><br/><span class="text-sm text-slate-500">20명 (사용자)</span></span>
-                        </div>
-                    </div>
+                
+                <div class="blur-reveal active delay-300 relative w-full max-w-2xl mx-auto flex flex-col items-center justify-center mt-4">
+                    <img id="mainLogo" src="https://drive.google.com/thumbnail?id=1ni_okeRngGumHYOOaCp2kZKEoPtTr--V&sz=w1200" alt="K-9 로고 배경" class="w-full object-contain drop-shadow-xl transition-all duration-200 ease-out" style="opacity: 0.9;">
                     
-                    <!-- 2. 유형팀 -->
-                    <div class="p-10 space-y-6 bg-white hover:bg-slate-50 transition duration-300">
-                        <h4 class="font-black text-brand-pink text-xl border-b pb-4 border-slate-100 flex items-center gap-2"><i class="ph-fill ph-magnifying-glass"></i> 유형팀 (디자인 고도화)</h4>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">광고 노출수</span><span class="text-slate-900">98,758회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">사이트 유입</span><span class="text-slate-900">722회</span></div>
-                        <div class="flex justify-between font-bold text-slate-600"><span class="text-slate-500">유입 단가(CPC)</span><span class="text-slate-900">107원</span></div>
-                        <div class="flex justify-between items-center font-black mt-6 pt-6 border-t border-slate-100">
-                            <span class="text-slate-900 text-lg leading-tight">최종 전환<br/><span class="text-sm font-bold text-slate-500">(외부링크 VISIT KOREA 클릭)</span></span>
-                            <span class="text-brand-pink text-right text-xl">16건 <span class="text-sm text-brand-pink/80">(이벤트)</span><br/><span class="text-sm text-slate-500">5명 (사용자)</span></span>
+                    <div class="absolute bottom-12 md:bottom-20 left-1/2 -translate-x-1/2 w-full flex flex-col items-center justify-center z-20">
+                        <div class="magnetic-wrap group mb-4 hover-target">
+                            <div class="magnetic-inner">
+                                <div class="absolute inset-0 bg-brand-cyan/60 blur-[20px] rounded-full animate-pulse-glow group-hover:bg-brand-cyan/90 transition duration-500 pointer-events-none"></div>
+                                <a href="#sec-summary" class="solid-dark-btn px-12 py-5 rounded-full z-10 relative">
+                                    <span class="magnetic-text flex items-center justify-center gap-3 font-black text-xl">
+                                        작전 성과 확인하기
+                                        <i class="ph-bold ph-hand-pointing-down text-3xl text-brand-cyan transition-colors"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition mt-2">
+                            <span class="text-[10px] font-black tracking-[0.2em] uppercase text-slate-500">Scroll Down</span>
+                            <div class="w-5 h-8 border-2 border-slate-400 rounded-full flex justify-center pt-1.5">
+                                <div class="w-1 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- 최종 결론 & 넥스트 스텝 -->
-            <div class="premium-card p-12 md:p-16 rounded-[3rem] reveal-up delay-100 border-l-[12px] border-l-yellow-400">
-                <h3 class="text-3xl font-black mb-8 text-slate-900 flex items-center gap-4"><i class="ph-fill ph-flag-banner text-yellow-400 text-4xl"></i> 프로젝트 인사이트 & 넥스트 스텝</h3>
-                <div class="grid md:grid-cols-2 gap-12 text-slate-600 font-medium leading-relaxed text-lg mb-12">
-                    <div class="readable-text">
-                        <p class="mb-3 text-slate-900 font-black flex items-center gap-2"><i class="ph-bold ph-coins text-brand-cyan"></i> 효율적인 예산 관리 입증</p>
-                        광고 노출을 1차보다 202%나 대폭 늘렸지만, 타겟팅을 정교하게 다듬어 <strong class="text-slate-900">유입 단가(CPC)를 107원으로 동일하게 방어</strong>하며 안정적으로 성과 규모 키웠습니다.
-                    </div>
-                    <div class="readable-text">
-                        <p class="mb-3 text-slate-900 font-black flex items-center gap-2"><i class="ph-bold ph-clock text-brand-pink"></i> 이탈을 막는 3초의 법칙</p>
-                        랜딩 첫 화면의 '시작 버튼'을 누르게 하는 것이 가장 큰 관건이었습니다. 3초 이내에 나가는 유저를 붙잡기 위해, <strong class="text-slate-900">광고 영상 제일 첫 부분에 확실한 보상이나 결과물을 미리 보여줘야 한다는 것</strong>을 배웠습니다.
-                    </div>
+        </section>
+
+        <!-- 💡 01. 실무형 Executive Summary -->
+        <section id="sec-summary" class="py-24 px-6 relative z-10 border-t border-slate-100 bg-white">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-16 blur-reveal">
+                    <span class="text-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">01. Executive Summary</span>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">프로젝트 요약</h2>
                 </div>
-                <!-- 💡 넥스트 스텝 및 핵심 결론 -->
-                <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200">
-                    <h4 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-2"><i class="ph-fill ph-rocket-launch text-slate-800"></i> Next Step & 핵심 결론</h4>
-                    <p class="text-slate-700 font-medium leading-relaxed mb-4 readable-text">
-                        이번 프로젝트의 진정한 성과는 남아공이라는 완전히 낯선 신규 시장에서 <strong>'작동하는 디지털 유입 공식'</strong>을 찾아냈다는 점입니다. 일방적인 관광 홍보물에는 전혀 반응하지 않던(1차 완주율 0%) 차가운 트래픽(Cold Traffic)을 상대로, 현지 밈(Now-Now)과 '인터랙티브 밸런스 게임'을 테스트한 결과 불과 20만 원 남짓한 소액 예산으로 <strong>총 53건의 자발적인 행동 전환(활성 사용자 25명)</strong>을 유도했습니다. 비록 초기 테스트라 절대적인 수치가 작아 보일 수 있으나, 이는 글로벌 유저가 한국 콘텐츠에 평균 10회 이상 능동적으로 개입하게 만들어 '0에서 1을 만들어낸' 매우 유의미한 질적 데이터입니다.
-                    </p>
-                    <p class="text-slate-700 font-bold leading-relaxed border-t border-slate-200 pt-4 readable-text">
-                        👉 <span class="text-brand-cyan">Next Step: 검증된 공식을 바탕으로 다음과 같은 구체적인 스케일업(Scale-up)을 실행합니다.</span><br/>
-                        1) <strong>소재 확장 (A/B 테스트):</strong> 현재 반응이 좋았던 1개의 밸런스 게임 테마를 K-Pop, K-Food, K-Beauty 등 3~5가지 세부 테마로 확장 제작하여 전체 트래픽 볼륨을 키웁니다.<br/>
-                        2) <strong>초기 3초 훅(Hook) 개선:</strong> 영상 시작 직후 상단에 '나만의 K-여행 결과 카드' 예시 이미지를 명확히 띄워, 유저가 이 영상을 끝까지 보고 버튼을 눌러야 할 목적성을 100% 직관적으로 인지시킵니다.<br/>
-                        3) <strong>유사 타겟(Lookalike) 마케팅 전개:</strong> 이번 캠페인에서 확보한 25명의 진성 유저 픽셀 데이터를 시드(Seed)로 삼아, 이들과 유사한 성향을 가진 잠재 고객만을 정밀 타겟팅하는 2차 맞춤형 광고를 돌려 최종 유입 단가(CPA)를 크게 낮추겠습니다.
-                    </p>
+                
+                <div class="premium-card p-10 md:p-14 rounded-[3rem] shadow-2xl border-t-8 border-t-brand-neonGreen blur-reveal hover-target">
+                    <ul class="space-y-8 text-slate-600 font-medium leading-relaxed text-base md:text-lg readable-text">
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-target text-brand-cyan mt-1 text-2xl shrink-0"></i> 
+                            <div>
+                                <h4 class="text-xl font-black text-slate-900 mb-2">해결 과제 및 타겟</h4>
+                                한국 홍보 콘텐츠에 대한 <strong class="text-slate-900">남아공 유저들의 심리적 장벽을 낮추고, 단순 시청을 넘어 실제 참여와 공유를 이끌어내는 최적의 광고 퍼널을 검증</strong>하고자 했습니다. 숏폼 참여형 콘텐츠 소비가 빠르고 K-트렌드 믹스매치를 즐기는 <strong class="text-brand-pink">남아공 18~30세 MZ세대(특히 20대 후반 여성)</strong>를 핵심 타겟으로 삼았습니다.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-strategy text-brand-pink mt-1 text-2xl shrink-0"></i> 
+                            <div>
+                                <h4 class="text-xl font-black text-slate-900 mb-2">전략 및 실행 목표</h4>
+                                유저 반응 데이터(CTR, 완주율 등) 기반의 현지 최적화 소구점을 도출하고, 게이미피케이션이 적용된 초개인화 퍼널로 <strong class="text-slate-900">잠재고객 전환율(CVR)을 극대화</strong>하는 것을 목표로 했습니다. 영상 소재와 랜딩 페이지가 결합된 2종의 독립적인 인터랙티브 퍼널(성향 테스트, 문화 퀴즈)을 기획하여 1·2차에 걸쳐 총 4개의 영상과 랜딩페이지를 제작했습니다.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-chart-line-up text-brand-neonGreen mt-1 text-2xl shrink-0"></i> 
+                            <div>
+                                <h4 class="text-xl font-black text-slate-900 mb-2">1차 가설 검증 결과</h4>
+                                '개인화 성향 자극(유형팀-A안)'과 '롤플레잉 지식 퀴즈(퀴즈팀-B안)' 중 유입 효율이 높은 소구점을 찾고자 A/B 테스트를 진행한 결과, <strong class="text-brand-neonGreen">유형팀이 CTR 1.74%, CPC 43원으로 고효율을 기록</strong>한 반면, 퀴즈팀은 완주율 0%, CTR 1.09%로 매우 저조했습니다.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-rocket-launch text-blue-500 mt-1 text-2xl shrink-0"></i> 
+                            <div>
+                                <h4 class="text-xl font-black text-slate-900 mb-2">2차 피봇 및 성과</h4>
+                                데이터 분석 결과 '영상-랜딩 간 경험 단절 및 텍스트 과부하(유형팀)'와 '무거운 진입 장벽(퀴즈팀)'이 원인이었습니다. 비주얼 중심의 저마찰 UX로 고도화한 유형팀은 <strong class="text-blue-600">전환수가 600% 성장(6건)</strong>했고, 지식 퀴즈에서 '양자택일 밸런스 게임'으로 피봇(Pivot)한 문화팀(구 퀴즈팀)은 무려 <strong class="text-blue-600">37건의 압도적인 최종 전환(유형팀의 6배 이상)</strong>을 달성했습니다.
+                            </div>
+                        </li>
+                        <div class="mt-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl">
+                            <h4 class="text-lg font-black mb-2 text-slate-900 flex items-center gap-2"><i class="ph-fill ph-lightbulb text-yellow-500 text-2xl"></i> 총합 결과 및 인사이트</h4>
+                            <p class="font-bold text-slate-600 leading-relaxed">
+                                결론적으로 글로벌 캠페인의 성과는 화려한 디자인이 아닌 <strong class="text-slate-900">'문화적 로컬라이제이션'</strong>과 2초 내 시선을 끄는 <strong class="text-slate-900">'시각적 압축률'</strong>에 달려있음을 확인했습니다. 무엇보다 <span class="underline decoration-2 underline-offset-4 text-brand-pink">영상의 소구점과 랜딩 페이지의 경험이 완벽히 일치해야 유저 이탈을 방어하고 성공적인 최종 전환을 이끌어낼 수 있다</span>는 핵심 인사이트를 얻었습니다.
+                            </p>
+                        </div>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 04. 팀 소개 -->
-    <section id="sec-04" class="py-32 px-6 bg-slate-50 border-t border-slate-200 relative z-10">
-        <div class="max-w-7xl mx-auto reveal-up">
-            <div class="text-center mb-24">
-                <span class="text-slate-400 font-black tracking-widest text-sm uppercase mb-3 block">04. Meet the Crew</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">이 구역의 전환 루팡, K-9적단</h2>
-                <p class="text-slate-500 text-xl font-medium">데이터를 무기로 성과를 만들어낸 5인의 프로 마케터</p>
-            </div>
+        <!-- 02. 프로젝트 소개 -->
+        <section id="sec-02" class="py-24 px-6 relative border-t border-slate-100">
+            <div class="max-w-7xl mx-auto relative z-10">
+                <div class="text-center mb-20 blur-reveal">
+                    <span class="text-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">02. Background</span>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">배경 & 문제 정의</h2>
+                    <p class="text-slate-500 text-lg font-medium readable-text">왜 하필 '남아공'이었고, 어떤 점이 가장 큰 어려움이었을까요?</p>
+                </div>
 
-            <!-- 5인 팀원 카드 -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 reveal-up delay-200">
-                <!-- Member 1 : 윤서영 (에메랄드 Emerald) -->
-                <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-emerald-400">
-                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                        <img src="https://drive.google.com/thumbnail?id=1uhmGR72hyXqs3bi-K66BmeqzGucrzwVX&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="윤서영">
-                        <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(16,185,129,0.15)] pointer-events-none transition duration-500"></div>
+                <div class="grid lg:grid-cols-2 gap-10 mb-24">
+                    <div class="premium-card p-10 md:p-12 rounded-[2.5rem] blur-reveal hover-target">
+                        <h3 class="text-2xl font-black mb-8 flex items-center gap-4 text-slate-900">
+                            <img src="https://drive.google.com/thumbnail?id=1Ab_QM2rgY-J3GDY2D-lpgdoYOHyCEMmM&sz=w200" alt="남아공 국기" class="w-12 h-12 object-cover rounded-full shadow-md border border-slate-200">
+                            디지털 친화적인 시장, Mzansi
+                        </h3>
+                        <div class="space-y-6 text-slate-600 font-medium text-lg leading-relaxed readable-text">
+                            <p class="flex items-start gap-4"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-2xl shrink-0"></i> <div><strong>압도적인 틱톡 사용량:</strong> 하루 평균 소셜미디어 3시간 36분 사용! (세계 최상위권). 틱톡을 통해 정보를 얻는 데 매우 익숙한 시장입니다.</div></p>
+                            <p class="flex items-start gap-4"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-2xl shrink-0"></i> <div><strong>영어 기반의 비즈니스:</strong> 12개의 언어가 있지만 비즈니스는 100% 영어를 사용합니다. 즉, 영어 콘텐츠 하나로 모든 인종을 공략할 수 있습니다.</div></p>
+                            <p class="flex items-start gap-4"><i class="ph-bold ph-check-circle text-brand-cyan mt-1 text-2xl shrink-0"></i> <div><strong>문화적 공감 포인트:</strong> 현지의 미루는 습관 'Now-Now'와 한국의 '빨리빨리' 문화가 만나면 광고의 훌륭한 재미 요소가 됩니다.</div></p>
+                        </div>
                     </div>
-                    <div class="p-5 text-center">
-                        <div class="text-[10px] font-black tracking-wider text-emerald-500 mb-1 uppercase">팀장 / PM</div>
-                        <div class="font-black text-xl text-slate-900">윤서영</div>
-                    </div>
-                </div>
-                <!-- Member 2 : 서지연 (핑크 Pink) -->
-                <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-brand-pink">
-                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                        <img src="https://drive.google.com/thumbnail?id=1ThPTdSFmntW0jgjbFnUruojnOuVqGZJi&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="서지연">
-                        <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(225,29,72,0.15)] pointer-events-none transition duration-500"></div>
-                    </div>
-                    <div class="p-5 text-center">
-                        <div class="text-[10px] font-black tracking-wider text-brand-pink mb-1 uppercase">부팀장 / Marketer</div>
-                        <div class="font-black text-xl text-slate-900">서지연</div>
-                    </div>
-                </div>
-                <!-- Member 3 : 김진석 (옐로우 Yellow) -->
-                <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-yellow-400">
-                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                        <img src="https://drive.google.com/thumbnail?id=1N4EZAs5Tg5tZfEn7LMNZRltmMBfOC4xx&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="김진석">
-                        <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(234,179,8,0.15)] pointer-events-none transition duration-500"></div>
-                    </div>
-                    <div class="p-5 text-center">
-                        <div class="text-[10px] font-black tracking-wider text-yellow-500 mb-1 uppercase">팀원 / Analyst</div>
-                        <div class="font-black text-xl text-slate-900">김진석</div>
+
+                    <div class="premium-card p-10 md:p-12 rounded-[2.5rem] blur-reveal delay-100 hover-target">
+                        <h3 class="text-2xl font-black mb-8 flex items-center gap-4 text-slate-900">
+                            <div class="w-12 h-12 rounded-full bg-rose-50 shadow-sm flex items-center justify-center text-brand-pink border border-rose-100"><i class="ph-fill ph-warning-octagon text-3xl"></i></div>
+                            우리가 해결해야 했던 숙제
+                        </h3>
+                        <div class="space-y-6 text-slate-600 font-medium text-lg leading-relaxed readable-text">
+                            <p class="flex items-start gap-4"><i class="ph-bold ph-x-circle text-brand-pink mt-1 text-2xl shrink-0"></i> <div><strong>낯선 한국 홍보물:</strong> 틱톡에서 처음 보는 한국 홍보 영상은 유저들의 관심도가 낮습니다. 시작하자마자 시선을 확 사로잡지 못하면 바로 스크롤을 내려버립니다.</div></p>
+                            <p class="flex items-start gap-4"><i class="ph-bold ph-x-circle text-brand-pink mt-1 text-2xl shrink-0"></i> <div><strong>일방적인 정보 전달의 지루함:</strong> 멋진 풍경이나 설명만 가득한 일방적인 광고는 피로감을 줍니다. 타겟의 일상에 녹아드는 친근하고 가벼운 접근이 필요했습니다.</div></p>
+                        </div>
                     </div>
                 </div>
-                <!-- Member 4 : 윤소이 (퍼플 Purple) -->
-                <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-purple-400">
-                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                        <img src="https://drive.google.com/thumbnail?id=1AR_55zPSkMomW2NLo1sSGMfdJV6ab49d&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="윤소이">
-                        <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(168,85,247,0.15)] pointer-events-none transition duration-500"></div>
-                    </div>
-                    <div class="p-5 text-center">
-                        <div class="text-[10px] font-black tracking-wider text-purple-500 mb-1 uppercase">팀원 / Designer</div>
-                        <div class="font-black text-xl text-slate-900">윤소이</div>
-                    </div>
-                </div>
-                <!-- Member 5 : 강현아 (시안 Cyan) -->
-                <div class="bg-white p-3 rounded-[2rem] shadow-sm hover:shadow-2xl transition duration-500 group border border-slate-200 hover:border-brand-cyan">
-                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
-                        <img src="https://drive.google.com/thumbnail?id=1RsMkfvcSUCucqU7fpdn5ky13iuCrqsz-&sz=w600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="강현아">
-                        <div class="absolute inset-0 shadow-[inset_0_-40px_40px_rgba(8,145,178,0.15)] pointer-events-none transition duration-500"></div>
-                    </div>
-                    <div class="p-5 text-center">
-                        <div class="text-[10px] font-black tracking-wider text-brand-cyan mb-1 uppercase">팀원 / Creator</div>
-                        <div class="font-black text-xl text-slate-900">강현아</div>
+
+                <div class="premium-card p-10 md:p-14 rounded-[3rem] blur-reveal delay-200 hover-target">
+                    <div class="flex flex-col md:flex-row items-center gap-12">
+                        <div class="w-full md:w-5/12 relative group">
+                            <div class="absolute inset-0 bg-brand-pink/10 rounded-[2.5rem] transform translate-x-4 translate-y-4 group-hover:translate-x-6 group-hover:translate-y-6 transition duration-500"></div>
+                            <img src="https://drive.google.com/thumbnail?id=1c_hvgJH9TKCDTs9gPYIAfY4GdQd0y_wj&sz=w1000" alt="아마라 페르소나" class="relative z-10 w-full object-cover rounded-[2.5rem] border border-slate-200 shadow-xl">
+                        </div>
+                        <div class="w-full md:w-7/12 space-y-8">
+                            <div>
+                                <span class="text-brand-pink font-black text-sm tracking-widest uppercase mb-3 block">Target Persona</span>
+                                <h4 class="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">아마라 (AMARA), 27세</h4>
+                                <p class="text-slate-500 font-bold text-lg readable-text">케이프타운 거주 | 프리랜서 콘텐츠 에디터 | 글로벌 힙스터</p>
+                            </div>
+                            <div class="grid sm:grid-cols-2 gap-6">
+                                <div class="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 shadow-sm transition">
+                                    <h5 class="font-black text-slate-900 mb-3 text-base flex items-center gap-2"><i class="ph-fill ph-warning-circle text-brand-pink"></i> 듣기 싫은 이야기</h5>
+                                    <p class="text-slate-600 text-sm leading-relaxed font-medium readable-text">정보만 나열하거나, 자랑만 하는 웅장한 관광 홍보물에는 흥미가 없습니다. 공감되지 않으면 3초 안에 넘겨버립니다.</p>
+                                </div>
+                                <div class="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 shadow-sm transition">
+                                    <h5 class="font-black text-slate-900 mb-3 text-base flex items-center gap-2"><i class="ph-fill ph-star text-yellow-400"></i> 가장 듣고 싶은 이야기</h5>
+                                    <p class="text-slate-600 text-sm leading-relaxed font-medium readable-text">거창한 여행 지식보다는 나의 취향(먹방, 쇼핑 등)을 가볍게 알아보고 대입해 볼 수 있는 '성향 테스트'에 열광합니다.</p>
+                                </div>
+                                <div class="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 shadow-sm sm:col-span-2 transition">
+                                    <h5 class="font-black text-slate-900 mb-3 text-base flex items-center gap-2"><i class="ph-fill ph-cursor-click text-brand-cyan"></i> 참여 스타일 (Hook Trigger)</h5>
+                                    <p class="text-slate-600 text-sm leading-relaxed font-medium readable-text"><strong>"당신은 한국에서 어떤 여행자가 될까요?"</strong> 같은 직관적인 질문으로 시선을 끕니다. 틱톡을 넘기다가 빠른 비교(A vs B) 선택지가 나오면 가벼운 재미로 참여하고, 결과를 지인들에게 공유합니다.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="mt-24 text-center reveal-scale delay-300">
-                <!-- 폭죽 효과가 들어간 영입 제안 버튼 -->
-                <button onclick="triggerConfettiAndModal()" class="px-12 py-6 bg-slate-900 text-white font-black rounded-full text-xl shadow-2xl hover:scale-105 hover:bg-slate-800 hover:shadow-brand-pink/20 transition duration-300 flex items-center gap-3 mx-auto">
-                    <i class="ph-fill ph-handshake text-2xl"></i> K-9적단 영입 제안하기
-                </button>
+        </section>
+
+        <!-- 03. 캠페인 설계 및 실행 내역 -->
+        <section id="sec-03" class="py-32 px-6 border-y border-slate-200/50 relative z-10">
+            <div class="max-w-7xl mx-auto relative z-20">
+                <div class="text-center mb-16 blur-reveal">
+                    <span class="text-brand-pink font-black tracking-widest text-sm uppercase mb-3 block">03. Strategy & Execution</span>
+                    <h2 class="text-4xl md:text-5xl font-black mb-8 text-slate-900">전략 및 집행 소재</h2>
+                    <p class="text-slate-500 text-lg font-medium leading-relaxed readable-text">데이터를 기반으로 이탈 구간을 분석하고 UX를 개선해 나간 과정입니다.</p>
+                </div>
+
+                <!-- 💡 퀴즈 & 문화팀 실행 내역 -->
+                <div class="mb-32">
+                    <div class="flex items-center gap-4 mb-12 blur-reveal relative z-10">
+                        <h3 class="text-3xl font-black text-slate-900 shrink-0 flex items-center gap-2"><i class="ph-fill ph-lightbulb text-brand-cyan"></i> 문화팀</h3>
+                        <div class="h-px flex-1 bg-slate-300"></div>
+                        <span class="text-brand-cyan font-black px-5 py-2 rounded-full text-sm shrink-0 premium-card !rounded-full hover-target">어려운 퀴즈 ➔ 쉬운 밸런스 게임으로 방향 전환</span>
+                    </div>
+
+                    <div class="flex flex-col gap-16 relative z-10">
+                        <div class="premium-card p-10 md:p-16 rounded-[3rem] flex flex-col xl:flex-row gap-16 items-center opacity-90 grayscale-[20%] hover:grayscale-0 transition duration-500 blur-reveal hover-target">
+                            <div class="flex-1 space-y-6">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="text-slate-500 font-black text-sm uppercase tracking-widest">1차 캠페인 (과거)</span>
+                                    <span class="text-brand-pink text-xs font-black bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-200">완주율 0% 실패</span>
+                                </div>
+                                <h4 class="text-3xl md:text-4xl font-black text-slate-900">지식 테스트가 만든 심리적 장벽</h4>
+                                <p class="text-lg font-bold text-slate-600 leading-relaxed readable-text">
+                                    공항 입국 심사라는 낯선 설정과, 수많은 영문 텍스트를 읽고 풀어야 하는 <strong class="text-brand-neonGreen">지식 테스트(B안)</strong>가 숏폼 유저들을 피곤하게 만들었습니다. 유입된 유저는 있었지만, 끝까지 문제를 푼 사람이 단 한 명도 없었습니다.
+                                </p>
+                            </div>
+                            
+                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target">
+                                <!-- 1차 영상 (B안) -->
+                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                    <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> B안 광고 영상</div>
+                                    <div class="phone-wrapper">
+                                        <div class="phone-glow glow-neon-green"></div>
+                                        <div class="phone-mockup phone-mockup-dark">
+                                            <div class="phone-screen">
+                                                <div class="gdrive-video-wrapper">
+                                                    <iframe src="https://drive.google.com/file/d/1GixiCpPE3NSES3ccmrPp15thvPYrG59l/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 1차 랜딩 (B안) -->
+                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                    <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> B안 랜딩페이지</div>
+                                    <div class="phone-wrapper">
+                                        <div class="phone-glow glow-neon-green"></div>
+                                        <div class="phone-mockup phone-mockup-dark">
+                                            <div class="phone-screen">
+                                                <div class="iframe-scaler-wrap">
+                                                    <div class="iframe-scaler">
+                                                        <iframe src="https://dima-1st-quiz.vercel.app/" class="phone-iframe"></iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="premium-card p-10 md:p-16 rounded-[3rem] border-2 border-brand-cyan/30 shadow-[0_20px_60px_rgba(8,145,178,0.12)] flex flex-col xl:flex-row gap-16 items-center blur-reveal delay-100 hover-target">
+                            <div class="flex-1 space-y-6">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="text-brand-cyan font-black text-sm uppercase tracking-widest">2차 캠페인 (현재)</span>
+                                    <span class="text-brand-cyan text-xs font-black bg-cyan-50/80 px-3 py-1.5 rounded-lg border border-cyan-100 animate-pulse-soft">기적의 완주율 달성</span>
+                                </div>
+                                <h4 class="text-3xl md:text-4xl font-black text-slate-900">글씨 대신 직관적인 그림으로 승부하다</h4>
+                                <p class="text-lg font-bold text-slate-700 leading-relaxed readable-text">
+                                    어려운 퀴즈를 과감히 버리고, 현지인들의 문화를 비교하는 친근한 <strong class="text-brand-cyan">'길거리 인터뷰' 영상(C안)</strong>으로 바꿨습니다. 랜딩페이지 역시 복잡한 글씨를 없애고 그림만 보고 1초 만에 탭하는 <strong class="text-brand-cyan">'A/B 밸런스 게임'</strong>으로 바꾸자 유저들이 이탈 없이 끝까지 몰입했습니다.
+                                </p>
+                            </div>
+                            
+                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target">
+                                <!-- 2차 영상 (C안) -->
+                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                    <div class="text-center text-sm font-bold text-brand-cyan mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> C안 광고 영상</div>
+                                    <div class="phone-wrapper">
+                                        <div class="phone-glow glow-cyan"></div>
+                                        <div class="phone-mockup border-cyan-800">
+                                            <div class="phone-screen">
+                                                <div class="gdrive-video-wrapper">
+                                                    <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 2차 랜딩 (C안) -->
+                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                    <div class="text-center text-sm font-bold text-brand-cyan mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-hand-tap text-lg"></i> C안 랜딩페이지</div>
+                                    <div class="phone-wrapper">
+                                        <div class="phone-glow glow-cyan"></div>
+                                        <div class="phone-mockup border-cyan-800">
+                                            <div class="phone-screen">
+                                                <div class="iframe-scaler-wrap">
+                                                    <div class="iframe-scaler">
+                                                        <iframe src="https://dima3-9quiz.vercel.app/" class="phone-iframe" style="position: relative; z-index: 10;"></iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🔍 유형팀 실행 내역 -->
+                <div class="blur-reveal">
+                    <div class="flex items-center gap-4 mb-6 relative z-10">
+                        <h3 class="text-3xl font-black text-slate-900 shrink-0 flex items-center gap-2"><i class="ph-fill ph-magnifying-glass text-brand-pink"></i> 유형팀</h3>
+                        <div class="h-px flex-1 bg-slate-300"></div>
+                        <span class="text-brand-pink font-black px-5 py-2 rounded-full text-sm shrink-0 premium-card !rounded-full hover-target">좋은 반응을 더 확실한 전환으로 확대</span>
+                    </div>
+
+                    <div class="flex flex-col gap-16 relative z-10">
+                        <div class="premium-card p-10 md:p-16 rounded-[3rem] flex flex-col xl:flex-row gap-16 items-center blur-reveal opacity-90 grayscale-[20%] hover:grayscale-0 transition duration-500 hover-target">
+                            <div class="flex-1 space-y-6">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="text-slate-500 font-black text-sm uppercase tracking-widest">1차 캠페인 (과거)</span>
+                                    <span class="text-brand-neonGreen text-xs font-black bg-brand-neonGreen/10 px-3 py-1.5 rounded-lg border border-brand-neonGreen/20">초기 유입은 성공적</span>
+                                </div>
+                                <h4 class="text-3xl md:text-4xl font-black text-slate-900">호기심 유발 성공, 하지만 아쉬운 첫인상</h4>
+                                <p class="text-lg font-bold text-slate-600 leading-relaxed readable-text">
+                                    '나의 성향 파악'이라는 주제 자체는 타겟의 호기심을 끌어 유입 단가를 크게 낮췄습니다. 하지만 클릭하고 들어온 랜딩 첫 화면에 작고 복잡한 픽셀 아트와 텍스트가 너무 많아, 유저들이 <strong class="text-brand-neonGreen">직관성을 느끼지 못하고 바로 뒤로 가기를 누르는 병목 현상</strong>이 발생했습니다.
+                                </p>
+                            </div>
+
+                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target">
+                                <!-- 1차 영상 (A안) -->
+                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                    <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> A안 광고 영상</div>
+                                    <div class="phone-wrapper">
+                                        <div class="phone-glow glow-neon-green"></div>
+                                        <div class="phone-mockup phone-mockup-dark">
+                                            <div class="phone-screen">
+                                                <div class="gdrive-video-wrapper">
+                                                    <iframe src="https://drive.google.com/file/d/1o7sNylbOp9Q5ob-jg6CznqRpMziy-ED0/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 1차 랜딩 (A안) -->
+                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                    <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> A안 랜딩페이지</div>
+                                    <div class="phone-wrapper">
+                                        <div class="phone-glow glow-neon-green"></div>
+                                        <div class="phone-mockup phone-mockup-dark">
+                                            <div class="phone-screen">
+                                                <div class="iframe-scaler-wrap">
+                                                    <div class="iframe-scaler">
+                                                        <iframe src="https://triptokorea9jo.netlify.app/" class="phone-iframe"></iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="premium-card p-10 md:p-16 rounded-[3rem] border-2 border-brand-pink/30 shadow-[0_20px_60px_rgba(225,29,72,0.12)] flex flex-col xl:flex-row gap-16 items-center blur-reveal delay-100 hover-target">
+                            <div class="flex-1 space-y-6">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="text-brand-pink font-black text-sm uppercase tracking-widest">2차 캠페인 (현재)</span>
+                                    <span class="text-brand-pink text-xs font-black bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-200">전환율 폭발적 성장</span>
+                                </div>
+                                <h4 class="text-3xl md:text-4xl font-black text-slate-900">클릭을 유도하는 직관적인 디자인 개편</h4>
+                                <p class="text-lg font-bold text-slate-700 leading-relaxed readable-text">
+                                    눈을 피곤하게 하던 복잡한 요소들을 과감히 다 지우고, 세련되고 귀여운 <strong class="text-brand-pink">3D 캐릭터</strong>로 화면을 바꿨습니다. 또한 최종 목표인 <strong class="text-brand-pink">'결과 확인하기' 버튼을 맨 위로 올리고 깜빡이는 애니메이션</strong>을 주어 유저의 클릭을 확실하게 이끌어냈습니다.
+                                </p>
+                            </div>
+                            
+                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target">
+                                <!-- 2차 영상 (A'안) -->
+                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                    <div class="text-center text-sm font-bold text-brand-pink mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> A'안 광고 영상</div>
+                                    <div class="phone-wrapper">
+                                        <div class="phone-glow glow-pink"></div>
+                                        <div class="phone-mockup border-rose-900">
+                                            <div class="phone-screen">
+                                                <div class="gdrive-video-wrapper">
+                                                    <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 2차 랜딩 (A'안) -->
+                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                    <div class="text-center text-sm font-bold text-brand-pink mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-hand-tap text-lg"></i> A'안 랜딩페이지</div>
+                                    <div class="phone-wrapper">
+                                        <div class="phone-glow glow-pink"></div>
+                                        <div class="phone-mockup border-rose-900">
+                                            <div class="phone-screen">
+                                                <div class="iframe-scaler-wrap">
+                                                    <div class="iframe-scaler">
+                                                        <iframe src="https://dima3-9test.vercel.app/" class="phone-iframe" style="position: relative; z-index: 10;"></iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 푸터 -->
-    <footer class="py-12 border-t border-slate-200 text-center text-slate-400 text-sm bg-white">
-        <div class="flex flex-wrap justify-center gap-3 mb-6">
-            <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 font-bold">#이9역_전환은_우리가접수한다</span>
-            <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 font-bold">#K_9적단_남아공접수완료</span>
-        </div>
-        <p class="font-bold tracking-tighter text-slate-400">&copy; 2026 K-9 Pirates. Crafted for the 1st Place.</p>
-    </footer>
+        <!-- 💡 04. 실무형 Apple-to-Apple KPI 분석 -->
+        <section id="sec-04" class="py-32 px-6 relative z-10 border-t border-slate-200/50 bg-slate-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20 blur-reveal">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">04. KPI & Results</span>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">KPI 데이터 기반 성과 분석</h2>
+                    <p class="text-slate-500 text-lg font-medium readable-text">Apple-to-Apple(동일 기준) 비교를 통해 증명된 실질적인 성과 개선 지표입니다.</p>
+                </div>
 
-    <!-- 💡 재치있는 영입 제안 팝업 모달 -->
+                <div class="max-w-6xl mx-auto mb-32 space-y-20 blur-reveal hover-target">
+                    
+                    <!-- 💡 1차 캠페인 KPI 분석표 -->
+                    <div class="premium-card p-6 md:p-10 rounded-[2.5rem]">
+                        <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                            <span class="px-5 py-2 bg-slate-800 text-white font-black rounded-full text-sm inline-flex items-center gap-2 shrink-0"><i class="ph-fill ph-presentation-chart text-lg"></i> 1차 캠페인</span>
+                            <h4 class="text-xl md:text-2xl font-black text-slate-900">유형팀(A안) vs 퀴즈팀(B안) 성과 요약</h4>
+                        </div>
+                        <div class="overflow-x-auto rounded-[1.5rem] border border-slate-200 shadow-sm bg-white">
+                            <table class="kpi-table w-full text-left min-w-[800px]">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-sm uppercase tracking-wider text-center">
+                                        <th class="p-5 font-black border-r border-slate-200 w-[15%]">핵심 지표 (퍼널)</th>
+                                        <th class="p-5 font-black border-r border-slate-200 w-[15%]">목표 수치</th>
+                                        <th class="p-5 font-black border-r border-slate-200 w-[20%] text-brand-pink">A안 (유형팀)</th>
+                                        <th class="p-5 font-black border-r border-slate-200 w-[20%] text-brand-cyan">B안 (퀴즈팀)</th>
+                                        <th class="p-5 font-black w-[30%] text-slate-900">평균 (A+B)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-base font-medium text-slate-700 text-center">
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">도달 (총 노출수)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">30,000회+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">51,222회</div>
+                                            <div class="status-badge status-success">달성</div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">52,300회</div>
+                                            <div class="status-badge status-success">달성</div>
+                                        </td>
+                                        <td class="p-5 font-bold">51,761회</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">흥미 (2초 시청)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">25,000건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-brand-pink">11,534건</div>
+                                            <div class="status-badge status-failed">미달성</div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-brand-pink">17,229건</div>
+                                            <div class="status-badge status-failed">미달성</div>
+                                        </td>
+                                        <td class="p-5 font-bold text-brand-pink">14,382건</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (클릭수)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">500건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">891건</div>
+                                            <div class="status-badge status-success">달성</div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">569건</div>
+                                            <div class="status-badge status-success">달성</div>
+                                        </td>
+                                        <td class="p-5 font-bold">730건</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (CTR)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">1.0%+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">1.74%</div>
+                                            <div class="status-badge status-overachieve">초과 달성</div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">1.09%</div>
+                                            <div class="status-badge status-success">달성</div>
+                                        </td>
+                                        <td class="p-5 font-bold">1.42%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">참여 (시작 버튼)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">300건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-pink">사용자 9명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 13건)</span>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-pink">사용자 10명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 0건)</span>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 font-bold text-brand-pink">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-slate-600">사용자 9.5명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 6.5건)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-50/50">
+                                        <td class="p-5 font-black text-slate-900 border-r border-slate-200">최종 전환 (KPI)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400 font-bold">10건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-pink">사용자 1명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 2건)</span>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-pink">사용자 0명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 0건)</span>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 font-black text-brand-pink">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-pink">사용자 0.5명</span>
+                                                <span class="text-sm text-brand-pink/70 font-bold bg-rose-50 px-2 py-0.5 rounded mt-1">(이벤트 1건)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 💡 2차 KPI 분석표 -->
+                    <div class="premium-card p-6 md:p-10 rounded-[2.5rem]">
+                        <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                            <span class="px-5 py-2 bg-brand-neonGreen text-white font-black rounded-full text-sm inline-flex items-center gap-2 shrink-0"><i class="ph-fill ph-rocket-launch text-lg"></i> 2차 피봇팅</span>
+                            <h4 class="text-xl md:text-2xl font-black text-slate-900">유형팀(A'안) vs 문화팀(C안) 성과 요약</h4>
+                        </div>
+                        <div class="overflow-x-auto rounded-[1.5rem] border border-slate-200 shadow-sm bg-white">
+                            <table class="kpi-table w-full text-left min-w-[800px]">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-xs md:text-sm uppercase tracking-wider text-center">
+                                        <th class="p-5 font-black border-r border-slate-200 w-[15%]">핵심 지표 (퍼널)</th>
+                                        <th class="p-5 font-black border-r border-slate-200 w-[15%]">KPI 목표치</th>
+                                        <th class="p-5 font-black border-r border-slate-200 w-[20%] text-brand-pink">A'안 (유형팀)</th>
+                                        <th class="p-5 font-black border-r border-slate-200 w-[20%] text-brand-cyan">C안 (문화팀)</th>
+                                        <th class="p-5 font-black w-[30%] text-slate-900">평균 (A'+C)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm md:text-base font-medium text-slate-700 text-center">
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">도달 (총 노출수)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">100,000회+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-brand-pink">77,169회</div>
+                                            <div class="status-badge status-failed">미달성</div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">112,277회</div>
+                                            <div class="status-badge status-overachieve">초과 달성</div>
+                                        </td>
+                                        <td class="p-5 font-bold text-slate-700">94,723회</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">흥미 (2초 시청)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">30,000건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-brand-pink">17,689건</div>
+                                            <div class="status-badge status-failed">미달성</div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">49,983건</div>
+                                            <div class="status-badge status-overachieve">초과 달성</div>
+                                        </td>
+                                        <td class="p-5 font-bold text-slate-700">33,836건</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (클릭수)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">700건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">722건</div>
+                                            <div class="status-badge status-success">달성</div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-slate-800">721건</div>
+                                            <div class="status-badge status-success">달성</div>
+                                        </td>
+                                        <td class="p-5 font-bold text-slate-700">721.5건</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (CTR)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">1.2% ~ 1.5%</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-brand-pink">0.73%</div>
+                                            <div class="status-badge status-failed">미달성</div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="font-bold text-brand-pink">0.64%</div>
+                                            <div class="status-badge status-failed">미달성</div>
+                                        </td>
+                                        <td class="p-5 font-bold text-brand-pink">0.69%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">랜딩 진입 (Visit)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">400건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-pink">사용자 346명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 361건)</span>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-slate-800">사용자 394명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 405건)</span>
+                                                <span class="status-badge status-success">달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 font-bold">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-slate-600">사용자 370명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 383건)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">참여 (시작 버튼)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400">50건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-pink">사용자 14명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 15건)</span>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-pink">사용자 20명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 42건)</span>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 font-bold text-brand-pink">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-slate-600">사용자 17명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 28.5건)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-50/50">
+                                        <td class="p-5 font-black text-slate-900 border-r border-slate-200">최종 전환 (KPI)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400 font-bold">30건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-pink">사용자 5명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 16건)</span>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-black text-brand-cyan text-xl">사용자 20명</span>
+                                                <span class="text-sm text-brand-cyan font-bold bg-cyan-50 px-2 py-0.5 rounded mt-1">(이벤트 37건)</span>
+                                                <span class="status-badge status-overachieve">초과 달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 font-black text-brand-neonGreen">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-brand-neonGreen text-lg">사용자 12.5명</span>
+                                                <span class="text-sm text-brand-neonGreen font-bold bg-green-50 px-2 py-0.5 rounded mt-1">(이벤트 26.5건)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">최종 전환 (보조지표)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-400 font-bold">10건+</td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center text-sm text-slate-600">
+                                                <div>이미지저장: <span class="text-brand-pink font-bold">1명 (1건)</span></div>
+                                                <div class="mt-1">공유버튼: <span class="text-brand-pink font-bold">1명 (1건)</span></div>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 border-r border-slate-200">
+                                            <div class="flex flex-col items-center justify-center text-sm text-slate-600">
+                                                <div>링크공유: <span class="text-brand-pink font-bold">6명 (6건)</span></div>
+                                                <div class="mt-1">SNS공유: <span class="text-brand-pink font-bold">1명 (1건)</span></div>
+                                                <span class="status-badge status-failed">미달성</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 font-black text-slate-400">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 💡 1차 vs 2차 종합 비교 분석표 -->
+                    <div class="premium-card p-6 md:p-10 rounded-[2.5rem] border-t-8 border-t-slate-900">
+                        <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                            <span class="px-5 py-2 bg-blue-600 text-white font-black rounded-full text-sm inline-flex items-center gap-2 shrink-0"><i class="ph-fill ph-chart-line-up text-lg"></i> 스케일업 종합</span>
+                            <h4 class="text-xl md:text-2xl font-black text-slate-900">1차 vs 2차 캠페인 종합 증감 분석 (평균치 기준)</h4>
+                        </div>
+                        <div class="overflow-x-auto rounded-[1.5rem] border border-slate-200 shadow-sm bg-white">
+                            <table class="kpi-table w-full text-left min-w-[900px]">
+                                <thead>
+                                    <tr class="bg-slate-900 text-white text-xs md:text-sm uppercase tracking-wider">
+                                        <th class="p-5 font-black border-r border-slate-700 w-[15%] text-center">구분</th>
+                                        <th class="p-5 font-black border-r border-slate-700 w-[14%] text-center">도달 (노출수)</th>
+                                        <th class="p-5 font-black border-r border-slate-700 w-[14%] text-center">흥미 (시청유지)</th>
+                                        <th class="p-5 font-black border-r border-slate-700 w-[14%] text-center">유입 (클릭수)</th>
+                                        <th class="p-5 font-black border-r border-slate-700 w-[13%] text-center">유입 (CTR)</th>
+                                        <th class="p-5 font-black border-r border-slate-700 w-[15%] text-center">참여 (시작버튼)</th>
+                                        <th class="p-5 font-black w-[15%] text-brand-neonGreen text-center">최종 전환 (KPI)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm md:text-base font-medium text-slate-700 text-center">
+                                    <tr class="border-b border-slate-200">
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50 text-left">1차 KPI (평균)</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-500">51,761</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-500">14,382</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-500">730</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-500">1.42%</td>
+                                        <td class="p-5 border-r border-slate-200 text-slate-500">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-lg">9.5명</span>
+                                                <span class="text-xs text-slate-400 mt-1">(6.5건)</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 text-slate-500">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-lg">0.5명</span>
+                                                <span class="text-xs text-slate-400 mt-1">(1건)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-slate-200 bg-slate-50/50">
+                                        <td class="p-5 font-bold border-r border-slate-200 bg-slate-50 text-left">2차 KPI (평균)</td>
+                                        <td class="p-5 border-r border-slate-200 font-bold text-slate-800">94,723</td>
+                                        <td class="p-5 border-r border-slate-200 font-bold text-slate-800">33,836</td>
+                                        <td class="p-5 border-r border-slate-200 font-bold text-slate-800">721.5</td>
+                                        <td class="p-5 border-r border-slate-200 font-bold text-slate-800">0.69%</td>
+                                        <td class="p-5 border-r border-slate-200 font-bold text-slate-800">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-lg">17명</span>
+                                                <span class="text-xs text-slate-500 mt-1">(28.5건)</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 font-black text-brand-neonGreen">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-xl">12.5명</span>
+                                                <span class="text-xs text-brand-neonGreen/80 mt-1">(26.5건)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-blue-50/30">
+                                        <td class="p-5 font-black text-slate-900 border-r border-slate-200 bg-blue-50 text-left">실질 증감</td>
+                                        <td class="p-5 border-r border-slate-200 font-black text-brand-neonGreen text-lg">▲ 42,962</td>
+                                        <td class="p-5 border-r border-slate-200 font-black text-brand-neonGreen text-lg">▲ 19,454</td>
+                                        <td class="p-5 border-r border-slate-200 font-bold text-brand-pink text-lg">▼ 8.5</td>
+                                        <td class="p-5 border-r border-slate-200 font-bold text-brand-pink text-lg">▼ 0.73%p</td>
+                                        <td class="p-5 border-r border-slate-200 font-black text-blue-600">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-xl">▲ 7.5명</span>
+                                                <span class="text-sm text-blue-500 mt-1">(+22건)</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-5 font-black text-blue-600">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <span class="font-bold text-2xl">▲ 12명</span>
+                                                <span class="text-sm text-blue-500 mt-1">(+25.5건)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 💡 KPI 인사이트 분석 블록 -->
+                <div class="premium-card p-12 md:p-16 rounded-[3rem] blur-reveal delay-300 border-l-[12px] border-l-yellow-400 hover-target">
+                    <h3 class="text-3xl font-black mb-10 text-slate-900 flex items-center gap-4"><i class="ph-fill ph-flag-banner text-yellow-400 text-4xl"></i> KPI 설정 근거 및 전략적 인사이트</h3>
+                    <div class="grid md:grid-cols-2 gap-12 text-slate-600 font-medium leading-relaxed text-lg mb-12">
+                        <div class="readable-text">
+                            <p class="mb-3 text-slate-900 font-black flex items-center gap-2"><i class="ph-bold ph-trend-up text-brand-neonGreen"></i> 확산 지표 1,000+ 목표 설정의 비밀</p>
+                            단순 클릭이 아닌 '게이미피케이션(참여)'이 목적이기에, 테스트 완료자 1명당 5~10%의 자발적 확산(공유, 링크 복사)을 목표로 했습니다. 특히 틱톡 신생 계정의 초기 가중치(Cold Start 부스트)를 받을 때 유기적 확산 수치 1,000을 넘기면, 알고리즘이 이를 고품질 콘텐츠로 인식해 <strong>광고 단가(CPM/CPC)를 급격히 낮춰주는 선순환</strong>을 일으킬 수 있습니다.
+                        </div>
+                        <div class="readable-text">
+                            <p class="mb-3 text-slate-900 font-black flex items-center gap-2"><i class="ph-bold ph-target text-brand-pink"></i> CTR 1.0% 이상 및 100원대 CPC의 의미</p>
+                            틱톡 인피드 광고 글로벌 평균 CTR(0.5~0.8%) 대비 1.0% 달성은 타겟의 후킹력이 매우 강함을 뜻합니다. 영미권 성숙 시장의 평균 CPC가 130~400원 수준인 반면, <strong>경쟁 심화 속에서도 저렴한 43~107원대 CPC를 방어해낸 것은 소재의 VTR(시청 지속률)이 높아 알고리즘의 선택을 받았다는 명백한 데이터 증거</strong>입니다.
+                        </div>
+                    </div>
+                    <div class="p-8 bg-slate-50/50 rounded-2xl border border-slate-200 border-l-4 border-l-brand-cyan">
+                        <h4 class="font-black text-brand-cyan mb-3 flex items-center gap-2"><i class="ph-fill ph-lightbulb"></i> 결론: CVR(전환율) 폭증의 핵심</h4>
+                        <p class="text-slate-700 font-medium leading-relaxed readable-text text-sm md:text-base">
+                            본 프로젝트는 '구매'가 아닌 '테스트 참여'가 전환 기준이므로, 인지적 마찰(Friction)을 줄이는 것이 최우선이었습니다. 어려운 지식을 버리고 타겟의 공유 본능을 자극하는 초개인화 DNA 테스트/밸런스 게임을 대입한 결과, <strong>일방적 관광 홍보물에는 반응하지 않던 차가운 트래픽(Cold Traffic)을 단돈 20만 원의 예산으로 유의미한 행동 전환(활성 25명, 이벤트 53건)으로 이끄는 퍼널 최적화 공식</strong>을 증명했습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 05. 팀 소개 -->
+        <section id="sec-05" class="py-32 px-6 border-t border-slate-200/50 relative z-10 bg-white">
+            <div class="max-w-7xl mx-auto blur-reveal">
+                <div class="text-center mb-24">
+                    <span class="text-slate-400 font-black tracking-widest text-sm uppercase mb-3 block">05. Meet the Crew</span>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">이 구역의 전환 루팡, K-9적단</h2>
+                    <p class="text-slate-500 text-xl font-medium">카드를 클릭(터치)하여 팀원들의 비밀 스탯을 확인해보세요!</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 blur-reveal delay-200 perspective-container">
+                    
+                    <!-- 윤서영 -->
+                    <div class="tilt-card hover-member cursor-pointer">
+                        <div class="tilt-wrapper">
+                            <div class="flip-inner">
+                                <div class="card-front p-3 shadow-sm group border border-slate-200 hover:border-emerald-400 premium-card">
+                                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                                        <img src="https://drive.google.com/thumbnail?id=1uhmGR72hyXqs3bi-K66BmeqzGucrzwVX&sz=w600" class="w-full h-full object-cover pointer-events-none">
+                                    </div>
+                                    <div class="p-5 text-center relative z-10">
+                                        <div class="text-[10px] font-black tracking-wider text-emerald-500 mb-1 uppercase">팀장 / PM</div>
+                                        <div class="font-black text-xl text-slate-900">윤서영</div>
+                                    </div>
+                                </div>
+                                <div class="card-back p-4 md:p-6 bg-slate-900 text-emerald-400 text-center">
+                                    <i class="ph-fill ph-crown text-3xl md:text-4xl mb-2 md:mb-4 text-emerald-400"></i>
+                                    <h5 class="font-black text-sm md:text-lg mb-2 md:mb-3 text-white">Secret Stats</h5>
+                                    <div class="text-[11px] md:text-sm font-bold leading-relaxed mb-2 md:mb-0">리더십: 99<br>결단력: MAX<br>주특기: 프로젝트 하드캐리</div>
+                                    <div class="mt-auto pt-3 border-t border-slate-700 w-full z-50">
+                                        <div onclick="copyEmail(event, 'althaeafrutex20@gmail.com')" class="text-[10px] md:text-sm py-2 flex flex-col items-center justify-center gap-1 text-emerald-400 hover:text-white transition-colors font-mono cursor-pointer break-all text-center w-full font-bold bg-white/10 rounded-lg" title="이메일 복사하기">
+                                            <i class="ph-fill ph-copy text-lg mb-1 pointer-events-none"></i> 
+                                            <span class="pointer-events-none">althaeafrutex20<br>@gmail.com</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 서지연 -->
+                    <div class="tilt-card hover-member cursor-pointer">
+                        <div class="tilt-wrapper">
+                            <div class="flip-inner">
+                                <div class="card-front p-3 shadow-sm group border border-slate-200 hover:border-brand-pink premium-card">
+                                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                                        <img src="https://drive.google.com/thumbnail?id=1ThPTdSFmntW0jgjbFnUruojnOuVqGZJi&sz=w600" class="w-full h-full object-cover pointer-events-none">
+                                    </div>
+                                    <div class="p-5 text-center relative z-10">
+                                        <div class="text-[10px] font-black tracking-wider text-brand-pink mb-1 uppercase">부팀장 / Marketer</div>
+                                        <div class="font-black text-xl text-slate-900">서지연</div>
+                                    </div>
+                                </div>
+                                <div class="card-back p-4 md:p-6 bg-slate-900 text-brand-pink text-center">
+                                    <i class="ph-fill ph-target text-3xl md:text-4xl mb-2 md:mb-4 text-brand-pink"></i>
+                                    <h5 class="font-black text-sm md:text-lg mb-2 md:mb-3 text-white">Secret Stats</h5>
+                                    <div class="text-[11px] md:text-sm font-bold leading-relaxed mb-2 md:mb-0">기획력: 95<br>추진력: 98<br>주특기: 타겟 취향 저격</div>
+                                    <div class="mt-auto pt-3 border-t border-slate-700 w-full z-50">
+                                        <div onclick="copyEmail(event, 'jiyeeooon2618@gmail.com')" class="text-[10px] md:text-sm py-2 flex flex-col items-center justify-center gap-1 text-brand-pink hover:text-white transition-colors font-mono cursor-pointer break-all text-center w-full font-bold bg-white/10 rounded-lg" title="이메일 복사하기">
+                                            <i class="ph-fill ph-copy text-lg mb-1 pointer-events-none"></i> 
+                                            <span class="pointer-events-none">jiyeeooon2618<br>@gmail.com</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 김진석 -->
+                    <div class="tilt-card hover-member cursor-pointer">
+                        <div class="tilt-wrapper">
+                            <div class="flip-inner">
+                                <div class="card-front p-3 shadow-sm group border border-slate-200 hover:border-yellow-400 premium-card">
+                                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                                        <img src="https://drive.google.com/thumbnail?id=1N4EZAs5Tg5tZfEn7LMNZRltmMBfOC4xx&sz=w600" class="w-full h-full object-cover pointer-events-none">
+                                    </div>
+                                    <div class="p-5 text-center relative z-10">
+                                        <div class="text-[10px] font-black tracking-wider text-yellow-500 mb-1 uppercase">팀원 / All-rounder</div>
+                                        <div class="font-black text-xl text-slate-900">김진석</div>
+                                    </div>
+                                </div>
+                                <div class="card-back p-4 md:p-6 bg-slate-900 text-yellow-400 text-center">
+                                    <i class="ph-fill ph-lifebuoy text-3xl md:text-4xl mb-2 md:mb-4 text-yellow-400"></i>
+                                    <h5 class="font-black text-sm md:text-lg mb-2 md:mb-3 text-white">Secret Stats</h5>
+                                    <div class="text-[11px] md:text-sm font-bold leading-relaxed mb-2 md:mb-0">데이터 생존력: 99<br>위기 돌파: MAX<br>주특기: 무에서 유 창조 트러블슈터</div>
+                                    <div class="mt-auto pt-3 border-t border-slate-700 w-full z-50">
+                                        <div onclick="copyEmail(event, 'jinseokjjj@gmail.com')" class="text-[10px] md:text-sm py-2 flex flex-col items-center justify-center gap-1 text-yellow-400 hover:text-white transition-colors font-mono cursor-pointer break-all text-center w-full font-bold bg-white/10 rounded-lg" title="이메일 복사하기">
+                                            <i class="ph-fill ph-copy text-lg mb-1 pointer-events-none"></i> 
+                                            <span class="pointer-events-none">jinseokjjj<br>@gmail.com</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 윤소이 -->
+                    <div class="tilt-card hover-member cursor-pointer">
+                        <div class="tilt-wrapper">
+                            <div class="flip-inner">
+                                <div class="card-front p-3 shadow-sm group border border-slate-200 hover:border-purple-400 premium-card">
+                                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                                        <img src="https://drive.google.com/thumbnail?id=1AR_55zPSkMomW2NLo1sSGMfdJV6ab49d&sz=w600" class="w-full h-full object-cover pointer-events-none">
+                                    </div>
+                                    <div class="p-5 text-center relative z-10">
+                                        <div class="text-[10px] font-black tracking-wider text-purple-500 mb-1 uppercase">팀원 / Designer</div>
+                                        <div class="font-black text-xl text-slate-900">윤소이</div>
+                                    </div>
+                                </div>
+                                <div class="card-back p-4 md:p-6 bg-slate-900 text-purple-400 text-center">
+                                    <i class="ph-fill ph-paint-brush-broad text-3xl md:text-4xl mb-2 md:mb-4 text-purple-400"></i>
+                                    <h5 class="font-black text-sm md:text-lg mb-2 md:mb-3 text-white">Secret Stats</h5>
+                                    <div class="text-[11px] md:text-sm font-bold leading-relaxed mb-2 md:mb-0">창의력: MAX<br>디테일 집착: 99%<br>주특기: 시각적 후킹 마스터</div>
+                                    <div class="mt-auto pt-3 border-t border-slate-700 w-full z-50">
+                                        <div onclick="copyEmail(event, '119kelly@naver.com')" class="text-[10px] md:text-sm py-2 flex flex-col items-center justify-center gap-1 text-purple-400 hover:text-white transition-colors font-mono cursor-pointer break-all text-center w-full font-bold bg-white/10 rounded-lg" title="이메일 복사하기">
+                                            <i class="ph-fill ph-copy text-lg mb-1 pointer-events-none"></i> 
+                                            <span class="pointer-events-none">119kelly<br>@naver.com</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 강현아 -->
+                    <div class="tilt-card hover-member cursor-pointer">
+                        <div class="tilt-wrapper">
+                            <div class="flip-inner">
+                                <div class="card-front p-3 shadow-sm group border border-slate-200 hover:border-brand-cyan premium-card">
+                                    <div class="aspect-[4/5] bg-slate-100 rounded-[1.5rem] flex flex-col items-center justify-center relative overflow-hidden">
+                                        <img src="https://drive.google.com/thumbnail?id=1RsMkfvcSUCucqU7fpdn5ky13iuCrqsz-&sz=w600" class="w-full h-full object-cover pointer-events-none">
+                                    </div>
+                                    <div class="p-5 text-center relative z-10">
+                                        <div class="text-[10px] font-black tracking-wider text-brand-cyan mb-1 uppercase">팀원 / Creator</div>
+                                        <div class="font-black text-xl text-slate-900">강현아</div>
+                                    </div>
+                                </div>
+                                <div class="card-back p-4 md:p-6 bg-slate-900 text-brand-cyan text-center">
+                                    <i class="ph-fill ph-magic-wand text-3xl md:text-4xl mb-2 md:mb-4 text-brand-cyan"></i>
+                                    <h5 class="font-black text-sm md:text-lg mb-2 md:mb-3 text-white">Secret Stats</h5>
+                                    <div class="text-[11px] md:text-sm font-bold leading-relaxed mb-2 md:mb-0">표현력: 98<br>트렌드: MAX<br>주특기: 숏폼 연성술사</div>
+                                    <div class="mt-auto pt-3 border-t border-slate-700 w-full z-50">
+                                        <div onclick="copyEmail(event, '1714kha@naver.com')" class="text-[10px] md:text-sm py-2 flex flex-col items-center justify-center gap-1 text-brand-cyan hover:text-white transition-colors font-mono cursor-pointer break-all text-center w-full font-bold bg-white/10 rounded-lg" title="이메일 복사하기">
+                                            <i class="ph-fill ph-copy text-lg mb-1 pointer-events-none"></i> 
+                                            <span class="pointer-events-none">1714kha<br>@naver.com</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="mt-24 text-center blur-reveal delay-300">
+                    <div class="magnetic-wrap inline-block hover-target">
+                        <div class="magnetic-inner">
+                            <button onclick="triggerConfettiAndModal()" class="solid-dark-btn px-12 py-6 rounded-full text-xl flex items-center gap-3 mx-auto cursor-none">
+                                <span class="magnetic-text flex items-center gap-3 font-black">
+                                    <i class="ph-fill ph-handshake text-2xl"></i> K-9적단 영입 제안하기
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 푸터 -->
+        <footer class="py-12 pb-40 border-t border-slate-200/50 text-center text-slate-400 text-sm relative z-10 hover-target">
+            <div class="flex flex-wrap justify-center gap-3 mb-6">
+                <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 font-bold premium-card cursor-none text-slate-500">#이9역_전환은_우리가접수한다</span>
+                <!-- 영수증 트리거 -->
+                <span onclick="triggerReceiptMode()" class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 font-bold premium-card select-none cursor-pointer text-slate-500 hover:text-brand-pink transition" title="Tap 5 times!">#K_9적단_남아공접수완료</span>
+            </div>
+            <p class="font-bold tracking-tighter text-slate-400">&copy; 2026 K-9 Pirates. Performance Certified.</p>
+        </footer>
+
+    </main>
+
+    <!-- 영입 제안 팝업 모달 -->
     <div id="hireModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleModal()"></div>
         <div class="bg-white rounded-[2rem] p-10 md:p-12 max-w-lg w-full relative z-10 shadow-2xl animate-slide-up text-center border-t-8 border-t-brand-cyan">
             <button onclick="toggleModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition text-2xl"><i class="ph-bold ph-x"></i></button>
-            
             <div class="w-20 h-20 bg-cyan-50 text-brand-cyan rounded-full flex items-center justify-center text-4xl mx-auto mb-6"><i class="ph-fill ph-confetti"></i></div>
             <h3 class="text-3xl font-black text-slate-900 mb-4">저희가 그만큼 마음에 드셨군요? 😉</h3>
             <p class="text-slate-600 font-bold text-lg leading-relaxed mb-4">
@@ -688,132 +1219,273 @@
             <p class="text-slate-400 text-sm font-medium mb-8">
                 (이 버튼을 누르셨다면 이미 저희에게 설득당하신 겁니다. 멋진 기회로 뵙겠습니다!)
             </p>
-            
-            <button onclick="toggleModal()" class="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition duration-300 text-lg">기분 좋게 닫기</button>
+            <button onclick="toggleModal()" class="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition duration-300 text-lg cursor-none">기분 좋게 닫기</button>
         </div>
     </div>
 
-    <!-- 💡 스크롤 맨 위로 올라가기 버튼 -->
-    <button id="backToTop" class="fixed bottom-8 right-8 w-14 h-14 bg-slate-900 text-white rounded-full shadow-2xl opacity-0 translate-y-10 pointer-events-none transition-all duration-300 z-50 hover:bg-brand-pink flex items-center justify-center" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <!-- 💀 해커 터미널 모달 (안전한 자바스크립트 레이어 덮어씌우기) -->
+    <div id="hacker-terminal" class="fixed inset-0 bg-black z-[9999999] hidden flex-col justify-start items-start p-10 font-mono text-[#10b981] overflow-y-auto shadow-[inset_0_0_100px_rgba(16,185,129,0.2)]">
+        <div class="w-full max-w-4xl mx-auto mt-10 relative z-20">
+            <div class="flex items-center justify-between border-b border-[#10b981]/30 pb-4 mb-6">
+                <span class="text-sm font-bold opacity-70 tracking-widest text-[#10b981]">SYSTEM HACK INITIATED</span>
+                <button onclick="closeTerminal()" class="text-[#10b981] hover:text-white cursor-pointer"><i class="ph-bold ph-x text-2xl"></i></button>
+            </div>
+            <!-- 코드 타이핑 영역 -->
+            <div id="terminal-content" class="text-base md:text-xl space-y-3 leading-relaxed text-[#10b981] drop-shadow-md"></div>
+            <div class="mt-4"><span class="typing-cursor text-[#10b981]"></span></div>
+        </div>
+    </div>
+
+    <!-- 🧾 메탈릭 영수증 모달 -->
+    <div id="receipt-modal">
+        <div class="printer-container">
+            <div class="printer-machine"><div class="printer-slot"></div></div>
+            <div class="receipt-paper-wrapper">
+                <div class="receipt-paper">
+                    <div class="text-center mb-6">
+                        <i class="ph-fill ph-skull text-5xl mb-2 text-slate-900"></i>
+                        <div class="font-black text-2xl border-b-2 border-slate-900 border-dashed pb-4 receipt-text-glow">K-9 PIRATES RECEIPT</div>
+                    </div>
+                    <div class="text-base font-bold space-y-3 mb-6 text-slate-800">
+                        <p class="flex justify-between"><span>DATE:</span><span>2026-05-15</span></p>
+                        <p class="flex justify-between"><span>MISSION:</span><span>ZA TIKTOK FUNNEL</span></p>
+                        <p class="flex justify-between mt-1"><span>STATUS:</span><strong class="text-brand-pink text-lg uppercase">Success</strong></p>
+                    </div>
+                    <div class="receipt-divider"></div>
+                    <div class="text-base font-black mb-4 text-center">[ CREW MEMBERS ]</div>
+                    <div class="text-sm font-bold space-y-3 mb-6 text-slate-600">
+                        <div class="flex justify-between items-center"><span class="w-16">윤서영</span> <span>althaeafrutex20@gmail.com</span></div>
+                        <div class="flex justify-between items-center"><span class="w-16">서지연</span> <span>jiyeeooon2618@gmail.com</span></div>
+                        <div class="flex justify-between items-center"><span class="w-16">김진석</span> <span>jinseokjjj@gmail.com</span></div>
+                        <div class="flex justify-between items-center"><span class="w-16">윤소이</span> <span>119kelly@naver.com</span></div>
+                        <div class="flex justify-between items-center"><span class="w-16">강현아</span> <span>1714kha@naver.com</span></div>
+                    </div>
+                    <div class="receipt-divider"></div>
+                    <div class="text-base font-black mb-4 text-center">[ PROJECT LOG ]</div>
+                    <div class="text-sm font-bold space-y-2 mb-6 text-slate-800">
+                        <div class="flex justify-between"><span>소요 시간</span><span>720 Hours</span></div>
+                        <div class="flex justify-between"><span>야근 및 밤샘</span><span>셀 수 없음 (Too Many)</span></div>
+                        <div class="flex justify-between"><span>카페인 섭취량</span><span>1,024 컵</span></div>
+                        <div class="flex justify-between"><span>멘탈 붕괴 위기</span><span>팀워크로 극복 완료</span></div>
+                        <div class="flex justify-between text-brand-cyan text-lg mt-4 font-black"><span>최종 평가</span><span>A+ 확정</span></div>
+                    </div>
+                    <div class="receipt-divider"></div>
+                    <div class="text-center text-sm mt-8 font-bold text-slate-500">이 프로젝트는 K-9적단이 완벽하게 접수했습니다.</div>
+                    <button onclick="closeReceiptModal()" class="mt-8 w-full py-4 bg-slate-900 text-white text-lg font-black hover:bg-brand-pink transition rounded-md cursor-pointer">CLOSE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="backToTop" class="fixed bottom-8 right-8 w-14 h-14 bg-slate-900 text-white rounded-full shadow-2xl opacity-0 translate-y-10 pointer-events-none transition-all duration-300 z-50 hover:bg-brand-pink flex items-center justify-center cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <i class="ph-bold ph-arrow-up text-2xl"></i>
     </button>
 
-    <!-- 스크립트 -->
     <script>
-        function triggerConfettiAndModal() {
-            var duration = 3 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 200 };
-
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) { return clearInterval(interval); }
-                var particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
-
-            setTimeout(() => { toggleModal(); }, 600);
+        // 1. 이메일 복사
+        function copyEmail(e, email) {
+            e.stopPropagation(); 
+            // fallback for clipboard writeText
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(email).then(() => {
+                    showCopyToast();
+                }).catch(err => {
+                    fallbackCopyTextToClipboard(email);
+                });
+            } else {
+                fallbackCopyTextToClipboard(email);
+            }
+        }
+        
+        function fallbackCopyTextToClipboard(text) {
+            var textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                var successful = document.execCommand('copy');
+                if(successful) showCopyToast();
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+            document.body.removeChild(textArea);
         }
 
+        function showCopyToast() {
+            const toast = document.getElementById('copyToast');
+            toast.classList.remove('opacity-0');
+            setTimeout(() => toast.classList.add('opacity-0'), 2000);
+        }
+
+        // 2. 영수증 이스터에그
+        let rcptClicks = 0; let rcptTimer = null;
+        function triggerReceiptMode() {
+            rcptClicks++;
+            clearTimeout(rcptTimer);
+            rcptTimer = setTimeout(() => rcptClicks = 0, 1000);
+            if(rcptClicks >= 5) {
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.1 }, colors: ['#FFD700', '#F59E0B'] });
+                document.getElementById('receipt-modal').classList.add('show');
+                document.body.style.overflow = 'hidden';
+                rcptClicks = 0;
+            }
+        }
+        function closeReceiptModal() {
+            document.getElementById('receipt-modal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 3. 💀 해커 터미널 완벽 복구 (레이어 방식)
+        let clicks = 0;
+        let timer = null;
+        function triggerTerminal() {
+            clicks++;
+            clearTimeout(timer);
+            timer = setTimeout(() => clicks = 0, 1000);
+            if(clicks >= 3) {
+                activateSystemOverride();
+                clicks = 0;
+            }
+        }
+
+        function activateSystemOverride() {
+            const terminal = document.getElementById('hacker-terminal');
+            document.body.style.overflow = 'hidden';
+            
+            // 안전한 자바스크립트 레이어를 덮어서 번쩍이는 효과 구현
+            const flashLayer = document.createElement('div');
+            flashLayer.style.position = 'fixed';
+            flashLayer.style.inset = '0';
+            flashLayer.style.backgroundColor = '#ffffff';
+            flashLayer.style.zIndex = '99999998';
+            flashLayer.style.transition = 'opacity 0.8s ease-in-out';
+            document.body.appendChild(flashLayer);
+            
+            setTimeout(() => {
+                terminal.classList.remove('hidden');
+                terminal.classList.add('flex'); 
+                flashLayer.style.opacity = '0'; 
+                typeTerminalMessage(); 
+            }, 100);
+
+            setTimeout(() => { document.body.removeChild(flashLayer); }, 1000);
+        }
+
+        function closeTerminal() {
+            document.body.style.overflow = '';
+            const t = document.getElementById('hacker-terminal');
+            t.classList.add('hidden'); t.classList.remove('flex');
+            document.getElementById('terminal-content').innerHTML = '';
+        }
+
+        function typeTerminalMessage() {
+            const content = document.getElementById('terminal-content');
+            const msgs = [
+                "CONNECTING TO K-9 SECURE SERVER...",
+                "[SUCCESS] ACCESS GRANTED.",
+                "DECRYPTING CONFIDENTIAL ZA_CAMPAIGN_DATA...",
+                "=========================================",
+                "[ CLASSIFIED K-9 PROJECT LOG ]",
+                "> Target: South Africa MZ Generation",
+                "> Type Team Users: +400% (1 -> 5)",
+                "> Type Team Events: +700% (2 -> 16)",
+                "> Culture Team Conversion: From 0 to 37 Events",
+                "> Result: Extreme CVR Optimization",
+                "=========================================",
+                "FINAL VERDICT: MISSION ACCOMPLISHED (A+)",
+                "Thank you for reviewing our hard work.",
+                "[ DISCONNECTING... ]"
+            ];
+            let idx = 0;
+            function type() {
+                if(idx < msgs.length) {
+                    const l = document.createElement('div');
+                    l.className = 'terminal-line';
+                    l.textContent = '> ' + msgs[idx];
+                    content.appendChild(l);
+                    idx++;
+                    setTimeout(type, Math.random() * 80 + 40);
+                }
+            }
+            type();
+        }
+
+        // 4. 공통 모달 및 기타
+        function triggerConfettiAndModal() {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            document.getElementById('hireModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
         function toggleModal() {
-            const modal = document.getElementById('hireModal');
-            modal.classList.toggle('hidden');
-            document.body.classList.toggle('modal-open');
+            document.getElementById('hireModal').classList.add('hidden');
+            document.body.style.overflow = '';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const revealElements = document.querySelectorAll('.reveal, .reveal-up, .reveal-scale');
-            const revealObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    } else {
-                        entry.target.classList.remove('active');
-                    }
+            const wraps = document.querySelectorAll('.magnetic-wrap');
+            wraps.forEach(w => {
+                const inner = w.querySelector('.magnetic-inner');
+                const text = w.querySelector('.magnetic-text');
+                w.addEventListener('mousemove', e => {
+                    const r = w.getBoundingClientRect();
+                    const x = e.clientX - r.left - r.width/2;
+                    const y = e.clientY - r.top - r.height/2;
+                    inner.style.transform = `translate(${x*0.3}px, ${y*0.3}px)`;
+                    text.style.transform = `translate(${x*0.15}px, ${y*0.15}px)`;
                 });
-            }, {
-                threshold: 0.1, 
-                rootMargin: "0px 0px -50px 0px" 
-            });
-
-            revealElements.forEach(el => revealObserver.observe(el));
-
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('.nav-link');
-            window.addEventListener('scroll', () => {
-                let current = '';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    if (scrollY >= sectionTop - 200) { current = section.getAttribute('id'); }
-                });
-                navLinks.forEach(link => {
-                    link.classList.remove('text-brand-pink', 'scale-110');
-                    if (link.getAttribute('href').includes(current)) { link.classList.add('text-brand-pink', 'scale-110'); }
+                w.addEventListener('mouseleave', () => {
+                    inner.style.transform = '';
+                    text.style.transform = '';
                 });
             });
 
-            const backToTopBtn = document.getElementById('backToTop');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 600) {
-                    backToTopBtn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
-                    backToTopBtn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
-                } else {
-                    backToTopBtn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
-                    backToTopBtn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
-                }
-            });
-
-            // 💡 맥북 등 작은 화면에서 로고가 순식간에 사라지는 현상 해결
-            const mainLogo = document.getElementById('mainLogo');
-            if (mainLogo) {
-                window.addEventListener('scroll', () => {
-                    let scrollY = window.scrollY;
-                    // 맥북의 좁은 세로 해상도에서도 바로 사라지지 않도록 시작 구간(fadeStart)을 150px 이상으로 설정
-                    let fadeStart = 150; 
-                    let fadeEnd = 800; // 충분히 넉넉한 스크롤 길이 보장
-
-                    if (scrollY <= fadeStart) {
-                        mainLogo.style.opacity = 1; // 150px까지는 무조건 100% 선명
-                        mainLogo.style.transform = `scale(1)`;
-                    } else if (scrollY > fadeStart && scrollY < fadeEnd) {
-                        // 150px ~ 800px 사이에서 매우 완만하게 투명해짐
-                        let progress = (scrollY - fadeStart) / (fadeEnd - fadeStart);
-                        let opacity = 1 - (progress * 0.97); 
-                        let scale = 1 + (progress * 0.15); 
-                        mainLogo.style.opacity = Math.max(opacity, 0.03); 
-                        mainLogo.style.transform = `scale(${scale})`;
-                    } else {
-                        mainLogo.style.opacity = 0.03;
-                        mainLogo.style.transform = `scale(1.15)`;
-                    }
-                });
+            const cursor = document.getElementById('liquid-cursor');
+            let cx = window.innerWidth/2, cy = window.innerHeight/2;
+            let mx = cx, my = cy;
+            document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+            const render = () => {
+                cx += (mx - cx) * 0.15; cy += (my - cy) * 0.15;
+                cursor.style.transform = `translate(-50%, -50%) translate(${cx}px, ${cy}px)`;
+                requestAnimationFrame(render);
+            }
+            if(window.matchMedia("(pointer: fine)").matches) {
+                cursor.style.opacity = '1';
+                render();
             }
 
-            const counters = document.querySelectorAll('.counter');
-            const counterObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const counter = entry.target;
-                        const target = parseFloat(counter.getAttribute('data-target'));
-                        const isFloat = !Number.isInteger(target);
-                        let count = 0;
-                        const inc = target / 50;
-                        const update = () => {
-                            if (count < target) {
-                                count += inc;
-                                counter.innerText = isFloat ? count.toFixed(2) : Math.ceil(count);
-                                requestAnimationFrame(update);
-                            } else { counter.innerText = target; }
-                        };
-                        update();
-                        counterObserver.unobserve(counter); 
-                    }
+            const tiltCards = document.querySelectorAll('.tilt-card');
+            tiltCards.forEach(c => {
+                const tw = c.querySelector('.tilt-wrapper');
+                const fi = c.querySelector('.flip-inner');
+                c.addEventListener('click', e => {
+                    if(e.target.closest('[onclick^="copyEmail"]')) return;
+                    fi.classList.toggle('is-flipped');
                 });
-            }, { threshold: 0.5 });
-            counters.forEach(c => counterObserver.observe(c));
+                c.addEventListener('mousemove', e => {
+                    const r = c.getBoundingClientRect();
+                    const x = (e.clientX - r.left) / r.width - 0.5;
+                    const y = (e.clientY - r.top) / r.height - 0.5;
+                    const isF = fi.classList.contains('is-flipped');
+                    const m = isF ? -1 : 1;
+                    tw.style.transform = `rotateX(${-y*20*m}deg) rotateY(${x*20*m}deg) scale(1.05)`;
+                });
+                c.addEventListener('mouseleave', () => tw.style.transform = '');
+                c.addEventListener('mouseenter', () => cursor.classList.add('hover-member'));
+                c.addEventListener('mouseleave', () => cursor.classList.remove('hover-member'));
+            });
+
+            const revealElements = document.querySelectorAll('.reveal-up, .reveal-scale, .blur-reveal');
+            const obs = new IntersectionObserver(es => {
+                es.forEach(e => {
+                    if(e.isIntersecting) e.target.classList.add('active');
+                    else if(e.boundingClientRect.top > 0) e.target.classList.remove('active');
+                });
+            }, { threshold: 0.1 });
+            revealElements.forEach(e => obs.observe(e));
         });
     </script>
 </body>
