@@ -29,16 +29,9 @@
         }
     </script>
     <style>
-        /* 💡 기본 세팅 (노션 임베드 호환을 위해 JS로 동적 제어) */
-        body.hide-cursor, 
-        body.hide-cursor a, 
-        body.hide-cursor button, 
-        body.hide-cursor .cursor-pointer, 
-        body.hide-cursor .tilt-card, 
-        body.hide-cursor .solid-dark-btn, 
-        body.hide-cursor #easter-egg-trigger, 
-        body.hide-cursor #nav-logo-trigger, 
-        body.hide-cursor #terminal-trigger-btn { 
+        /* 💡 노션 임베드 완벽 호환을 위한 동적 커서 제어 (JS와 연동하여 기본 커서 완벽 숨김) */
+        .hide-default-cursor, 
+        .hide-default-cursor * { 
             cursor: none !important; 
         }
 
@@ -135,9 +128,20 @@
         .gdrive-video-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; overflow: hidden; }
         .gdrive-video-iframe { position: absolute; top: 50%; left: 50%; width: 150%; height: 150%; transform: translate(-50%, -50%) scale(0.666667); border: none; }
 
+        /* 💡 노션 임베드 최적화 (높이가 낮은 임베드 환경에서 자동으로 크기를 줄여 시원시원하게 한눈에 보이게 함) */
         @media (max-width: 380px) {
             .phone-wrapper { transform: scale(0.85); transform-origin: top center; margin-bottom: -100px; }
             .phone-wrapper:hover { transform: scale(0.85) translateY(-8px); }
+        }
+        @media (max-height: 850px) and (min-width: 381px) {
+            #sec-00 { min-height: 850px; }
+            .phone-wrapper { transform: scale(0.8); transform-origin: top center; margin-bottom: -150px; }
+            .phone-wrapper:hover { transform: scale(0.8) translateY(-8px); }
+        }
+        @media (max-height: 700px) and (min-width: 381px) {
+            #sec-00 { min-height: 750px; }
+            .phone-wrapper { transform: scale(0.65); transform-origin: top center; margin-bottom: -250px; }
+            .phone-wrapper:hover { transform: scale(0.65) translateY(-8px); }
         }
 
         ::-webkit-scrollbar { width: 6px; }
@@ -1443,7 +1447,7 @@
                 });
             });
 
-            // 💡 리퀴드 커서 (노션 임베드 호환용)
+            // 💡 리퀴드 커서 (노션 임베드 아이프레임 환경 완벽 호환 및 최적화)
             const cursor = document.getElementById('liquid-cursor');
             let cx = window.innerWidth/2, cy = window.innerHeight/2;
             let mx = cx, my = cy;
@@ -1454,11 +1458,20 @@
                 my = e.clientY; 
                 
                 if (!isCursorActive) {
-                    document.body.classList.add('hide-cursor');
+                    // 마우스가 감지되면 기본 커서를 완전히 숨기고 리퀴드 커서를 표시
+                    document.body.classList.add('hide-default-cursor');
                     cursor.style.opacity = '1';
                     isCursorActive = true;
-                    render();
+                    requestAnimationFrame(render);
                 }
+            });
+
+            // 아이프레임(노션) 밖으로 마우스가 벗어나면 커서 숨김 처리
+            document.addEventListener('mouseleave', () => {
+                if(isCursorActive) cursor.style.opacity = '0';
+            });
+            document.addEventListener('mouseenter', () => {
+                if(isCursorActive) cursor.style.opacity = '1';
             });
 
             const render = () => {
