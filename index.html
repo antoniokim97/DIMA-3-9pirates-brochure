@@ -29,16 +29,9 @@
         }
     </script>
     <style>
-        /* 💡 기본 세팅 (노션 임베드 호환을 위해 JS로 동적 제어) */
-        body.hide-cursor, 
-        body.hide-cursor a, 
-        body.hide-cursor button, 
-        body.hide-cursor .cursor-pointer, 
-        body.hide-cursor .tilt-card, 
-        body.hide-cursor .solid-dark-btn, 
-        body.hide-cursor #easter-egg-trigger, 
-        body.hide-cursor #nav-logo-trigger, 
-        body.hide-cursor #terminal-trigger-btn { 
+        /* 기본 세팅 (노션 임베드 호환을 위해 JS로 동적 제어) */
+        .hide-default-cursor, 
+        .hide-default-cursor * { 
             cursor: none !important; 
         }
 
@@ -57,7 +50,7 @@
         #orb-1 { width: 50vw; height: 50vw; top: -10%; left: -10%; background: rgba(8, 145, 178, 0.3); } 
         #orb-2 { width: 60vw; height: 60vw; bottom: -10%; right: -10%; background: rgba(225, 29, 72, 0.2); }
 
-        /* 💡 리퀴드 커서 */
+        /* 리퀴드 커서 */
         #liquid-cursor {
             position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999999;
             background: #0f172a; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -83,7 +76,7 @@
 
         .readable-text { word-break: keep-all; line-height: 1.7; }
         
-        /* 🍎 스크롤 애니메이션 */
+        /* 스크롤 애니메이션 */
         .reveal-up { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal-up.active { opacity: 1; transform: translateY(0); }
         .reveal-scale { opacity: 0; transform: scale(0.95); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -135,7 +128,7 @@
         .gdrive-video-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; overflow: hidden; }
         .gdrive-video-iframe { position: absolute; top: 50%; left: 50%; width: 150%; height: 150%; transform: translate(-50%, -50%) scale(0.666667); border: none; }
 
-        /* 노션 임베드 최적화 */
+        /* 노션 임베드 최적화 (높이 부족할때 자동 축소) */
         @media (max-width: 380px) {
             .phone-wrapper { transform: scale(0.85); transform-origin: top center; margin-bottom: -100px; }
             .phone-wrapper:hover { transform: scale(0.85) translateY(-8px); }
@@ -155,17 +148,17 @@
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        /* KPI 테이블 스타일링 (가독성 최적화 & 글씨 크기 확대) */
+        /* KPI 테이블 스타일링 (가독성 최적화) */
         .kpi-table th { border-bottom: 2px solid #e2e8f0; vertical-align: middle; padding: 1.25rem 1rem; font-size: 0.95rem; }
         .kpi-table td { border-bottom: 1px solid #f1f5f9; vertical-align: middle; padding: 1.25rem 1rem; font-size: 1rem; }
         .kpi-table tr:last-child th, .kpi-table tr:last-child td { border-bottom: none; }
         .kpi-table tbody tr:hover { background-color: #f8fafc; transition: background-color 0.2s; }
         
         /* 증감 뱃지 */
-        .badge-increase { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 0.85rem; font-weight: 900; margin-left: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .badge-decrease { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 6px; background: rgba(225, 29, 72, 0.15); color: #e11d48; font-size: 0.85rem; font-weight: 900; margin-left: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .badge-increase { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 0.85rem; font-weight: 900; margin-left: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .badge-decrease { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 6px; background: rgba(225, 29, 72, 0.15); color: #e11d48; font-size: 0.85rem; font-weight: 900; margin-left: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* 💡 KPI 달성 상태 애니메이션 뱃지 (더욱 극적이고 직관적인 표현) */
+        /* KPI 달성 상태 애니메이션 뱃지 (더욱 극적이고 직관적인 표현) */
         .status-badge { display: inline-flex; align-items: center; justify-content: center; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 6px; }
         
         /* 초과 달성: 눈에 띄는 네온 블루 글로우 애니메이션 */
@@ -185,18 +178,66 @@
             50% { box-shadow: 0 0 0 6px rgba(225, 29, 72, 0); } 
         }
 
-        /* 해커 터미널 이스터에그 */
-        #hacker-terminal {
-            display: none; position: fixed; inset: 0; background-color: transparent; z-index: 9999999;
-            flex-direction: column; justify-content: flex-start; align-items: flex-start;
-            padding: 3rem 5%; font-family: 'Courier New', Courier, monospace;
-            color: #10b981; text-shadow: 0 0 8px rgba(16,185,129,0.6); overflow-y: auto; overflow-x: hidden;
-            opacity: 0; transition: opacity 0.5s ease;
+        /* 💀 [NEW] 기괴한 NO SIGNAL 글리치 애니메이션 스타일 */
+        .glitch-container {
+            position: fixed; inset: 0; z-index: 9999999; background: #000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
         }
-        .terminal-line { font-size: 14px; margin-bottom: 8px; line-height: 1.4; word-break: break-all; }
-        @media (min-width: 768px) { .terminal-line { font-size: 18px; margin-bottom: 10px; } }
-        .typing-cursor::after { content: '█'; animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
+        .glitch-container.active { opacity: 1; pointer-events: auto; }
+        
+        /* 글리치용 마우스 커서 (터미널 작동 중에만 활성화) */
+        .glitch-cursor { cursor: crosshair !important; }
+
+        .flash-red { animation: flash-red 0.4s ease-out forwards; }
+        @keyframes flash-red { 0%, 50%, 100% { background: #ff0000; } 25%, 75% { background: #000000; } }
+        
+        .crt-overlay::before {
+            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        }
+        .glitch-text-element { font-size: 5rem; font-weight: 900; color: white; letter-spacing: -0.05em; text-align: center; }
+        @media (min-width: 768px) { .glitch-text-element { font-size: 8rem; } }
+        
+        /* 해골 기괴한 애니메이션 (상하 진동 + RGB 스플릿 + 떨림) */
+        .creepy-skull { animation: creepy-shake 0.15s infinite; }
+        @keyframes creepy-shake {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); filter: hue-rotate(0deg) drop-shadow(0 0 10px red); }
+            20% { transform: translate(-5px, 5px) scale(1.05) rotate(-2deg); filter: hue-rotate(90deg) drop-shadow(-5px 0 cyan) drop-shadow(5px 0 red); }
+            40% { transform: translate(5px, -5px) scale(0.95) rotate(2deg); filter: hue-rotate(-90deg) invert(0.2); }
+            60% { transform: translate(-5px, -5px) scale(1.1) skewX(10deg); filter: blur(1px) drop-shadow(0 0 20px red); }
+            80% { transform: translate(5px, 5px) scale(0.9) skewX(-10deg); filter: hue-rotate(180deg); }
+            100% { transform: translate(0, 0) scale(1) rotate(0deg); filter: hue-rotate(0deg); }
+        }
+
+        /* 뼈 & 해골 코드 타이핑 영역 */
+        .dev-log-container {
+            width: 90%; max-width: 800px; height: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
+            font-family: 'Courier New', Courier, monospace; overflow-y: auto; overflow-x: hidden; position: relative; z-index: 10;
+        }
+        
+        /* 매트릭스 비 (배경) */
+        #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.3; }
+
+        /* 웃는 아스키 해골 (대체용) */
+        .ascii-skull { font-family: monospace; font-size: 8px; line-height: 1.1; color: #ef4444; text-shadow: 0 0 10px #ef4444; text-align: center; margin-bottom: 2rem; font-weight: 900; }
+        @media (min-width: 768px) { .ascii-skull { font-size: 14px; } }
+        .jaw { animation: laugh 0.15s infinite alternate; display: block; }
+        @keyframes laugh { 0% { transform: translateY(0); } 100% { transform: translateY(10px); } }
+
+        .dev-line { font-size: 14px; margin-bottom: 6px; line-height: 1.5; word-break: break-all; text-shadow: 0 0 5px currentColor; }
+        @media (min-width: 768px) { .dev-line { font-size: 18px; margin-bottom: 10px; } }
+        .typing-cursor::after { content: '█'; animation: blink 1s step-end infinite; color: #10b981; }
+        
+        /* 🦖 다채로운 K-9 해커 런 미니게임 캔버스 */
+        .game-wrapper {
+            width: 100%; max-width: 800px; margin: 2rem auto; position: relative;
+            border: 4px solid #10b981; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.4), inset 0 0 20px rgba(16, 185, 129, 0.2);
+            z-index: 20; background: #0f172a;
+        }
+        #trex-game { width: 100%; height: 200px; cursor: pointer; display: block; }
 
         /* 메탈릭 영수증 프린터 */
         #receipt-modal {
@@ -249,17 +290,19 @@
     <!-- 화면 반전을 위한 메인 컨텐츠 래퍼 -->
     <main id="main-content" class="relative z-10 w-full h-full transition-[filter] duration-700">
 
+        <!-- 💡 네비게이션 매핑 정상화 (00~05 완벽 링크) -->
         <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-slate-100 transition-all duration-300">
             <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
-                <div class="font-black text-2xl tracking-tighter flex items-center gap-2 text-slate-900 select-none cursor-pointer hover-target" onclick="triggerTerminal()" title="Tap 3 times.">
+                <div class="font-black text-2xl tracking-tighter flex items-center gap-2 text-slate-900 select-none cursor-pointer hover-target" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                     <i class="ph-fill ph-skull text-brand-pink animate-float pointer-events-none"></i> K-9적단
                 </div>
                 <div class="hidden md:flex space-x-8 text-sm font-bold text-slate-500">
                     <a href="#sec-00" class="nav-link hover-target hover:text-brand-pink transition">00. 프로젝트 명</a>
-                    <a href="#sec-summary" class="nav-link hover-target hover:text-brand-pink transition">01. Summary</a>
-                    <a href="#sec-02" class="nav-link hover-target hover:text-brand-pink transition">02. 전략 & 실행</a>
-                    <a href="#sec-03" class="nav-link hover-target hover:text-brand-cyan transition">03. KPI 성과 분석</a>
-                    <a href="#sec-04" class="nav-link hover-target hover:text-brand-pink transition">04. 크루 소개</a>
+                    <a href="#sec-01" class="nav-link hover-target hover:text-brand-pink transition">01. Summary</a>
+                    <a href="#sec-02" class="nav-link hover-target hover:text-brand-pink transition">02. 배경 & 타겟</a>
+                    <a href="#sec-03" class="nav-link hover-target hover:text-brand-pink transition">03. 전략 & 실행</a>
+                    <a href="#sec-04" class="nav-link hover-target hover:text-brand-cyan transition">04. KPI 성과 분석</a>
+                    <a href="#sec-05" class="nav-link hover-target hover:text-brand-pink transition">05. 크루 소개</a>
                 </div>
             </div>
         </nav>
@@ -268,9 +311,8 @@
             <div class="absolute inset-0 z-0 bg-gradient-to-tr from-rose-50 via-slate-50 to-cyan-50 opacity-80"></div>
             <div class="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center">
                 
-                <!-- 해커 터미널 트리거 (원형 박스 3번 클릭) -->
-                <div id="terminal-trigger-btn" onclick="triggerTerminal()" class="blur-reveal active inline-flex items-center gap-2 px-5 py-2 rounded-full bg-slate-900 border border-slate-700 shadow-xl text-sm font-bold text-brand-neonGreen tracking-widest uppercase mb-8 cursor-pointer hover-target transition hover:bg-slate-800" title="Tap 3 times">
-                    <i class="ph-fill ph-terminal-window text-lg pointer-events-none"></i> <span class="pointer-events-none">디마 3기 최종 프로젝트</span>
+                <div class="blur-reveal active inline-flex items-center gap-2 px-5 py-2 rounded-full bg-slate-900 border border-slate-700 shadow-xl text-sm font-bold text-brand-neonGreen tracking-widest uppercase mb-8">
+                    <i class="ph-fill ph-check-circle text-lg pointer-events-none"></i> <span class="pointer-events-none">디마 3기 최종 프로젝트</span>
                 </div>
 
                 <h1 class="blur-reveal active delay-100 text-6xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter mb-6 leading-[1.1] text-slate-900 drop-shadow-sm">
@@ -288,7 +330,7 @@
                         <div class="magnetic-wrap group mb-4 hover-target">
                             <div class="magnetic-inner">
                                 <div class="absolute inset-0 bg-brand-cyan/60 blur-[20px] rounded-full animate-pulse-glow group-hover:bg-brand-cyan/90 transition duration-500 pointer-events-none"></div>
-                                <a href="#sec-summary" class="solid-dark-btn px-12 py-5 rounded-full z-10 relative">
+                                <a href="#sec-01" class="solid-dark-btn px-12 py-5 rounded-full z-10 relative cursor-pointer">
                                     <span class="magnetic-text flex items-center justify-center gap-3 font-black text-xl">
                                         작전 성과 확인하기
                                         <i class="ph-bold ph-hand-pointing-down text-3xl text-brand-cyan transition-colors"></i>
@@ -308,7 +350,7 @@
         </section>
 
         <!-- 💡 01. 실무형 Executive Summary -->
-        <section id="sec-summary" class="py-24 px-6 relative z-10 border-t border-slate-100 bg-white">
+        <section id="sec-01" class="py-24 px-6 relative z-10 border-t border-slate-100 bg-white">
             <div class="max-w-5xl mx-auto">
                 <div class="text-center mb-16 blur-reveal">
                     <span class="text-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">01. Executive Summary</span>
@@ -342,7 +384,7 @@
                             <i class="ph-fill ph-rocket-launch text-blue-500 mt-1 text-2xl shrink-0"></i> 
                             <div>
                                 <h4 class="text-xl font-black text-slate-900 mb-2">2차 피봇 및 성과</h4>
-                                데이터 분석 결과 '영상-랜딩 간 경험 단절 및 텍스트 과부하(유형팀)'와 '무거운 진입 장벽(퀴즈팀)'이 원인이었습니다. 비주얼 중심의 저마찰 UX로 고도화한 유형팀은 <strong class="text-blue-600">전환수가 600% 성장(6건)</strong>했고, 지식 퀴즈에서 '양자택일 밸런스 게임'으로 피봇(Pivot)한 문화팀(구 퀴즈팀)은 무려 <strong class="text-blue-600">37건의 압도적인 최종 전환(유형팀의 6배 이상)</strong>을 달성했습니다.
+                                데이터 분석 결과 '영상-랜딩 간 경험 단절 및 텍스트 과부하(유형팀)'와 '무거운 진입 장벽(퀴즈팀)'이 원인이었습니다. 비주얼 중심의 저마찰 UX로 고도화한 유형팀은 <strong class="text-blue-600">전환 사용자가 400% 성장(1명➔5명) 및 이벤트 700% 폭증(2건➔16건)</strong>을 이루었고, '양자택일 밸런스 게임'으로 과감히 피봇한 문화팀(구 퀴즈팀)은 무려 <strong class="text-blue-600">사용자 20명(이벤트 37건)의 압도적인 최종 전환(유형팀의 6배 이상)</strong>을 달성하며 KPI를 초과 달성했습니다.
                             </div>
                         </li>
                         <div class="mt-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl">
@@ -361,7 +403,7 @@
             <div class="max-w-7xl mx-auto relative z-10">
                 <div class="text-center mb-20 blur-reveal">
                     <span class="text-brand-cyan font-black tracking-widest text-sm uppercase mb-3 block">02. Background</span>
-                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">배경 & 문제 정의</h2>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-slate-900">배경 & 타겟</h2>
                     <p class="text-slate-500 text-lg font-medium readable-text">왜 하필 '남아공'이었고, 어떤 점이 가장 큰 어려움이었을까요?</p>
                 </div>
 
@@ -639,7 +681,7 @@
             </div>
         </section>
 
-        <!-- 💡 04. 실무형 Apple-to-Apple KPI 분석 -->
+        <!-- 💡 04. 실무형 Apple-to-Apple KPI 분석 (모든 지표 완벽 반영 및 직관적 뱃지 적용) -->
         <section id="sec-04" class="py-32 px-6 relative z-10 border-t border-slate-200/50 bg-slate-50">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-20 blur-reveal">
@@ -672,74 +714,74 @@
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">도달 (총 노출수)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">30,000회+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">51,222회</div>
+                                            <div class="font-bold text-slate-800 text-lg">51,222회</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">52,300회</div>
+                                            <div class="font-bold text-slate-800 text-lg">52,300회</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
-                                        <td class="p-5 font-bold">51,761회</td>
+                                        <td class="p-5 font-bold text-lg">51,761회</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">흥미 (2초 시청)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">25,000건+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-brand-pink">11,534건</div>
+                                            <div class="font-bold text-brand-pink text-lg">11,534건</div>
                                             <div class="status-badge status-failed">미달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-brand-pink">17,229건</div>
+                                            <div class="font-bold text-brand-pink text-lg">17,229건</div>
                                             <div class="status-badge status-failed">미달성</div>
                                         </td>
-                                        <td class="p-5 font-bold text-brand-pink">14,382건</td>
+                                        <td class="p-5 font-bold text-brand-pink text-lg">14,382건</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (클릭수)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">500건+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">891건</div>
+                                            <div class="font-bold text-slate-800 text-lg">891건</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">569건</div>
+                                            <div class="font-bold text-slate-800 text-lg">569건</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
-                                        <td class="p-5 font-bold">730건</td>
+                                        <td class="p-5 font-bold text-lg">730건</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (CTR)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">1.0%+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">1.74%</div>
+                                            <div class="font-bold text-slate-800 text-lg">1.74%</div>
                                             <div class="status-badge status-overachieve">초과 달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">1.09%</div>
+                                            <div class="font-bold text-slate-800 text-lg">1.09%</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
-                                        <td class="p-5 font-bold">1.42%</td>
+                                        <td class="p-5 font-bold text-lg">1.42%</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">참여 (시작 버튼)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">300건+</td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink">사용자 9명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 13건)</span>
+                                                <span class="font-bold text-brand-pink text-lg">사용자 9명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 13건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink">사용자 10명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 0건)</span>
+                                                <span class="font-bold text-brand-pink text-lg">사용자 10명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 0건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 font-bold text-brand-pink">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-slate-600">사용자 9.5명</span>
+                                                <span class="font-bold text-slate-600 text-lg">사용자 9.5명</span>
                                                 <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 6.5건)</span>
                                             </div>
                                         </td>
@@ -749,21 +791,21 @@
                                         <td class="p-5 border-r border-slate-200 text-slate-400 font-bold">10건+</td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink">사용자 1명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 2건)</span>
+                                                <span class="font-bold text-brand-pink text-lg">사용자 1명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 2건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink">사용자 0명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 0건)</span>
+                                                <span class="font-bold text-brand-pink text-lg">사용자 0명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 0건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 font-black text-brand-pink">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink">사용자 0.5명</span>
+                                                <span class="font-bold text-brand-pink text-lg">사용자 0.5명</span>
                                                 <span class="text-sm text-brand-pink/70 font-bold bg-rose-50 px-2 py-0.5 rounded mt-1">(이벤트 1건)</span>
                                             </div>
                                         </td>
@@ -795,75 +837,75 @@
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">도달 (총 노출수)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">100,000회+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-brand-pink">77,169회</div>
+                                            <div class="font-bold text-brand-pink text-lg">77,169회</div>
                                             <div class="status-badge status-failed">미달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">112,277회</div>
+                                            <div class="font-bold text-slate-800 text-lg">112,277회</div>
                                             <div class="status-badge status-overachieve">초과 달성</div>
                                         </td>
-                                        <td class="p-5 font-bold text-slate-700">94,723회</td>
+                                        <td class="p-5 font-bold text-slate-700 text-lg">94,723회</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">흥미 (2초 시청)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">30,000건+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-brand-pink">17,689건</div>
+                                            <div class="font-bold text-brand-pink text-lg">17,689건</div>
                                             <div class="status-badge status-failed">미달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">49,983건</div>
+                                            <div class="font-bold text-slate-800 text-lg">49,983건</div>
                                             <div class="status-badge status-overachieve">초과 달성</div>
                                         </td>
-                                        <td class="p-5 font-bold text-slate-700">33,836건</td>
+                                        <td class="p-5 font-bold text-slate-700 text-lg">33,836건</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (클릭수)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">700건+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">722건</div>
+                                            <div class="font-bold text-slate-800 text-lg">722건</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800">721건</div>
+                                            <div class="font-bold text-slate-800 text-lg">721건</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
-                                        <td class="p-5 font-bold text-slate-700">721.5건</td>
+                                        <td class="p-5 font-bold text-slate-700 text-lg">721.5건</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (CTR)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">1.2% ~ 1.5%</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-brand-pink">0.73%</div>
+                                            <div class="font-bold text-brand-pink text-lg">0.73%</div>
                                             <div class="status-badge status-failed">미달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-brand-pink">0.64%</div>
+                                            <div class="font-bold text-brand-pink text-lg">0.64%</div>
                                             <div class="status-badge status-failed">미달성</div>
                                         </td>
-                                        <td class="p-5 font-bold text-brand-pink">0.69%</td>
+                                        <td class="p-5 font-bold text-brand-pink text-lg">0.69%</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">랜딩 진입 (Visit)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">400건+</td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink">사용자 346명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 361건)</span>
+                                                <span class="font-bold text-brand-pink text-lg">사용자 346명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 361건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-slate-800">사용자 394명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 405건)</span>
+                                                <span class="font-bold text-slate-800 text-lg">사용자 394명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 405건)</span>
                                                 <span class="status-badge status-success">달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 font-bold">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-slate-600">사용자 370명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 383건)</span>
+                                                <span class="font-bold text-slate-600 text-lg">사용자 370명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 383건)</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -872,22 +914,22 @@
                                         <td class="p-5 border-r border-slate-200 text-slate-400">50건+</td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink">사용자 14명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 15건)</span>
+                                                <span class="font-bold text-brand-pink text-lg">사용자 14명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 15건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink">사용자 20명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 42건)</span>
+                                                <span class="font-bold text-brand-pink text-lg">사용자 20명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 42건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 font-bold text-brand-pink">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-slate-600">사용자 17명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 28.5건)</span>
+                                                <span class="font-bold text-slate-600 text-lg">사용자 17명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 28.5건)</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -896,22 +938,22 @@
                                         <td class="p-5 border-r border-slate-200 text-slate-400 font-bold">30건+</td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink">사용자 5명</span>
-                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 16건)</span>
+                                                <span class="font-bold text-brand-pink text-lg">사용자 5명</span>
+                                                <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 16건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-black text-brand-cyan text-xl">사용자 20명</span>
-                                                <span class="text-sm text-brand-cyan font-bold bg-cyan-50 px-2 py-0.5 rounded mt-1">(이벤트 37건)</span>
+                                                <span class="font-black text-brand-cyan text-2xl">사용자 20명</span>
+                                                <span class="text-sm text-brand-cyan font-bold bg-cyan-50 px-2 py-0.5 rounded my-1">(이벤트 37건)</span>
                                                 <span class="status-badge status-overachieve">초과 달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 font-black text-brand-neonGreen">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-neonGreen text-lg">사용자 12.5명</span>
-                                                <span class="text-sm text-brand-neonGreen font-bold bg-green-50 px-2 py-0.5 rounded mt-1">(이벤트 26.5건)</span>
+                                                <span class="font-bold text-brand-neonGreen text-xl">사용자 12.5명</span>
+                                                <span class="text-sm text-brand-neonGreen font-bold bg-green-50 px-2 py-0.5 rounded my-1">(이벤트 26.5건)</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -920,15 +962,15 @@
                                         <td class="p-5 border-r border-slate-200 text-slate-400 font-bold">10건+</td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center text-sm text-slate-600">
-                                                <div>이미지저장: <span class="text-brand-pink font-bold">1명 (1건)</span></div>
-                                                <div class="mt-1">공유버튼: <span class="text-brand-pink font-bold">1명 (1건)</span></div>
+                                                <div>이미지 저장: <span class="text-brand-pink font-bold text-base">1명 (1건)</span></div>
+                                                <div class="my-1">공유 버튼: <span class="text-brand-pink font-bold text-base">1명 (1건)</span></div>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center text-sm text-slate-600">
-                                                <div>링크공유: <span class="text-brand-pink font-bold">6명 (6건)</span></div>
-                                                <div class="mt-1">SNS공유: <span class="text-brand-pink font-bold">1명 (1건)</span></div>
+                                                <div>링크 공유: <span class="text-slate-800 font-bold text-base">6명 (6건)</span></div>
+                                                <div class="my-1">SNS 공유: <span class="text-slate-800 font-bold text-base">1명 (1건)</span></div>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
@@ -1215,8 +1257,9 @@
         <!-- 푸터 -->
         <footer class="py-12 pb-40 border-t border-slate-200/50 text-center text-slate-400 text-sm relative z-10 hover-target">
             <div class="flex flex-wrap justify-center gap-3 mb-6">
-                <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 font-bold premium-card cursor-none text-slate-500">#이9역_전환은_우리가접수한다</span>
-                <!-- 영수증 트리거 -->
+                <!-- 💡 해커 터미널 글리치 트리거 버튼 -->
+                <span onclick="triggerGlitchProtocol()" class="px-4 py-1.5 rounded-full bg-slate-900 border border-slate-700 font-bold premium-card select-none cursor-pointer text-brand-neonGreen hover:bg-slate-800 transition shadow-lg" title="DO NOT CLICK">#이9역_전환은_우리가접수한다</span>
+                <!-- 기존 영수증 트리거 -->
                 <span onclick="triggerReceiptMode()" class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 font-bold premium-card select-none cursor-pointer text-slate-500 hover:text-brand-pink transition" title="Tap 5 times!">#K_9적단_남아공접수완료</span>
             </div>
             <p class="font-bold tracking-tighter text-slate-400">&copy; 2026 K-9 Pirates. Performance Certified.</p>
@@ -1241,16 +1284,61 @@
         </div>
     </div>
 
-    <!-- 💀 해커 터미널 모달 (안전한 자바스크립트 레이어 덮어씌우기) -->
-    <div id="hacker-terminal" class="fixed inset-0 bg-black z-[9999999] hidden flex-col justify-start items-start p-10 font-mono text-[#10b981] overflow-y-auto shadow-[inset_0_0_100px_rgba(16,185,129,0.2)]">
-        <div class="w-full max-w-4xl mx-auto mt-10 relative z-20">
-            <div class="flex items-center justify-between border-b border-[#10b981]/30 pb-4 mb-6">
-                <span class="text-sm font-bold opacity-70 tracking-widest text-[#10b981]">SYSTEM HACK INITIATED</span>
-                <button onclick="closeTerminal()" class="text-[#10b981] hover:text-white cursor-pointer"><i class="ph-bold ph-x text-2xl"></i></button>
+    <!-- 💀 [NEW] NO SIGNAL 기괴한 글리치 모달 & 해커 런 미니게임 -->
+    <div id="glitch-overlay" class="glitch-container">
+        
+        <!-- 매트릭스 비 배경 -->
+        <canvas id="matrix-canvas"></canvas>
+
+        <!-- 페이즈 1: NO SIGNAL 에러 화면 -->
+        <div id="glitch-phase-1" class="w-full h-full flex items-center justify-center crt-overlay bg-blue-900 flex-col relative z-20">
+            <div class="bg-black px-10 py-6 border-4 border-white mb-4 shadow-[0_0_50px_rgba(255,255,255,0.5)]">
+                <h1 id="no-signal-text" class="glitch-text-element mix-blend-screen text-transparent bg-clip-text bg-white">NO SIGNAL</h1>
             </div>
-            <!-- 코드 타이핑 영역 -->
-            <div id="terminal-content" class="text-base md:text-xl space-y-3 leading-relaxed text-[#10b981] drop-shadow-md"></div>
-            <div class="mt-4"><span class="typing-cursor text-[#10b981]"></span></div>
+            <p class="font-mono text-white text-xl tracking-widest animate-pulse">CHECK VIDEO CABLE</p>
+        </div>
+
+        <!-- 페이즈 2: 해골 이미지 & 개발자 로그 타이핑 -->
+        <div id="glitch-phase-2" class="hidden w-full h-full p-6 md:p-10 relative z-20 glitch-cursor">
+            <button onclick="closeGlitchProtocol()" class="absolute top-6 right-6 text-red-500 hover:text-white transition cursor-pointer z-50"><i class="ph-bold ph-x text-3xl"></i></button>
+            <div class="dev-log-container mx-auto">
+                <div class="w-full flex justify-center mb-6">
+                    <!-- 유저가 업로드한 해골 이미지 또는 ASCII 백업 -->
+                    <img id="skull-img" src="Untitled-1.jpg" alt="해골 그림" class="w-48 md:w-64 mx-auto mix-blend-screen opacity-90 filter contrast-125 sepia hue-rotate-15 creepy-skull" onerror="this.style.display='none'; document.getElementById('fallback-ascii').style.display='block';">
+                    <!-- CSS로 그린 턱 움직이는 해골 아스키 (이미지 로드 실패 시 표시) -->
+                    <div id="fallback-ascii" style="display:none;" class="ascii-skull creepy-skull">
+                        <pre>
+      .ed'''' """ $$$$$be.
+    -"           ^""**$$$e.
+  ."                   '$$$c
+ /                      "4$$b
+d  3                      $$$$
+$  * .$$$$$$
+.$  ^c           $$$$$e$$$$$$$$.
+d$L  4.         4$$$$$$$$$$$$$$b
+                        </pre>
+                        <pre class="jaw">
+$$$$b ^ceeeee.  4$$ECL.F*$$$$$$$
+$$$$P d$$$$F $ $$$$$$$$$- $$$$$$
+3$$$F "$$$$b   $"$$$$$$$  $$$$*"
+ $$P"  "$$b   .$ $$$$$...e$$
+  *c    ..    $$ 3$$$$$$$$$$eF
+    %ce""    $$$  $$$$$$$$$$*
+     *$e.    *** d$$$$$"L$$
+      $$$      4J$$$$$% $$$
+      $"'$=e....$*$$**$cz$$
+                        </pre>
+                    </div>
+                </div>
+                <div id="dev-log-content" class="w-full font-bold"></div>
+                <div class="mt-2"><span class="typing-cursor text-red-500"></span></div>
+                
+                <!-- 🦖 K-9 미니게임 캔버스 -->
+                <div id="game-wrapper" class="hidden game-wrapper">
+                    <canvas id="trex-game" width="800" height="200"></canvas>
+                    <div id="game-instruction" class="absolute bottom-2 w-full text-center text-xs md:text-sm text-brand-neonGreen font-mono animate-pulse pointer-events-none">PRESS SPACE OR TOUCH TO SURVIVE</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1295,7 +1383,8 @@
         </div>
     </div>
 
-    <button id="backToTop" class="fixed bottom-8 right-8 w-14 h-14 bg-slate-900 text-white rounded-full shadow-2xl opacity-0 translate-y-10 pointer-events-none transition-all duration-300 z-50 hover:bg-brand-pink flex items-center justify-center cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <!-- ⬆️ 우측 하단 위로 가기 버튼 -->
+    <button id="backToTop" class="fixed bottom-8 right-8 w-14 h-14 bg-slate-900 text-brand-neonGreen rounded-full shadow-2xl opacity-0 translate-y-10 pointer-events-none transition-all duration-300 z-50 hover:bg-slate-800 hover:scale-110 flex items-center justify-center cursor-pointer border border-brand-neonGreen/30" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <i class="ph-bold ph-arrow-up text-2xl"></i>
     </button>
 
@@ -1338,7 +1427,7 @@
             setTimeout(() => toast.classList.add('opacity-0'), 2000);
         }
 
-        // 2. 영수증 이스터에그
+        // 2. 영수증 이스터에그 (유지)
         let rcptClicks = 0; let rcptTimer = null;
         function triggerReceiptMode() {
             rcptClicks++;
@@ -1356,80 +1445,267 @@
             document.body.style.overflow = '';
         }
 
-        // 3. 💀 해커 터미널 완벽 복구 (레이어 방식)
-        let clicks = 0;
-        let timer = null;
-        function triggerTerminal() {
-            clicks++;
-            clearTimeout(timer);
-            timer = setTimeout(() => clicks = 0, 1000);
-            if(clicks >= 3) {
-                activateSystemOverride();
-                clicks = 0;
+        // 3. 💀 새롭게 태어난 기괴한 글리치 프로토콜 & 매트릭스 비 & 해커 런
+        let glitchInterval;
+        let typeTimeout;
+        let miniGameLoop;
+        let matrixInterval;
+
+        // 매트릭스 비 내리는 효과
+        function startMatrixEffect() {
+            const c = document.getElementById("matrix-canvas");
+            const ctx = c.getContext("2d");
+            c.width = window.innerWidth;
+            c.height = window.innerHeight;
+            
+            const matrix = "01".split("");
+            const font_size = 14;
+            const columns = c.width/font_size;
+            const drops = [];
+            for(let x = 0; x < columns; x++) drops[x] = 1; 
+
+            function draw() {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
+                ctx.fillRect(0, 0, c.width, c.height);
+                ctx.fillStyle = "#10b981"; // 네온 그린
+                ctx.font = font_size + "px arial";
+                for(let i = 0; i < drops.length; i++) {
+                    const text = matrix[Math.floor(Math.random()*matrix.length)];
+                    ctx.fillText(text, i*font_size, drops[i]*font_size);
+                    if(drops[i]*font_size > c.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                }
             }
+            matrixInterval = setInterval(draw, 35);
         }
 
-        function activateSystemOverride() {
-            const terminal = document.getElementById('hacker-terminal');
+        // 찌지지지직 소름돋는 사운드 (해골 웃음소리)
+        function playGlitchSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // 백그라운드 지지직 노이즈
+                const bufferSize = ctx.sampleRate * 4.0;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+                
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass'; filter.frequency.value = 800;
+                
+                const noiseGain = ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.6, ctx.currentTime);
+                noiseGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 3.5);
+
+                noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(ctx.destination);
+                noise.start();
+
+                // 기괴한 해골 웃음소리 (FM 주파수 변조)
+                let time = ctx.currentTime + 0.5;
+                for(let i=0; i<15; i++) {
+                    const osc = ctx.createOscillator();
+                    const mod = ctx.createOscillator();
+                    const modGain = ctx.createGain();
+                    const oscGain = ctx.createGain();
+                    
+                    osc.type = 'sawtooth';
+                    mod.type = 'square';
+                    
+                    const baseFreq = 300 - (i*15);
+                    osc.frequency.setValueAtTime(baseFreq, time);
+                    osc.frequency.exponentialRampToValueAtTime(baseFreq/2, time + 0.1);
+                    
+                    mod.frequency.value = 50; 
+                    modGain.gain.value = 100;
+                    
+                    oscGain.gain.setValueAtTime(0.5, time);
+                    oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
+                    
+                    mod.connect(modGain);
+                    modGain.connect(osc.frequency);
+                    osc.connect(oscGain);
+                    oscGain.connect(ctx.destination);
+                    
+                    mod.start(time); mod.stop(time + 0.15);
+                    osc.start(time); osc.stop(time + 0.15);
+                    
+                    time += Math.random() * 0.1 + 0.05;
+                }
+            } catch (e) { console.log("Audio not supported"); }
+        }
+
+        function triggerGlitchProtocol() {
+            playGlitchSound();
+            
+            const overlay = document.getElementById('glitch-overlay');
+            const phase1 = document.getElementById('glitch-phase-1');
+            const phase2 = document.getElementById('glitch-phase-2');
+            
             document.body.style.overflow = 'hidden';
+            overlay.classList.remove('hidden');
+            overlay.classList.add('active');
             
-            // 안전한 자바스크립트 레이어를 덮어서 번쩍이는 효과 구현
-            const flashLayer = document.createElement('div');
-            flashLayer.style.position = 'fixed';
-            flashLayer.style.inset = '0';
-            flashLayer.style.backgroundColor = '#ffffff';
-            flashLayer.style.zIndex = '99999998';
-            flashLayer.style.transition = 'opacity 0.8s ease-in-out';
-            document.body.appendChild(flashLayer);
+            phase1.classList.remove('hidden');
+            phase2.classList.add('hidden');
             
+            // 붉은 화면 번쩍임
+            overlay.classList.add('flash-red');
+            setTimeout(() => overlay.classList.remove('flash-red'), 500);
+
+            // NO SIGNAL 글리치 효과
+            glitchInterval = setInterval(() => {
+                const noSignal = document.getElementById('no-signal-text');
+                if(noSignal) {
+                    noSignal.style.transform = `translate(${Math.random()*20 - 10}px, ${Math.random()*20 - 10}px)`;
+                    noSignal.style.textShadow = `${Math.random()*20 - 10}px 0 red, ${Math.random()*20 - 10}px 0 cyan`;
+                }
+            }, 50);
+
+            // 2.5초 후 페이즈 2 (해골 & 매트릭스 & 타이핑) 전환
             setTimeout(() => {
-                terminal.classList.remove('hidden');
-                terminal.classList.add('flex'); 
-                flashLayer.style.opacity = '0'; 
-                typeTerminalMessage(); 
-            }, 100);
-
-            setTimeout(() => { document.body.removeChild(flashLayer); }, 1000);
+                clearInterval(glitchInterval);
+                phase1.classList.add('hidden');
+                phase2.classList.remove('hidden');
+                startMatrixEffect();
+                typeDevLog();
+            }, 2500);
         }
 
-        function closeTerminal() {
+        function closeGlitchProtocol() {
             document.body.style.overflow = '';
-            const t = document.getElementById('hacker-terminal');
-            t.classList.add('hidden'); t.classList.remove('flex');
-            document.getElementById('terminal-content').innerHTML = '';
+            const overlay = document.getElementById('glitch-overlay');
+            overlay.classList.remove('active');
+            clearInterval(glitchInterval);
+            clearInterval(matrixInterval);
+            clearTimeout(typeTimeout);
+            cancelAnimationFrame(miniGameLoop);
+            document.getElementById('dev-log-content').innerHTML = '';
+            document.getElementById('game-wrapper').classList.add('hidden');
         }
 
-        function typeTerminalMessage() {
-            const content = document.getElementById('terminal-content');
-            const msgs = [
-                "CONNECTING TO K-9 SECURE SERVER...",
-                "[SUCCESS] ACCESS GRANTED.",
-                "DECRYPTING CONFIDENTIAL ZA_CAMPAIGN_DATA...",
-                "=========================================",
-                "[ CLASSIFIED K-9 PROJECT LOG ]",
-                "> Target: South Africa MZ Generation",
-                "> Type Team Users: +400% (1 -> 5)",
-                "> Type Team Events: +700% (2 -> 16)",
-                "> Culture Team Conversion: From 0 to 37 Events",
-                "> Result: Extreme CVR Optimization",
-                "=========================================",
-                "FINAL VERDICT: MISSION ACCOMPLISHED (A+)",
-                "Thank you for reviewing our hard work.",
-                "[ DISCONNECTING... ]"
+        function typeDevLog() {
+            const content = document.getElementById('dev-log-content');
+            content.innerHTML = '';
+            const devLogs = [
+                {text: "[ CRITICAL ERROR ] MENTAL_HEALTH_NOT_FOUND", color: "#ef4444"},
+                {text: "> Initiating brain.reboot()... FAILED", color: "#f59e0b"},
+                {text: "> Loading caffeine_injection.exe (Dose: 1,024%)", color: "#10b981"},
+                {text: "WARNING: Sleep deprivation limits exceeded.", color: "#ef4444"},
+                {text: "--------------------------------------------------", color: "#475569"},
+                {text: "[ K-9 PIRATES DEV LOG ]", color: "#3b82f6"},
+                {text: "디마 3기 최종 플젝... 우리는 무엇을 위해 이렇게 달렸는가?", color: "#a855f7"},
+                {text: "수정, 수정, 그리고 또 수정... (Ctrl+Z 의 무한루프)", color: "#f43f5e"},
+                {text: "1차 퀴즈팀 완주율 0%를 보았을 때의 그 서늘함...", color: "#64748b"},
+                {text: "하지만 픽셀을 갈아엎고 밸런스 게임을 탄생시킨 순간,", color: "#10b981"},
+                {text: "전환율 19배 폭증. 우리는 데이터를 통해 증명해냈다.", color: "#3b82f6"},
+                {text: "--------------------------------------------------", color: "#475569"},
+                {text: "SYSTEM MESSAGE: 남아공의 트래픽은 우리가 통제한다.", color: "#ef4444"},
+                {text: "LOADING SURVIVAL PROTOCOL...", color: "#10b981"}
             ];
+            
             let idx = 0;
             function type() {
-                if(idx < msgs.length) {
+                if(idx < devLogs.length) {
                     const l = document.createElement('div');
-                    l.className = 'terminal-line';
-                    l.textContent = '> ' + msgs[idx];
+                    l.className = 'dev-line';
+                    l.style.color = devLogs[idx].color;
+                    l.textContent = devLogs[idx].text;
                     content.appendChild(l);
                     idx++;
-                    setTimeout(type, Math.random() * 80 + 40);
+                    typeTimeout = setTimeout(type, Math.random() * 50 + 30);
+                } else {
+                    // 타이핑이 끝나면 공룡 게임 시작
+                    setTimeout(initMiniGame, 800);
                 }
             }
             type();
         }
+
+        // 🦖 다채로운 K-9 해커 런 (미니게임)
+        function initMiniGame() {
+            const wrapper = document.getElementById('game-wrapper');
+            const canvas = document.getElementById('trex-game');
+            wrapper.classList.remove('hidden');
+            
+            const ctx = canvas.getContext('2d');
+            let isJumping = false;
+            let y = 140;
+            let vy = 0;
+            let gravity = 0.8;
+            let jumpPower = -12;
+            let obstacles = [];
+            let frame = 0;
+            let score = 0;
+            let gameOver = false;
+
+            function jump() {
+                if(!isJumping && !gameOver) {
+                    vy = jumpPower;
+                    isJumping = true;
+                } else if(gameOver) {
+                    gameOver = false;
+                    y = 140; vy = 0; score = 0; obstacles = []; frame = 0;
+                }
+            }
+
+            window.addEventListener('keydown', (e) => { if(e.code === 'Space' || e.code === 'ArrowUp') jump(); });
+            canvas.addEventListener('mousedown', jump);
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); }, {passive: false});
+
+            function loop() {
+                if(gameOver) {
+                    ctx.fillStyle = 'rgba(239, 68, 68, 0.3)'; // 피 튀기는 효과
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 24px Courier New';
+                    ctx.fillText("SYSTEM HALTED. TAP TO REBOOT.", canvas.width/2 - 200, 100);
+                    return;
+                }
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // K-9 Player (강아지 이모지)
+                vy += gravity;
+                y += vy;
+                if(y >= 140) { y = 140; isJumping = false; vy = 0; }
+                ctx.font = '30px Arial';
+                ctx.fillText("🐕", 50, y);
+
+                // 장애물 생성 (벌레 & 커피)
+                if(frame % 90 === 0) {
+                    const isBug = Math.random() > 0.3;
+                    obstacles.push({x: canvas.width, y: 140, type: isBug ? '🐛' : '☕', size: 30});
+                }
+                
+                for(let i=0; i<obstacles.length; i++) {
+                    let obs = obstacles[i];
+                    obs.x -= 6 + (score * 0.005);
+                    ctx.font = '24px Arial';
+                    ctx.fillText(obs.type, obs.x, obs.y);
+                    
+                    // 충돌 판정
+                    if(obs.x < 75 && obs.x + 24 > 50 && y > 115) {
+                        gameOver = true;
+                    }
+                }
+                
+                obstacles = obstacles.filter(o => o.x > -30);
+                
+                score++;
+                ctx.fillStyle = '#10b981';
+                ctx.font = 'bold 16px Courier New';
+                ctx.fillText("SURVIVAL SCORE: " + score, 10, 25);
+
+                frame++;
+                miniGameLoop = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        // 터미널 구형 트리거 대응 (이젠 안전한 글리치로 발동)
+        function triggerTerminal() { triggerGlitchProtocol(); }
 
         // 4. 공통 모달 및 기타
         function triggerConfettiAndModal() {
@@ -1460,18 +1736,35 @@
                 });
             });
 
+            // 💡 리퀴드 커서 (노션 임베드 아이프레임 완벽 호환)
             const cursor = document.getElementById('liquid-cursor');
             let cx = window.innerWidth/2, cy = window.innerHeight/2;
             let mx = cx, my = cy;
-            document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+            let isCursorActive = false;
+
+            document.addEventListener('mousemove', e => { 
+                mx = e.clientX; 
+                my = e.clientY; 
+                
+                if (!isCursorActive) {
+                    document.body.classList.add('hide-cursor');
+                    cursor.style.opacity = '1';
+                    isCursorActive = true;
+                    requestAnimationFrame(render);
+                }
+            });
+
+            document.addEventListener('mouseleave', () => {
+                if(isCursorActive) cursor.style.opacity = '0';
+            });
+            document.addEventListener('mouseenter', () => {
+                if(isCursorActive) cursor.style.opacity = '1';
+            });
+
             const render = () => {
                 cx += (mx - cx) * 0.15; cy += (my - cy) * 0.15;
                 cursor.style.transform = `translate(-50%, -50%) translate(${cx}px, ${cy}px)`;
                 requestAnimationFrame(render);
-            }
-            if(window.matchMedia("(pointer: fine)").matches) {
-                cursor.style.opacity = '1';
-                render();
             }
 
             const tiltCards = document.querySelectorAll('.tilt-card');
@@ -1503,6 +1796,45 @@
                 });
             }, { threshold: 0.1 });
             revealElements.forEach(e => obs.observe(e));
+            
+            // 💡 네비게이션 스크롤 액티브 매핑 (정확히 정렬 완료)
+            const sections = document.querySelectorAll('section[id^="sec-"]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    // 여백을 고려한 섹션 위치 추적
+                    if (scrollY >= sectionTop - 150) { 
+                        current = section.getAttribute('id'); 
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('text-brand-pink', 'text-brand-cyan', 'scale-110');
+                    if (link.getAttribute('href').includes(current)) { 
+                        // KPI 파트는 청록색, 나머지는 핑크색으로 하이라이트
+                        if(current === 'sec-04') {
+                            link.classList.add('text-brand-cyan', 'scale-110'); 
+                        } else {
+                            link.classList.add('text-brand-pink', 'scale-110'); 
+                        }
+                    }
+                });
+
+                // 맨 위로 가기 버튼 로직
+                const backToTopBtn = document.getElementById('backToTop');
+                if(backToTopBtn) {
+                    if (window.scrollY > 600) {
+                        backToTopBtn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+                        backToTopBtn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                    } else {
+                        backToTopBtn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+                        backToTopBtn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                    }
+                }
+            });
         });
     </script>
 </body>
