@@ -105,8 +105,12 @@
         .card-front { position: relative; z-index: 2; }
         .card-back { background: #0f172a; color: white; transform: rotateY(180deg); display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); border: 1px solid #334155; padding: 1rem; }
 
-        /* 데스크탑 단일 목업 비율 고정 렌더링 */
-        .phone-wrapper { position: relative; margin: 0 auto; width: 360px; height: 780px; max-width: 100vw; transition: transform 0.3s ease; transform: translateZ(0); will-change: transform; }
+        /* 💡 100% 무적 데스크탑 단일 목업 및 iframe 최적화 (새로고침/쏠림 방지) */
+        .phone-wrapper { 
+            position: relative; margin: 0 auto; width: 336px; height: 760px; max-width: 100%; 
+            transition: transform 0.3s ease; 
+            transform: translateZ(0); /* 하드웨어 가속 */
+        }
         .phone-glow { position: absolute; inset: -4px; border-radius: 4rem; filter: blur(12px); opacity: 0.8; z-index: 0; transition: all 0.5s ease; }
         .phone-wrapper:hover .phone-glow { filter: blur(18px); opacity: 1; inset: -6px; }
         .phone-wrapper:hover { transform: translateY(-8px) translateZ(0); }
@@ -135,19 +139,19 @@
         .gdrive-video-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; overflow: hidden; }
         .gdrive-video-iframe { position: absolute; top: 50%; left: 50%; width: 150%; height: 150%; transform: translate(-50%, -50%) scale(0.666667); border: none; }
 
-        /* 노션 임베드 최적화 */
+        /* 노션 임베드 최적화 (모바일 뷰포트 크기 자동 대응) */
         @media (max-width: 380px) {
-            .phone-wrapper { transform: scale(0.85) translateZ(0); transform-origin: top center; margin-bottom: -100px; }
+            .phone-wrapper { transform: scale(0.85) translateZ(0); transform-origin: top center; margin-bottom: -100px; margin-left: auto; margin-right: auto; }
             .phone-wrapper:hover { transform: scale(0.85) translateY(-8px) translateZ(0); }
         }
         @media (max-height: 850px) and (min-width: 381px) {
             #sec-00 { min-height: 850px; }
-            .phone-wrapper { transform: scale(0.8) translateZ(0); transform-origin: top center; margin-bottom: -150px; }
+            .phone-wrapper { transform: scale(0.8) translateZ(0); transform-origin: top center; margin-bottom: -150px; margin-left: auto; margin-right: auto; }
             .phone-wrapper:hover { transform: scale(0.8) translateY(-8px) translateZ(0); }
         }
         @media (max-height: 700px) and (min-width: 381px) {
             #sec-00 { min-height: 750px; }
-            .phone-wrapper { transform: scale(0.65) translateZ(0); transform-origin: top center; margin-bottom: -250px; }
+            .phone-wrapper { transform: scale(0.65) translateZ(0); transform-origin: top center; margin-bottom: -250px; margin-left: auto; margin-right: auto; }
             .phone-wrapper:hover { transform: scale(0.65) translateY(-8px) translateZ(0); }
         }
 
@@ -155,7 +159,7 @@
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        /* KPI 테이블 스타일링 */
+        /* KPI 테이블 스타일링 (가독성 최적화) */
         .kpi-table th { border-bottom: 2px solid #e2e8f0; vertical-align: middle; padding: 1.25rem 1rem; font-size: 0.95rem; }
         .kpi-table td { border-bottom: 1px solid #f1f5f9; vertical-align: middle; padding: 1.25rem 1rem; font-size: 1rem; }
         .kpi-table tr:last-child th, .kpi-table tr:last-child td { border-bottom: none; }
@@ -165,7 +169,7 @@
         .badge-increase { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 0.85rem; font-weight: 900; margin-left: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .badge-decrease { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 6px; background: rgba(225, 29, 72, 0.15); color: #e11d48; font-size: 0.85rem; font-weight: 900; margin-left: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* KPI 달성 상태 애니메이션 뱃지 */
+        /* KPI 달성 상태 애니메이션 뱃지 (직관적인 상태 알림) */
         .status-badge { display: inline-flex; align-items: center; justify-content: center; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 6px; }
         
         .status-overachieve { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; animation: pulse-overachieve 2s infinite cubic-bezier(0.4, 0, 0.6, 1); border: 1px solid #60a5fa; }
@@ -190,7 +194,6 @@
         }
         .glitch-container.active { opacity: 1; pointer-events: auto; }
         
-        /* 글리치용 마우스 커서 */
         .glitch-cursor { cursor: crosshair !important; }
 
         .flash-red { animation: flash-red 0.4s ease-out forwards; }
@@ -279,10 +282,11 @@
         .receipt-text-glow { text-shadow: 0 0 5px rgba(0,0,0,0.2); }
     </style>
 </head>
-<body class="antialiased selection:bg-brand-pink selection:text-white bg-slate-50 relative w-full overflow-x-hidden">
+<body class="antialiased selection:bg-brand-pink selection:text-white break-keep bg-slate-50 relative w-full overflow-x-hidden">
 
     <div id="liquid-cursor"><span>CLICK</span></div>
 
+    <!-- 복사 완료 토스트 알림 -->
     <div id="copyToast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-brand-neonGreen text-white px-6 py-3 rounded-full font-bold shadow-lg opacity-0 transition-opacity z-[999999]">
         <i class="ph-bold ph-check-circle text-lg align-middle mr-1"></i> Copied to clipboard!
     </div>
@@ -290,6 +294,7 @@
     <div id="orb-1" class="ambient-orb"></div>
     <div id="orb-2" class="ambient-orb"></div>
 
+    <!-- 화면 반전을 위한 메인 컨텐츠 래퍼 -->
     <main id="main-content" class="relative z-10 w-full max-w-full overflow-x-hidden h-full transition-[filter] duration-700">
 
         <!-- 💡 네비게이션 매핑 정상화 (00~05 완벽 링크) -->
@@ -386,7 +391,7 @@
                             <i class="ph-fill ph-rocket-launch text-blue-500 mt-1 text-2xl shrink-0"></i> 
                             <div>
                                 <h4 class="text-xl font-black text-slate-900 mb-2">2차 피봇 및 성과</h4>
-                                데이터 분석 결과 '영상-랜딩 간 경험 단절 및 텍스트 과부하(유형팀)'와 '무거운 진입 장벽(퀴즈팀)'이 원인이었습니다. 비주얼 중심의 저마찰 UX로 고도화한 유형팀은 <strong class="text-blue-600">전환 사용자 400% 성장(1명➔5명) 및 이벤트 700% 폭증(2건➔16건)</strong>을 이루었고, '양자택일 밸런스 게임'으로 과감히 피봇한 문화팀(구 퀴즈팀)은 무려 <strong class="text-blue-600">사용자 20명(이벤트 37건)의 압도적인 최종 전환(유형팀의 6배 이상)</strong>을 달성하며 KPI를 초과 달성했습니다.
+                                데이터 분석 결과 '영상-랜딩 간 경험 단절 및 텍스트 과부하(유형팀)'와 '무거운 진입 장벽(퀴즈팀)'이 원인이었습니다. 비주얼 중심의 저마찰 UX로 고도화한 유형팀은 <strong class="text-blue-600">전환 사용자가 400% 성장(1명➔5명) 및 이벤트 700% 폭증(2건➔16건)</strong>을 이루었고, '양자택일 밸런스 게임'으로 과감히 피봇한 문화팀(구 퀴즈팀)은 무려 <strong class="text-blue-600">사용자 20명(이벤트 37건)의 압도적인 최종 전환(유형팀의 6배 이상)</strong>을 달성하며 KPI를 초과 달성했습니다.
                             </div>
                         </li>
                         <div class="mt-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl">
@@ -496,9 +501,9 @@
                                 </p>
                             </div>
                             
-                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target">
+                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target items-center">
                                 <!-- 1차 영상 (B안) -->
-                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                <div class="flex-1 w-full max-w-[340px] mx-auto flex flex-col items-center">
                                     <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> B안 광고 영상</div>
                                     <div class="phone-wrapper">
                                         <div class="phone-glow glow-neon-green"></div>
@@ -512,7 +517,7 @@
                                     </div>
                                 </div>
                                 <!-- 1차 랜딩 (B안) -->
-                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                <div class="flex-1 w-full max-w-[340px] mx-auto flex flex-col items-center">
                                     <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> B안 랜딩페이지</div>
                                     <div class="phone-wrapper">
                                         <div class="phone-glow glow-neon-green"></div>
@@ -520,7 +525,7 @@
                                             <div class="phone-screen">
                                                 <div class="iframe-scaler-wrap">
                                                     <div class="iframe-scaler">
-                                                        <iframe src="https://dima-1st-quiz.vercel.app/" class="phone-iframe"></iframe>
+                                                        <iframe src="https://dima-1st-quiz.vercel.app/"></iframe>
                                                     </div>
                                                 </div>
                                             </div>
@@ -530,7 +535,7 @@
                             </div>
                         </div>
 
-                        <div class="premium-card p-10 md:p-16 rounded-[3rem] border-2 border-brand-cyan/30 shadow-[0_20px_60px_rgba(8,145,178,0.12)] flex flex-col xl:flex-row gap-16 items-center blur-reveal delay-100 hover-target">
+                        <div class="premium-card p-10 md:p-16 rounded-[3rem] border-2 border-brand-cyan/30 shadow-[0_20px_60px_rgba(8,145,178,0.12)] flex flex-col xl:flex-row gap-16 items-center reveal-up delay-100 hover-target">
                             <div class="flex-1 space-y-6">
                                 <div class="flex items-center gap-3 mb-4">
                                     <span class="text-brand-cyan font-black text-sm uppercase tracking-widest">2차 캠페인 (현재)</span>
@@ -542,23 +547,23 @@
                                 </p>
                             </div>
                             
-                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target">
+                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target items-center">
                                 <!-- 2차 영상 (C안) -->
-                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                <div class="flex-1 w-full max-w-[340px] mx-auto flex flex-col items-center">
                                     <div class="text-center text-sm font-bold text-brand-cyan mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> C안 광고 영상</div>
                                     <div class="phone-wrapper">
                                         <div class="phone-glow glow-cyan"></div>
                                         <div class="phone-mockup border-cyan-800">
                                             <div class="phone-screen">
                                                 <div class="gdrive-video-wrapper">
-                                                    <iframe src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                                    <iframe loading="lazy" src="https://drive.google.com/file/d/1--TRogZIAzZBWy6ZLRcCs2rIXV_1b4N4/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- 2차 랜딩 (C안) -->
-                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                <div class="flex-1 w-full max-w-[340px] mx-auto flex flex-col items-center">
                                     <div class="text-center text-sm font-bold text-brand-cyan mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-hand-tap text-lg"></i> C안 랜딩페이지</div>
                                     <div class="phone-wrapper">
                                         <div class="phone-glow glow-cyan"></div>
@@ -566,7 +571,7 @@
                                             <div class="phone-screen">
                                                 <div class="iframe-scaler-wrap">
                                                     <div class="iframe-scaler">
-                                                        <iframe src="https://dima3-9quiz.vercel.app/" class="phone-iframe" style="position: relative; z-index: 10;"></iframe>
+                                                        <iframe loading="lazy" src="https://dima3-9quiz.vercel.app/" class="phone-iframe" style="position: relative; z-index: 10;"></iframe>
                                                     </div>
                                                 </div>
                                             </div>
@@ -587,7 +592,7 @@
                     </div>
 
                     <div class="flex flex-col gap-16 relative z-10">
-                        <div class="premium-card p-10 md:p-16 rounded-[3rem] flex flex-col xl:flex-row gap-16 items-center blur-reveal opacity-90 grayscale-[20%] hover:grayscale-0 transition duration-500 hover-target">
+                        <div class="premium-card p-10 md:p-16 rounded-[3rem] flex flex-col xl:flex-row gap-16 items-center reveal-up transition duration-500 hover-target">
                             <div class="flex-1 space-y-6">
                                 <div class="flex items-center gap-3 mb-4">
                                     <span class="text-slate-500 font-black text-sm uppercase tracking-widest">1차 캠페인 (과거)</span>
@@ -599,9 +604,9 @@
                                 </p>
                             </div>
 
-                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target">
+                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target items-center">
                                 <!-- 1차 영상 (A안) -->
-                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                <div class="flex-1 w-full max-w-[340px] mx-auto flex flex-col items-center">
                                     <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> A안 광고 영상</div>
                                     <div class="phone-wrapper">
                                         <div class="phone-glow glow-neon-green"></div>
@@ -615,7 +620,7 @@
                                     </div>
                                 </div>
                                 <!-- 1차 랜딩 (A안) -->
-                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                <div class="flex-1 w-full max-w-[340px] mx-auto flex flex-col items-center">
                                     <div class="text-center text-sm font-bold text-slate-500 mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-device-mobile text-lg"></i> A안 랜딩페이지</div>
                                     <div class="phone-wrapper">
                                         <div class="phone-glow glow-neon-green"></div>
@@ -633,7 +638,7 @@
                             </div>
                         </div>
 
-                        <div class="premium-card p-10 md:p-16 rounded-[3rem] border-2 border-brand-pink/30 shadow-[0_20px_60px_rgba(225,29,72,0.12)] flex flex-col xl:flex-row gap-16 items-center blur-reveal delay-100 hover-target">
+                        <div class="premium-card p-10 md:p-16 rounded-[3rem] border-2 border-brand-pink/30 shadow-[0_20px_60px_rgba(225,29,72,0.12)] flex flex-col xl:flex-row gap-16 items-center reveal-up delay-100 hover-target">
                             <div class="flex-1 space-y-6">
                                 <div class="flex items-center gap-3 mb-4">
                                     <span class="text-brand-pink font-black text-sm uppercase tracking-widest">2차 캠페인 (현재)</span>
@@ -645,23 +650,23 @@
                                 </p>
                             </div>
                             
-                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target">
+                            <div class="w-full xl:w-auto flex flex-col sm:flex-row justify-center gap-8 hover-target items-center mt-8 xl:mt-0">
                                 <!-- 2차 영상 (A안 고도화) -->
-                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                <div class="flex-1 w-full max-w-[340px] mx-auto flex flex-col items-center">
                                     <div class="text-center text-sm font-bold text-brand-pink mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-video-camera text-lg"></i> A안(고도화) 광고 영상</div>
                                     <div class="phone-wrapper">
                                         <div class="phone-glow glow-pink"></div>
                                         <div class="phone-mockup border-rose-900">
                                             <div class="phone-screen">
                                                 <div class="gdrive-video-wrapper">
-                                                    <iframe src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                                                    <iframe loading="lazy" src="https://drive.google.com/file/d/1WYJQ5EFX8vA1ZPyqdHQfqcwjtzCgUbIX/preview" class="gdrive-video-iframe" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- 2차 랜딩 (A안 고도화) -->
-                                <div class="flex-1 w-full max-w-[340px] mx-auto">
+                                <div class="flex-1 w-full max-w-[340px] mx-auto flex flex-col items-center">
                                     <div class="text-center text-sm font-bold text-brand-pink mb-4 flex items-center justify-center gap-2"><i class="ph-fill ph-hand-tap text-lg"></i> A안(고도화) 랜딩페이지</div>
                                     <div class="phone-wrapper">
                                         <div class="phone-glow glow-pink"></div>
@@ -669,7 +674,7 @@
                                             <div class="phone-screen">
                                                 <div class="iframe-scaler-wrap">
                                                     <div class="iframe-scaler">
-                                                        <iframe src="https://dima3-9test.vercel.app/" class="phone-iframe" style="position: relative; z-index: 10;"></iframe>
+                                                        <iframe loading="lazy" src="https://dima3-9test.vercel.app/" class="phone-iframe" style="position: relative; z-index: 10;"></iframe>
                                                     </div>
                                                 </div>
                                             </div>
@@ -683,7 +688,7 @@
             </div>
         </section>
 
-        <!-- 💡 04. 실무형 Apple-to-Apple KPI 분석 (모든 지표 완벽 반영 및 직관적 뱃지 적용) -->
+        <!-- 💡 04. 실무형 Apple-to-Apple KPI 분석 -->
         <section id="sec-04" class="py-32 px-6 relative z-10 border-t border-slate-200/50 bg-slate-50">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-20 blur-reveal">
@@ -716,74 +721,74 @@
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">도달 (총 노출수)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">30,000회+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800 text-lg">51,222회</div>
+                                            <div class="font-bold text-slate-800">51,222회</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800 text-lg">52,300회</div>
+                                            <div class="font-bold text-slate-800">52,300회</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
-                                        <td class="p-5 font-bold text-lg">51,761회</td>
+                                        <td class="p-5 font-bold">51,761회</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">흥미 (2초 시청)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">25,000건+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-brand-pink text-lg">11,534건</div>
+                                            <div class="font-bold text-brand-pink">11,534건</div>
                                             <div class="status-badge status-failed">미달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-brand-pink text-lg">17,229건</div>
+                                            <div class="font-bold text-brand-pink">17,229건</div>
                                             <div class="status-badge status-failed">미달성</div>
                                         </td>
-                                        <td class="p-5 font-bold text-brand-pink text-lg">14,382건</td>
+                                        <td class="p-5 font-bold text-brand-pink">14,382건</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (클릭수)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">500건+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800 text-lg">891건</div>
+                                            <div class="font-bold text-slate-800">891건</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800 text-lg">569건</div>
+                                            <div class="font-bold text-slate-800">569건</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
-                                        <td class="p-5 font-bold text-lg">730건</td>
+                                        <td class="p-5 font-bold">730건</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">유입 (CTR)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">1.0%+</td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800 text-lg">1.74%</div>
+                                            <div class="font-bold text-slate-800">1.74%</div>
                                             <div class="status-badge status-overachieve">초과 달성</div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
-                                            <div class="font-bold text-slate-800 text-lg">1.09%</div>
+                                            <div class="font-bold text-slate-800">1.09%</div>
                                             <div class="status-badge status-success">달성</div>
                                         </td>
-                                        <td class="p-5 font-bold text-lg">1.42%</td>
+                                        <td class="p-5 font-bold">1.42%</td>
                                     </tr>
                                     <tr>
                                         <td class="p-5 font-bold border-r border-slate-200 bg-slate-50">참여 (시작 버튼)</td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400">300건+</td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink text-lg">사용자 9명</span>
+                                                <span class="font-bold text-brand-pink">사용자 9명</span>
                                                 <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 13건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink text-lg">사용자 10명</span>
+                                                <span class="font-bold text-brand-pink">사용자 10명</span>
                                                 <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 0건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 font-bold text-brand-pink">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-slate-600 text-lg">사용자 9.5명</span>
+                                                <span class="font-bold text-slate-600">사용자 9.5명</span>
                                                 <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded mt-1">(이벤트 6.5건)</span>
                                             </div>
                                         </td>
@@ -791,26 +796,26 @@
                                     <tr class="bg-slate-50/50">
                                         <td class="p-5 font-black text-slate-900 border-r border-slate-200">
                                             최종 전환 (KPI)<br>
-                                            <span class="text-xs font-bold text-slate-500 block mt-1">유형팀: 외부링크<br>퀴즈팀: 공유</span>
+                                            <span class="text-xs font-bold text-slate-500 block mt-1">유형팀: 외부링크 클릭<br>퀴즈팀: 공유버튼 클릭</span>
                                         </td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400 font-bold">10건+</td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink text-lg">사용자 1명</span>
+                                                <span class="font-bold text-brand-pink">사용자 1명</span>
                                                 <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 2건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 border-r border-slate-200">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink text-lg">사용자 0명</span>
+                                                <span class="font-bold text-brand-pink">사용자 0명</span>
                                                 <span class="text-sm text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded my-1">(이벤트 0건)</span>
                                                 <span class="status-badge status-failed">미달성</span>
                                             </div>
                                         </td>
                                         <td class="p-5 font-black text-brand-pink">
                                             <div class="flex flex-col items-center justify-center">
-                                                <span class="font-bold text-brand-pink text-lg">사용자 0.5명</span>
+                                                <span class="font-bold text-brand-pink">사용자 0.5명</span>
                                                 <span class="text-sm text-brand-pink/70 font-bold bg-rose-50 px-2 py-0.5 rounded mt-1">(이벤트 1건)</span>
                                             </div>
                                         </td>
@@ -941,7 +946,7 @@
                                     <tr class="bg-slate-50/50">
                                         <td class="p-5 font-black text-slate-900 border-r border-slate-200">
                                             최종 전환 (KPI)<br>
-                                            <span class="text-[11px] text-slate-500 font-bold block mt-1">유형팀: 외부링크<br>문화팀: 완료페이지</span>
+                                            <span class="text-[11px] text-slate-500 font-bold block mt-1">유형팀: 외부링크 클릭<br>문화팀: 완료페이지 조회</span>
                                         </td>
                                         <td class="p-5 border-r border-slate-200 text-slate-400 font-bold">30건+</td>
                                         <td class="p-5 border-r border-slate-200">
@@ -1336,7 +1341,7 @@ $$$$P d$$$$F $ $$$$$$$$$- $$$$$$
   *c    ..    $$ 3$$$$$$$$$$eF
     %ce""    $$$  $$$$$$$$$$*
      *$e.    *** d$$$$$"L$$
-      $$$      4J$$$$$% $$$
+      $$$     4J$$$$$%$$$
       $"'$=e....$*$$**$cz$$
                         </pre>
                     </div>
@@ -1714,9 +1719,6 @@ $$$$P d$$$$F $ $$$$$$$$$- $$$$$$
             }
             loop();
         }
-
-        // 터미널 구형 트리거 대응 (이젠 안전한 글리치로 발동)
-        function triggerTerminal() { triggerGlitchProtocol(); }
 
         // 4. 공통 모달 및 기타
         function triggerConfettiAndModal() {
